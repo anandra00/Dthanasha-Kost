@@ -18,11 +18,11 @@
         <h1 class="font-cursive text-6xl mb-2 text-black tracking-wide">Welcome</h1>
         <h2 class="text-xl font-bold mb-12 text-black uppercase tracking-tight">Dthanasha Kost</h2>
 
-        <form action="{{ url('/login') }}" method="POST" class="w-full flex flex-col items-center">
+        <form action="{{ route('login') }}" method="POST" class="w-full flex flex-col items-center">
             @csrf 
             <div class="w-full max-w-[250px] mb-5">
-                <label for="username" class="block text-[11px] font-bold text-black mb-1 ml-3">Username</label>
-                <input type="text" id="username" name="username" required autofocus class="w-full bg-black text-white rounded-full px-6 py-2.5 text-sm outline-none focus:ring-2 focus:ring-gray-300 transition-all">
+                <label for="login" class="block text-[11px] font-bold text-black mb-1 ml-3">Username</label>
+                <input type="text" id="login" name="login" required autofocus class="w-full bg-black text-white rounded-full px-6 py-2.5 text-sm outline-none focus:ring-2 focus:ring-gray-300 transition-all">
             </div>
 
             <div class="w-full max-w-[250px] mb-10">

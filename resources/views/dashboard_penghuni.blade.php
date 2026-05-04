@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Penghuni - Dthanasha Kost (Industrial Steel)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    @vite('resources/css/app.css')
     <style>
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
@@ -68,7 +68,17 @@
         </header>
 
         <h1 class="text-2xl font-black text-gray-900 mb-8">Selamat datang, Misael!</h1>
+       <form action="{{ route('logout') }}" method="POST" class="inline">
+    
+    <!-- INI WAJIB ADA. Kalau ga ada, Laravel bakal nolak dan ngasih error 419 Page Expired -->
+    @csrf
 
+    <!-- Tombol lu di dalem sini, tambahin type="submit" -->
+    <button type="submit" class="bg-[#e0e0e0] text-black font-bold text-sm py-2 px-14 rounded-md hover:bg-[#d1d1d1] active:scale-95 transition-all shadow-sm">
+        Logout
+    </button>
+
+</form>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
             
             <div class="bg-white p-8 rounded-3xl card-shadow border border-gray-50 flex flex-col justify-between h-72">
