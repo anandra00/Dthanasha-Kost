@@ -19,8 +19,8 @@ class Penghuni extends Model
         'jenis_kelamin',
         'no_telepon',
         'no_telepon_orangtua',
-        'kamar_id', // <-- Ini foreign key yang menghubungkan ke tabel kamar
-        'user_id'   // <-- Ini foreign key yang menghubungkan ke tabel users (akun)
+        'id_kamar', // <-- Ini foreign key yang menghubungkan ke tabel kamar
+        'id_user'   // <-- Ini foreign key yang menghubungkan ke tabel users (akun)
     ];
 
     /**
@@ -29,7 +29,7 @@ class Penghuni extends Model
      */
     public function kamar()
     {
-        return $this->belongsTo(Kamar::class, 'kamar_id');
+        return $this->belongsTo(Kamar::class, 'id_kamar');
     }
 
     /**
@@ -38,6 +38,6 @@ class Penghuni extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'id_user');
     }
 }

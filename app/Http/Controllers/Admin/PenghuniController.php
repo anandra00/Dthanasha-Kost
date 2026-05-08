@@ -35,7 +35,7 @@ class PenghuniController extends Controller
         
         if ($akunLama) {
             // Cek apakah akun ini masih tersambung dengan penghuni yang aktif
-            $masihDipakai = Penghuni::where('user_id', $akunLama->id)->exists();
+            $masihDipakai = Penghuni::where('id', $akunLama->id)->exists();
             
             if (!$masihDipakai) {
                 // Jika sudah tidak dipakai (penghuninya sudah pindah/dihapus), 
@@ -60,7 +60,7 @@ class PenghuniController extends Controller
             'name' => $request->nama,
             'username' => $request->nama_akun,
             'password' => Hash::make($request->password),
-            // 'role' => 'penghuni', // Buka komen ini jika kamu punya kolom role di tabel users
+            'role' => 'penghuni', // Buka komen ini jika kamu punya kolom role di tabel users
         ]);
 
         // B. Buat data profil penghuninya
@@ -70,7 +70,7 @@ class PenghuniController extends Controller
             'jenis_kelamin' => $request->jk,
             'no_telepon' => $request->kontak,
             'no_telepon_orangtua' => $request->kontak_ortu,
-            'user_id' => $user->id, // Sambungkan ke akun yang baru dibuat
+            'id_user' => $user->id, // Sambungkan ke akun yang baru dibuat
         ]);
 
         return redirect()->back()->with('success', 'Akun penghuni baru berhasil ditambahkan!');
@@ -86,7 +86,7 @@ class PenghuniController extends Controller
 
         $penghuni = Penghuni::findOrFail($id);
         $kamarLamaId = $penghuni->kamar_id;
-        $kamarBaruId = $request->kamar_id;
+        $kamarBaruId = $request->kamar_id ?: null;
 
         // Cek apakah kamar diubah
         if ($kamarLamaId != $kamarBaruId) {
@@ -103,7 +103,7 @@ class PenghuniController extends Controller
         // Update nama dan ID kamar di tabel penghuni
         $penghuni->update([
             'nama_penghuni' => $request->nama,
-            'kamar_id' => $kamarBaruId,
+            'id_kamar' => $kamarBaruId,
         ]);
 
         return redirect()->back()->with('success', 'Data penghuni dan status kamar berhasil diupdate!');
@@ -119,7 +119,7 @@ class PenghuniController extends Controller
             Kamar::where('id', $penghuni->kamar_id)->update(['status_kamar' => 'Kosong']);
         }
 
-        $userId = $penghuni->user_id;
+        $userId = $penghuni->id;
         $namaPenghuni = $penghuni->nama_penghuni;
         
         // 2. Hapus profil penghuninya
@@ -128,7 +128,7 @@ class PenghuniController extends Controller
         // 3. Hapus akun login-nya dari tabel users secara permanen
         if ($userId) {
             // Jika data baru (sudah ada relasi user_id)
-            User::where('id', $userId)->delete();
+            User::where('id', $id)->delete();
         } else {
             // FALLBACK UNTUK DATA LAMA: 
             // Jika belum ada user_id, kita cari berdasarkan namanya dan hapus

@@ -20,7 +20,7 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
 
     // ---> Route CRUD Data Penghuni <---
     Route::get('admin/data-penghuni', [PenghuniController::class, 'index'])->name('admin.data-penghuni');
-    Route::post('/admin/tambah_akun', [PenghuniController::class, 'store']);
+    Route::post('/admin/tambah_akun', [PenghuniController::class, 'store'])->name('admin.tambah-akun');
     Route::put('/admin/edit_penghuni/{id}', [PenghuniController::class, 'update']);
     Route::delete('/admin/hapus_penghuni/{id}', [PenghuniController::class, 'destroy']); // <-- Pastikan ada /{id}
 
@@ -77,10 +77,6 @@ Route::middleware(['auth', 'role:penghuni'])->group(function () {
         return view('penghuni.pembayaran_manual');
     })->name('penghuni.pembayaran-manual');
 
-    Route::get('penghuni/pembayaran', function () {
-        return view('penghuni.pembayaran_penghuni');
-    })->name('penghuni.pembayaran');
-
     Route::get('penghuni/profile', function () {
         return view('penghuni.profile_penghuni');
     })->name('penghuni.profile');
@@ -102,9 +98,8 @@ Route::middleware(['auth', 'role:penghuni'])->group(function () {
         return redirect()->back();
     });
 
-    Route::get('/pembayaran', [PaymentController::class, 'halamanPembayaran']);
-    Route::post('/proses-bayar', [PaymentController::class, 'prosesBayar']);
-    Route::post('/midtrans-callback', [PaymentController::class, 'webhook']);
+    Route::get('penghuni/pembayaran', [PaymentController::class, 'halamanPembayaran'])->name('penghuni.pembayaran');
+    Route::post('penghuni/proses-bayar', [PaymentController::class, 'prosesBayar'])->name('penghuni.proses-bayar');
 
     Route::post('/proses_bayar_manual', function () {
         // Logic upload dari halaman upload manual
@@ -113,6 +108,8 @@ Route::middleware(['auth', 'role:penghuni'])->group(function () {
 
     });
 });
+Route::post('/midtrans/webhook', [PaymentController::class, 'webhook']);
+
 
 // Route autentikasi bawaan Breeze
 require __DIR__.'/auth.php';

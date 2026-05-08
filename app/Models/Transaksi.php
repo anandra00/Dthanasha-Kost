@@ -15,16 +15,10 @@ class Transaksi extends Model
     public $incrementing = false;
     protected $keyType = 'string'; //[cite: 6]
 
-    protected $fillable = [
-        'order_id',
-        'id_tagihan',
-        'snap_token',
-        'tipe_pembayaran',
-        'status_transaksi'
-    ]; //[cite: 6]
+    protected $fillable = ['order_id', 'id_tagihan', 'snap_token', 'status_transaksi', 'tipe_pembayaran'];
 
     public function tagihan()
     {
-        return $this->belongsTo(Tagihan::class, 'id_tagihan');
+        return $this->belongsTo(Tagihan::class, 'id_tagihan', 'id');
     }
 }

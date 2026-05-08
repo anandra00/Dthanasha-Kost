@@ -91,10 +91,11 @@
             <h2 class="text-xl font-black text-gray-900 mb-6">Pembayaran Berhasil</h2>
             <div class="flex justify-center mb-6"><i class="ph-fill ph-check-circle text-green-600 text-7xl"></i></div>
             <div class="space-y-4 mb-8 text-left bg-zinc-50 p-4 rounded-xl border border-zinc-100">
-                <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Periode Pembayaran</span><span class="text-sm font-medium text-zinc-700">Juni 2026</span></div>
-                <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Tanggal Pembayaran</span><span class="text-sm font-medium text-zinc-700">1 Juni 2026</span></div>
-                <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Status Pembayaran</span><span class="text-sm font-bold text-green-600">Berhasil</span></div>
-                <div class="flex justify-between items-center pt-2 border-t border-zinc-200"><span class="text-sm font-bold text-zinc-900">Nominal</span><span class="text-base font-black text-zinc-900">Rp 1.000.000</span></div>
+                <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Order ID</span><span class="text-sm font-medium text-zinc-700">{{ isset($modalData) ? $modalData->order_id : 'TRX-DUMMY-123' }}</span></div>
+                <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Periode Pembayaran</span><span class="text-sm font-medium text-zinc-700">{{ isset($modalData) && $modalData->tagihan ? $modalData->tagihan->periode_bulan : 'Juni 2026' }}</span></div>
+                <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Tanggal Transaksi</span><span class="text-sm font-medium text-zinc-700">{{ isset($modalData) ? \Carbon\Carbon::parse($modalData->created_at)->format('d M Y, H:i') : '1 Juni 2026' }}</span></div>
+                <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Status Pembayaran</span><span class="text-sm font-bold text-green-600">{{$modalStatus}}</span></div>
+                <div class="flex justify-between items-center pt-2 border-t border-zinc-200"><span class="text-sm font-bold text-zinc-900">Nominal</span><span class="text-base font-black text-zinc-900">Rp {{ isset($modalData) && $modalData->tagihan ? number_format($modalData->tagihan->nominal_tagihan, 0, ',', '.') : '1.000.000' }}</span></div>
             </div>
             <button onclick="tutupModal('modalBerhasil')" class="w-full px-4 py-3 rounded-xl bg-zinc-200 text-zinc-700 font-bold hover:bg-zinc-300 transition-all text-sm">Kembali</button>
         </div>
@@ -105,10 +106,9 @@
             <h2 class="text-xl font-black text-gray-900 mb-6">Pembayaran Gagal</h2>
             <div class="flex justify-center mb-6"><i class="ph-fill ph-warning-circle text-red-600 text-7xl"></i></div>
             <div class="space-y-4 mb-8 text-left bg-zinc-50 p-4 rounded-xl border border-zinc-100">
-                <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Periode Pembayaran</span><span class="text-sm font-medium text-zinc-700">Juni 2026</span></div>
-                <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Tanggal Pembayaran</span><span class="text-sm font-medium text-zinc-700">1 Juni 2026</span></div>
-                <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Status Pembayaran</span><span class="text-sm font-bold text-red-600">Gagal</span></div>
-                <div class="flex justify-between items-center pt-2 border-t border-zinc-200"><span class="text-sm font-bold text-zinc-900">Nominal</span><span class="text-base font-black text-zinc-900">Rp 1.000.000</span></div>
+                <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Order ID</span><span class="text-sm font-medium text-zinc-700">{{ isset($modalData) ? $modalData->order_id : 'TRX-DUMMY-123' }}</span></div>
+                <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Periode Pembayaran</span><span class="text-sm font-medium text-zinc-700">{{ isset($modalData) && $modalData->tagihan ? $modalData->tagihan->periode_bulan : 'Juni 2026' }}</span></div>
+                <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Status Pembayaran</span><span class="text-sm font-bold text-red-600">Gagal / Dibatalkan</span></div>
             </div>
             <div class="flex gap-3">
                 <button onclick="tutupModal('modalGagal')" class="flex-1 px-4 py-3 rounded-xl bg-zinc-200 text-zinc-700 font-bold hover:bg-zinc-300 transition-all text-sm">Kembali</button>
@@ -119,65 +119,10 @@
 @endsection
 
 @section('scripts')
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
+    
     <script>
-        document.getElementById('pay-button').onclick = async function(e) {
-            e.preventDefault();
-            
-            const btn = this;
-            const originalText = btn.innerHTML;
-            
-            // Bikin tombol loading biar keliatan profesional
-            btn.innerHTML = 'Sedang memproses...';
-            btn.disabled = true;
 
-            try {
-                // Ambil CSRF Token dari meta tag
-                const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-
-                // Tembak URL controller kita di belakang layar
-                const response = await fetch('/proses-bayar', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
-                    }
-                });
-
-                const data = await response.json();
-
-                // Balikin wujud tombolnya
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-
-                if(data.status === 'success') {
-                    // Panggil Midtrans pake token dari respon JSON
-                    window.snap.pay(data.snap_token, {
-                        onSuccess: function(result){
-                            alert("Mantap! Pembayaran berhasil.");
-                            window.location.reload(); 
-                        },
-                        onPending: function(result){
-                            alert("Sip, segera transfer ya bro!");
-                            window.location.reload();
-                        },
-                        onError: function(result){
-                            alert("Pembayaran gagal!");
-                        },
-                        onClose: function(){
-                            alert("Lu nutup popup belom kelar bayar woy!");
-                        }
-                    });
-                } else {
-                    alert("Gagal memproses token, coba lagi.");
-                }
-
-            } catch (error) {
-                console.error(error);
-                alert("Ada gangguan di server nih!");
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        };
         function bukaModalBerhasil() { 
             tutupSemuaModal();
             document.getElementById('modalBerhasil').classList.remove('hidden'); 
@@ -193,5 +138,75 @@
             document.getElementById('modalBerhasil').classList.add('hidden');
             document.getElementById('modalGagal').classList.add('hidden');
         }
+        // LOGIKA AUTO-OPEN MODAL JIKA ADA PARAMETER DARI MIDTRANS
+        document.addEventListener('DOMContentLoaded', function() {
+            let statusDariUrl = "{{ $modalStatus ?? '' }}";
+            console.log("CCTV: Status dari Controller = '" + statusDariUrl + "'");
+
+            if (statusDariUrl === 'success' || statusDariUrl === 'pending') {
+                console.log("CCTV: Modal Berhasil harusnya kebuka sekarang!");
+                bukaModalBerhasil();
+                // MATIIN SEMENTARA BIAR URL BISA KITA BACA
+                // window.history.replaceState(null, null, window.location.pathname);
+            } else if (statusDariUrl === 'failed') {
+                console.log("CCTV: Modal Gagal harusnya kebuka sekarang!");
+                bukaModalGagal();
+                // MATIIN SEMENTARA BIAR URL BISA KITA BACA
+                // window.history.replaceState(null, null, window.location.pathname);
+            }
+        });
+
+        document.getElementById('pay-button').onclick = async function(e) {
+            e.preventDefault();
+            
+            const btn = this;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Sedang memproses...';
+            btn.disabled = true;
+
+            try {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+                const response = await fetch('{{ route('penghuni.proses-bayar') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    }
+                });
+
+                const data = await response.json();
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+
+                if(data.status === 'success') {
+                    // DI SINI KUNCI REDIRECT-NYA BRO!
+                    window.snap.pay(data.snap_token, {
+                        onSuccess: function(result){
+                            window.location.href = "{{ route('penghuni.pembayaran') }}?order_id=" + result.order_id + "&status=success";
+                        },
+                        onPending: function(result){
+                            window.location.href = "{{ route('penghuni.pembayaran') }}?order_id=" + result.order_id + "&status=pending";
+                        },
+                        onError: function(result){
+                            window.location.href = "{{ route('penghuni.pembayaran') }}?order_id=" + result.order_id + "&status=failed";
+                        },
+                        onClose: function(){
+                            alert("Lu nutup popup belom kelar bayar woy!");
+                        }
+                    });
+                } else if (data.status === 'error'){
+                    alert(data.message);
+                } else {
+                    alert("Gagal memproses token, coba lagi.");
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert("Ada gangguan di server nih!");
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        };
     </script>
 @endsection
