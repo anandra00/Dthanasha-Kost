@@ -10,32 +10,11 @@
 @endsection
 
 @section('content')
-    <h1 class="text-2xl font-black text-gray-900 mb-8">Selamat datang, Misael!</h1>
+    <h1 class="text-2xl font-black text-gray-900 mb-8">Selamat datang, {{ $nama }}!</h1>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
         <!-- Card Status Tagihan -->
-        <div class="bg-white p-8 rounded-3xl card-shadow border border-gray-50 flex flex-col justify-between h-72">
-            <div class="flex justify-between items-start">
-                <div>
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Status Tagihan Bulan Ini</h3>
-                    <div class="flex items-center gap-2 mt-4">
-                        <i class="ph ph-calendar-blank text-zinc-400"></i>
-                        <p class="text-sm font-bold text-zinc-700">Periode : <span class="font-black">April 2026</span></p>
-                    </div>
-                    <div class="flex items-center gap-2 mt-2">
-                        <i class="ph ph-clock-countdown text-zinc-400"></i>
-                        <p class="text-sm font-bold text-zinc-700">Jatuh Tempo : <span class="text-red-500 font-black">10 April 2026</span></p>
-                    </div>
-                </div>
-                <span class="bg-red-50 text-red-600 text-[10px] font-black px-3 py-1.5 rounded-lg border border-red-100 uppercase tracking-widest flex items-center gap-1.5">
-                    <div class="w-1.5 h-1.5 bg-red-600 rounded-full"></div> Belum Lunas
-                </span>
-            </div>
-            <div class="mt-auto pt-6 border-t border-zinc-100">
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Total Bayar</p>
-                <p class="text-4xl font-black text-zinc-900">Rp 1.200.000</p>
-            </div>
-        </div>
+       <x-card-tagihan :tagihan="$tagihanSaatIni" />
 
         <!-- Card Informasi Hunian -->
         <div class="bg-white p-8 rounded-3xl card-shadow border border-gray-50 h-72">
@@ -48,15 +27,15 @@
             <div class="space-y-4">
                 <div class="flex justify-between items-center border-b border-zinc-50 pb-2">
                     <span class="text-sm font-medium text-zinc-500">Nomor Kamar</span>
-                    <span class="text-sm font-black text-zinc-900 bg-zinc-100 px-2 py-0.5 rounded">100</span>
+                    <span class="text-sm font-black text-zinc-900 bg-zinc-100 px-2 py-0.5 rounded">{{ $kamar->nomor_kamar }}</span>
                 </div>
                 <div class="flex justify-between items-center border-b border-zinc-50 pb-2">
                     <span class="text-sm font-medium text-zinc-500">Tipe Kamar</span>
-                    <span class="text-sm font-bold text-zinc-900">Reguler</span>
+                    <span class="text-sm font-bold text-zinc-900">{{ $kamar->jenis_kamar }}</span>
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="text-sm font-medium text-zinc-500">Tanggal Masuk</span>
-                    <span class="text-sm font-bold text-zinc-900">12 Januari 2026</span>
+                    <span class="text-sm font-bold text-zinc-900">{{ $penghuni->created_at?->format('d/m/y') ?? '-' }}</span>
                 </div>
             </div>
         </div>
@@ -101,7 +80,7 @@
         <div class="space-y-6">
             <div class="bg-white p-6 rounded-3xl card-shadow border border-gray-50 flex flex-col gap-4">
                 <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide mb-2">Aksi Cepat</h3>
-                <a href="{{ url('/penghuni/pembayaran') }}" class="group bg-[#18181B] hover:bg-[#334155] p-5 rounded-2xl transition-all shadow-md active:scale-95 flex items-center justify-between">
+                <a href="{{ route('penghuni.pembayaran') }}" class="group bg-[#18181B] hover:bg-[#334155] p-5 rounded-2xl transition-all shadow-md active:scale-95 flex items-center justify-between">
                     <div class="flex items-center gap-4">
                         <div class="w-10 h-10 bg-zinc-800 rounded-xl flex items-center justify-center text-white group-hover:bg-zinc-700 transition-colors">
                             <i class="ph ph-wallet text-xl"></i>
@@ -110,7 +89,7 @@
                     </div>
                     <i class="ph ph-caret-right text-zinc-500"></i>
                 </a>
-                <a href="https://wa.me/6281234567890" target="_blank" class="group bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 p-5 rounded-2xl transition-all active:scale-95 flex items-center justify-between">
+                <a href={{ $waAdmin? "https://wa.me/".$waAdmin->nilai : "6281384700455"}} target="_blank" class="group bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 p-5 rounded-2xl transition-all active:scale-95 flex items-center justify-between">
                     <div class="flex items-center gap-4">
                         <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-zinc-900 border border-zinc-200">
                             <i class="ph ph-chat-centered-text text-xl"></i>

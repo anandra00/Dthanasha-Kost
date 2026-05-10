@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\PengaturanController;
+use App\Http\Controllers\Penghuni\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\PenghuniController;
 use App\Http\Controllers\Penghuni\PaymentController;
@@ -59,7 +61,8 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
     Route::delete('/hapus_riwayat', function () { return back(); });
 
     // Action Pengaturan
-    Route::post('/update_pengaturan', function () { return back(); });
+    Route::get('/admin/pengaturan', [PengaturanController::class, 'index'])->name('admin.pengaturan');
+    Route::post('/admin/update-pengaturan', [PengaturanController::class, 'update'])->name('admin.update-pengaturan');
 });
 
 
@@ -69,9 +72,7 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
 Route::middleware(['auth', 'role:penghuni'])->group(function () { 
     
     // --- Views Penghuni ---
-    Route::get('penghuni/dashboard', function () {
-        return view('penghuni.dashboard');
-    })->name('penghuni.dashboard');
+    Route::get('penghuni/dashboard', [DashboardController::class, 'index'])->name('penghuni.dashboard');
 
     Route::get('penghuni/pembayaran-manual', function () {
         return view('penghuni.pembayaran_manual');

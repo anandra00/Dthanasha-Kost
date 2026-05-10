@@ -15,7 +15,7 @@
     </div>
 
     <div class="bg-white p-8 rounded-3xl card-shadow border border-gray-50 max-w-3xl">
-        <form action="{{ url('/update_pengaturan') }}" method="POST" class="space-y-6">
+        <form action="{{ route('admin.update-pengaturan') }}" method="POST" class="space-y-6">
             @csrf
 
             <!-- Setting Deadline -->
@@ -29,7 +29,7 @@
                         <p class="text-[11px] font-semibold text-zinc-500 mb-3">Tentukan tanggal jatuh tempo pembayaran kost setiap bulannya (cth: 10).</p>
                         <div class="flex items-center gap-3">
                             <span class="text-sm font-bold text-zinc-600">Tanggal</span>
-                            <input type="number" name="deadline_tanggal" min="1" max="31" value="10" class="w-24 px-4 py-2.5 rounded-xl bg-white border border-zinc-300 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900 text-center shadow-sm" required>
+                            <input type="number" value="{{ $pengaturan['deadline'] ?? '' }}" id="deadline" name="deadline" min="1" max="31" value="10" class="w-24 px-4 py-2.5 rounded-xl bg-white border border-zinc-300 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900 text-center shadow-sm" required>
                         </div>
                     </div>
                 </div>
@@ -44,7 +44,7 @@
                     <div class="flex-1">
                         <label class="block text-sm font-bold text-zinc-900 mb-1">Nomor WhatsApp Admin</label>
                         <p class="text-[11px] font-semibold text-zinc-500 mb-3">Nomor ini akan digunakan sebagai kontak darurat dan pengirim notifikasi tagihan.</p>
-                        <input type="text" name="wa_admin" value="6281234567890" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-300 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900 shadow-sm" placeholder="Gunakan kode negara (cth: 628...)" required>
+                        <input type="text" value="{{ $pengaturan['wa_admin'] ?? '' }}" id="wa-admin" name="wa_admin" value="6281234567890" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-300 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900 shadow-sm" placeholder="Gunakan kode negara (cth: 628...)" required>
                     </div>
                 </div>
             </div>
@@ -58,7 +58,7 @@
                     <div class="flex-1">
                         <label class="block text-sm font-bold text-zinc-900 mb-1">Alamat Email Admin</label>
                         <p class="text-[11px] font-semibold text-zinc-500 mb-3">Email utama untuk menerima laporan sistem atau keluhan penghuni via email.</p>
-                        <input type="email" name="email_admin" value="admin@dthanasha.com" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-300 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900 shadow-sm" required>
+                        <input type="email" value="{{ $pengaturan['email_admin'] ?? '' }}" id=""email-admin name="email_admin" value="admin@dthanasha.com" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-300 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900 shadow-sm" required>
                     </div>
                 </div>
             </div>

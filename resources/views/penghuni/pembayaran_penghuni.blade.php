@@ -13,22 +13,7 @@
 
     <!-- Status Tagihan & Aksi Cepat -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-        <div class="bg-white p-8 rounded-3xl card-shadow border border-gray-50 flex flex-col justify-between h-72">
-            <div class="flex justify-between items-start">
-                <div>
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 flex items-center gap-2">Status Tagihan Bulan Ini <i class="ph ph-wallet"></i></h3>
-                    <div class="flex items-center gap-2 mt-4"><i class="ph ph-calendar-blank text-zinc-400"></i><p class="text-sm font-bold text-zinc-700">Periode : <span class="font-black">April 2026</span></p></div>
-                    <div class="flex items-center gap-2 mt-2"><i class="ph ph-clock-countdown text-zinc-400"></i><p class="text-sm font-bold text-zinc-700">Jatuh Tempo : <span class="text-red-500 font-black">10 April 2026</span></p></div>
-                </div>
-                <span class="bg-red-50 text-red-600 text-[10px] font-black px-3 py-1.5 rounded-lg border border-red-100 uppercase tracking-widest flex items-center gap-1.5"><div class="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse"></div> Belum Lunas</span>
-            </div>
-            <div class="mt-auto pt-6 border-t border-zinc-100 flex justify-between items-end">
-                <div>
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nominal Tagihan</p>
-                    <p class="text-4xl font-black text-red-600">Rp 1.200.000</p>
-                </div>
-            </div>
-        </div>
+        <x-card-tagihan :tagihan="$tagihanSaatIni" />
 
         <div class="bg-white p-8 rounded-3xl card-shadow border border-gray-50 h-72 flex flex-col justify-center">
             <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide mb-6">Aksi Cepat</h3>
@@ -97,7 +82,7 @@
                 <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Status Pembayaran</span><span class="text-sm font-bold text-green-600">{{$modalStatus}}</span></div>
                 <div class="flex justify-between items-center pt-2 border-t border-zinc-200"><span class="text-sm font-bold text-zinc-900">Nominal</span><span class="text-base font-black text-zinc-900">Rp {{ isset($modalData) && $modalData->tagihan ? number_format($modalData->tagihan->nominal_tagihan, 0, ',', '.') : '1.000.000' }}</span></div>
             </div>
-            <button onclick="tutupModal('modalBerhasil')" class="w-full px-4 py-3 rounded-xl bg-zinc-200 text-zinc-700 font-bold hover:bg-zinc-300 transition-all text-sm">Kembali</button>
+            <button onclick="window.location.href='{{ route('penghuni.pembayaran') }}'" class="w-full px-4 py-3 rounded-xl bg-zinc-200 text-zinc-700 font-bold hover:bg-zinc-300 transition-all text-sm">Kembali</button>
         </div>
     </div>
 
@@ -111,7 +96,7 @@
                 <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Status Pembayaran</span><span class="text-sm font-bold text-red-600">Gagal / Dibatalkan</span></div>
             </div>
             <div class="flex gap-3">
-                <button onclick="tutupModal('modalGagal')" class="flex-1 px-4 py-3 rounded-xl bg-zinc-200 text-zinc-700 font-bold hover:bg-zinc-300 transition-all text-sm">Kembali</button>
+                <button onclick="window.location.href='{{ route('penghuni.pembayaran') }}'" class="w-full px-4 py-3 rounded-xl bg-zinc-200 text-zinc-700 font-bold hover:bg-zinc-300 transition-all text-sm">Kembali</button>
                 <a href="{{ url('/penghuni/pembayaran-manual') }}" class="flex-1 px-4 py-3 rounded-xl bg-blue-500 text-white font-bold hover:bg-blue-600 shadow-md transition-all text-sm active:scale-95 flex items-center justify-center">Pembayaran Manual</a>
             </div>
         </div>

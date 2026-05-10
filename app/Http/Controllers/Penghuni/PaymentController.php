@@ -7,6 +7,7 @@ use App\Services\MidtransService;
 use Illuminate\Support\Facades\Log;
 use App\Models\Transaksi;
 use App\Models\Tagihan;
+use App\Models\Penghuni;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 
@@ -21,6 +22,7 @@ class PaymentController extends Controller
 
     public function halamanPembayaran(Request $request)
     {
+        $user = Auth::user();
         $grossAmount = 1200000; 
         $modalData = null;
         $orderId = $request->query('order_id');
@@ -45,17 +47,21 @@ class PaymentController extends Controller
                 $modalData = $transaksi;
             }
         }
+        $penghuni = Penghuni::where('id_user', $user->id)->first();
+        $tagihanSaatIni = Tagihan::where('id_penghuni', $penghuni->id)
+                                      ->first();
 
-        return view('penghuni.pembayaran_penghuni', compact('grossAmount', 'modalData', 'modalStatus'));
+        return view('penghuni.pembayaran_penghuni', compact('grossAmount', 'modalData', 'modalStatus', 'tagihanSaatIni'));
     }
 
     public function prosesBayar(Request $request)
     {
         $user = Auth::user();
+        $penghuni = Penghuni::where('id_user', $user->id)->first();
 
         // 1. Cari tagihan milik user ini yang statusnya MASIH BELUM LUNAS
         // Asumsi: id_penghuni di tabel tagihan itu nyambung ke tabel users. 
-        $tagihan = Tagihan::where('id_penghuni', $user->id)
+        $tagihan = Tagihan::where('id_penghuni', $penghuni->id)
                           ->where('status_tagihan', 'Belum Lunas') 
                           ->first(); 
 
