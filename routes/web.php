@@ -64,9 +64,7 @@ Route::middleware(['auth', 'role:penghuni'])->group(function () {
     // --- Views Penghuni ---
     Route::get('penghuni/dashboard', [DashboardController::class, 'index'])->name('penghuni.dashboard');
 
-    Route::get('penghuni/pembayaran-manual', function () {
-        return view('penghuni.pembayaran_manual');
-    })->name('penghuni.pembayaran-manual');
+    Route::get('penghuni/pembayaran-manual', [PaymentController::class, 'halamanManual'])->name('penghuni.pembayaran-manual');
 
     Route::get('penghuni/profile', [PenghuniProfileController::class, 'index'])->name('penghuni.profile');
     Route::post('penghuni/update-profile', [PenghuniProfileController::class, 'update'])->name('penghuni.update-profile');
@@ -79,12 +77,7 @@ Route::middleware(['auth', 'role:penghuni'])->group(function () {
     Route::get('penghuni/pembayaran', [PaymentController::class, 'halamanPembayaran'])->name('penghuni.pembayaran');
     Route::post('penghuni/proses-bayar', [PaymentController::class, 'prosesBayar'])->name('penghuni.proses-bayar');
 
-    Route::post('/proses_bayar_manual', function () {
-        // Logic upload dari halaman upload manual
-        return redirect('/penghuni/pembayaran');
-
-
-    });
+    Route::post('/proses_bayar_manual', [PaymentController::class, 'prosesBayarManual']);
 });
 Route::post('/midtrans/webhook', [PaymentController::class, 'webhook']);
 

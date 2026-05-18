@@ -27,14 +27,20 @@
             <div>
                 <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide mb-4 flex items-center gap-2">Status Tagihan Saat Ini <i class="ph ph-wallet text-lg"></i></h3>
                 <div class="bg-white p-6 rounded-3xl card-shadow border border-gray-50 flex flex-col justify-between">
-                    <div class="bg-zinc-100/80 border border-zinc-200 text-red-600 font-extrabold text-sm py-3 rounded-xl flex justify-center items-center gap-2 w-full mx-auto mb-6">
-                        <div class="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div> Belum Lunas
-                    </div>
-                    <div class="space-y-4">
-                        <div class="flex items-center gap-4 text-sm"><span class="font-bold text-zinc-500 w-28 uppercase tracking-wider text-[11px]">Periode</span><span class="font-bold text-zinc-900">April 2026</span></div>
-                        <div class="flex items-center gap-4 text-sm"><span class="font-bold text-zinc-500 w-28 uppercase tracking-wider text-[11px]">Jatuh Tempo</span><span class="font-bold text-zinc-900">10 April 2026</span></div>
-                        <div class="flex items-center gap-4 pt-4 border-t border-zinc-100"><span class="font-bold text-zinc-500 w-28 uppercase tracking-wider text-[11px]">Nominal</span><span class="font-black text-2xl text-red-600">Rp 1.200.000</span></div>
-                    </div>
+                    @if($tagihanSaatIni)
+                        <div class="bg-zinc-100/80 border border-zinc-200 text-red-600 font-extrabold text-sm py-3 rounded-xl flex justify-center items-center gap-2 w-full mx-auto mb-6">
+                            <div class="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div> Belum Lunas
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4 text-sm"><span class="font-bold text-zinc-500 w-28 uppercase tracking-wider text-[11px]">Periode</span><span class="font-bold text-zinc-900">{{ $tagihanSaatIni->periode_bulan }}</span></div>
+                            <div class="flex items-center gap-4 text-sm"><span class="font-bold text-zinc-500 w-28 uppercase tracking-wider text-[11px]">Jatuh Tempo</span><span class="font-bold text-zinc-900">{{ $tagihanSaatIni->jatuh_tempo ? \Carbon\Carbon::parse($tagihanSaatIni->jatuh_tempo)->translatedFormat('d M Y') : '-' }}</span></div>
+                            <div class="flex items-center gap-4 pt-4 border-t border-zinc-100"><span class="font-bold text-zinc-500 w-28 uppercase tracking-wider text-[11px]">Nominal</span><span class="font-black text-2xl text-red-600">Rp {{ number_format($tagihanSaatIni->nominal_tagihan, 0, ',', '.') }}</span></div>
+                        </div>
+                    @else
+                        <div class="flex justify-center items-center h-full">
+                            <p class="text-zinc-500 font-bold text-sm">Tidak ada tagihan yang perlu dibayar.</p>
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -67,10 +73,10 @@
                 @csrf
                 <div class="flex-1 flex flex-col justify-center">
                     <div class="relative w-full h-64 border-2 border-dashed border-zinc-300 bg-zinc-50 rounded-2xl flex flex-col items-center justify-center text-center hover:bg-zinc-100 hover:border-zinc-400 transition-all cursor-pointer group">
-                        <input type="file" name="bukti_transfer" id="fileInput" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" required accept=".jpg,.jpeg,.png,.pdf" onchange="tampilkanNamaFile()">
+                        <input type="file" name="bukti_transfer" id="fileInput" class="absolute inset-0 w-full h-full opacity-0 {{ !$tagihanSaatIni ? 'cursor-not-allowed' : 'cursor-pointer' }} z-10" {{ !$tagihanSaatIni ? 'disabled' : 'required' }} accept=".jpg,.jpeg,.png,.pdf" onchange="tampilkanNamaFile()">
                         <div class="flex flex-col items-center z-0 pointer-events-none" id="upload-content">
                             <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><i class="ph ph-plus text-2xl font-bold"></i></div>
-                            <p class="text-sm font-bold text-zinc-900">Klik atau seret foto bukti transfer ke sini</p>
+                            <p class="text-sm font-bold text-zinc-900">{{ !$tagihanSaatIni ? 'Tidak ada tagihan' : 'Klik atau seret foto bukti transfer ke sini' }}</p>
                             <p class="text-xs font-medium text-zinc-500 mt-2">Format: JPG, PNG, atau PDF (Maks. 5 MB)</p>
                         </div>
                         <div class="flex flex-col items-center z-0 hidden pointer-events-none" id="file-selected">
@@ -81,7 +87,7 @@
                     </div>
                 </div>
                 <div class="mt-8 space-y-3">
-                    <button type="submit" class="w-full py-4 rounded-xl bg-green-600 hover:bg-green-700 text-white font-black text-sm uppercase tracking-wide transition-all shadow-md active:scale-95 flex justify-center items-center gap-2">
+                    <button type="submit" class="w-full py-4 rounded-xl {{ !$tagihanSaatIni ? 'bg-zinc-300 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700 active:scale-95' }} text-white font-black text-sm uppercase tracking-wide transition-all shadow-md flex justify-center items-center gap-2" {{ !$tagihanSaatIni ? 'disabled' : '' }}>
                         Konfirmasi Pembayaran <i class="ph ph-check-circle text-lg"></i>
                     </button>
                     <a href="{{ url('/penghuni/pembayaran') }}" class="w-full py-4 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-600 font-bold text-sm uppercase tracking-wide transition-all flex justify-center items-center">

@@ -189,4 +189,57 @@ class PaymentController extends Controller
             return response()->json(['message' => 'Error dari server'], 500);
         }
     }
+
+    public function halamanManual(Request $request)
+    {
+        $user = Auth::user();
+        $penghuni = Penghuni::where('id_user', $user->id)->first();
+        $tagihanSaatIni = null;
+
+        if ($penghuni) {
+            $tagihanSaatIni = Tagihan::where('id_penghuni', $penghuni->id)
+                ->where('status_tagihan', 'Belum Lunas')
+                ->latest()
+                ->first();
+        }
+
+        return view('penghuni.pembayaran_manual', compact('tagihanSaatIni'));
+    }
+
+    public function prosesBayarManual(Request $request)
+    {
+        $request->validate([
+            'bukti_transfer' => 'required|image|mimes:jpeg,png,jpg|max:5120',
+        ]);
+
+        $user = Auth::user();
+        $penghuni = Penghuni::where('id_user', $user->id)->first();
+
+        if (!$penghuni) {
+            return redirect()->back()->with('error', 'Data penghuni tidak ditemukan.');
+        }
+
+        $tagihan = Tagihan::where('id_penghuni', $penghuni->id)
+            ->where('status_tagihan', 'Belum Lunas')
+            ->first();
+
+        if (!$tagihan) {
+            return redirect()->back()->with('error', 'Tidak ada tagihan yang harus dibayar.');
+        }
+
+        if ($request->hasFile('bukti_transfer')) {
+            $file = $request->file('bukti_transfer');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/bukti'), $filename);
+
+            $tagihan->update([
+                'status_tagihan' => 'Menunggu Konfirmasi',
+                'bukti_transfer' => 'uploads/bukti/' . $filename,
+            ]);
+
+            return redirect()->route('penghuni.pembayaran')->with('success', 'Bukti pembayaran berhasil diunggah. Menunggu konfirmasi admin.');
+        }
+
+        return redirect()->back()->with('error', 'Gagal mengunggah bukti pembayaran.');
+    }
 }
