@@ -16,7 +16,11 @@ class Transaksi extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = ['order_id', 'id_tagihan', 'id_waiting_list', 'snap_token', 'status_transaksi', 'tipe_pembayaran'];
+    protected $fillable = [
+        'order_id', 'id_tagihan', 'id_waiting_list', 'snap_token', 
+        'status_transaksi', 'tipe_pembayaran',
+        'kegiatan', 'nama', 'nominal', 'waktu'
+    ];
 
     public function tagihan()
     {

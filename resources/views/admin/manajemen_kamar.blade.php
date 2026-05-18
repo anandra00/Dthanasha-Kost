@@ -68,7 +68,7 @@
                 </div>
             </div>
             <div class="flex gap-2 h-11">
-                <button onclick="bukaModalDetail({{ $kamar->id }}, '{{ $kamar->nomor_kamar }}', '{{ $kamar->status_kamar }}', '{{ $kamar->jenis_kamar }}', '{{ $kamar->harga_kamar }}')" class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-bold rounded-xl flex-1 text-[13px] transition-all active:scale-95">Detail</button>
+                <button onclick='bukaModalDetail({{ $kamar->id }}, "{{ $kamar->nomor_kamar }}", "{{ $kamar->status_kamar }}", "{{ $kamar->jenis_kamar }}", "{{ $kamar->harga_kamar }}", @json($kamar->penghuni))' class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-bold rounded-xl flex-1 text-[13px] transition-all active:scale-95">Detail</button>
                 <form action="{{ url('/admin/hapus_kamar/'.$kamar->id) }}" method="POST" class="h-full">
                     @csrf @method('DELETE')
                     <button type="submit" onclick="return confirm('Yakin ingin menghapus kamar ini?')" class="bg-red-50 hover:bg-red-100 text-red-500 w-11 h-full rounded-xl flex items-center justify-center transition-all active:scale-95"><i class="ph ph-trash text-lg"></i></button>
@@ -159,6 +159,32 @@
                         <input type="number" id="detail_harga" name="harga_kamar" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all font-bold text-zinc-900 text-sm" required>
                     </div>
                 </div>
+
+                <!-- Bagian Informasi Penghuni (muncul jika ada penghuni) -->
+                <div id="detail_penghuni_container" class="hidden mt-6 pt-6 border-t border-zinc-100">
+                    <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide mb-4 flex items-center gap-2">
+                        <i class="ph-fill ph-user-circle text-lg text-blue-500"></i> Informasi Penghuni
+                    </h3>
+                    <div class="bg-zinc-50 p-4 rounded-xl border border-zinc-100 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-zinc-500">Nama Lengkap</span>
+                            <span class="text-sm font-bold text-zinc-900" id="info_nama"></span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-zinc-500">Usia & Gender</span>
+                            <span class="text-sm font-bold text-zinc-900" id="info_usia_gender"></span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-zinc-500">Kontak Pribadi</span>
+                            <span class="text-sm font-bold text-zinc-900" id="info_nohp"></span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-zinc-500">Kontak Darurat (Ortu)</span>
+                            <span class="text-sm font-bold text-zinc-900" id="info_ortu"></span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="flex gap-3 pt-6 border-t border-zinc-100">
                     <button type="button" onclick="tutupModal('modalDetail')" class="flex-1 px-4 py-3.5 rounded-xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm uppercase tracking-wide">Tutup</button>
                     <button type="submit" class="flex-1 px-4 py-3.5 rounded-xl bg-[#18181B] text-white font-bold hover:bg-[#334155] shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide">Update</button>
@@ -172,12 +198,29 @@
     <script>
         function bukaModalTambah() { document.getElementById('modalTambah').classList.remove('hidden'); }
         
-        function bukaModalDetail(id, nomor, status, jenis, harga) {
+        function bukaModalDetail(id, nomor, status, jenis, harga, penghuni) {
             document.getElementById('formEdit').action = '/admin/edit_kamar/' + id;
             document.getElementById('detail_nomor').value = nomor;
             document.getElementById('detail_status').value = status;
             document.getElementById('detail_jenis').value = jenis;
             document.getElementById('detail_harga').value = harga;
+
+            // Handle data penghuni
+            const containerPenghuni = document.getElementById('detail_penghuni_container');
+            if (penghuni) {
+                containerPenghuni.classList.remove('hidden');
+                document.getElementById('info_nama').textContent = penghuni.nama_penghuni || '-';
+                
+                const usia = penghuni.usia ? penghuni.usia + ' thn' : '';
+                const gender = penghuni.jenis_kelamin || '';
+                document.getElementById('info_usia_gender').textContent = (usia && gender) ? `${usia} - ${gender}` : (usia || gender || '-');
+                
+                document.getElementById('info_nohp').textContent = penghuni.no_telepon || '-';
+                document.getElementById('info_ortu').textContent = penghuni.no_telepon_orangtua || '-';
+            } else {
+                containerPenghuni.classList.add('hidden');
+            }
+
             document.getElementById('modalDetail').classList.remove('hidden');
         }
         

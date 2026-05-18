@@ -58,7 +58,7 @@
                     <div class="flex-1">
                         <label class="block text-sm font-bold text-zinc-900 mb-1">Alamat Email Admin</label>
                         <p class="text-[11px] font-semibold text-zinc-500 mb-3">Email utama untuk menerima laporan sistem atau keluhan penghuni via email.</p>
-                        <input type="email" value="{{ $pengaturan['email_admin'] ?? '' }}" id=""email-admin name="email_admin" value="admin@dthanasha.com" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-300 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900 shadow-sm" required>
+                        <input type="email" value="{{ $pengaturan['email_admin'] ?? '' }}" id="email-admin" name="email_admin" value="admin@dthanasha.com" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-300 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900 shadow-sm" required>
                     </div>
                 </div>
             </div>

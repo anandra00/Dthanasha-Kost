@@ -14,11 +14,13 @@ class RiwayatController extends Controller
         // Ambil semua transaksi beserta relasi tagihan & penghuni
         $transaksis = Transaksi::with('tagihan.penghuni')->latest()->paginate(10);
 
-        // Hitung pemasukan (semua transaksi yang settlement/berhasil)
+        // Hitung pemasukan (hanya dari tagihan yang lunas)
         $totalPemasukan = Tagihan::where('status_tagihan', 'Lunas')->sum('nominal_tagihan');
 
-        // Hitung total tagihan belum lunas sebagai "pengeluaran" (biaya operasional)
-        $totalPengeluaran = Tagihan::where('status_tagihan', 'Belum Lunas')->sum('nominal_tagihan');
+        // Hitung pengeluaran (dari transaksi manual yang id_tagihan-nya null)
+        $totalPengeluaran = Transaksi::whereNull('id_tagihan')
+                            ->whereIn('status_transaksi', ['settlement', 'berhasil'])
+                            ->sum('nominal');
 
         // Keuntungan bersih
         $keuntungan = $totalPemasukan - $totalPengeluaran;
@@ -36,9 +38,10 @@ class RiwayatController extends Controller
                 ->whereDate('tanggal_bayar', $date->toDateString())
                 ->sum('nominal_tagihan');
 
-            $chartPengeluaran[] = Tagihan::where('status_tagihan', 'Belum Lunas')
-                ->whereDate('jatuh_tempo', $date->toDateString())
-                ->sum('nominal_tagihan');
+            $chartPengeluaran[] = Transaksi::whereNull('id_tagihan')
+                ->whereIn('status_transaksi', ['settlement', 'berhasil'])
+                ->whereDate('waktu', $date->toDateString())
+                ->sum('nominal');
         }
 
         return view('admin.riwayat', compact(
@@ -68,14 +71,21 @@ class RiwayatController extends Controller
             'id_tagihan'        => null,
             'tipe_pembayaran'   => $request->metode,
             'status_transaksi'  => $request->status,
+            'kegiatan'          => $request->kegiatan,
+            'nama'              => $request->nama,
+            'waktu'             => $request->waktu,
+            'nominal'           => $request->nominal,
         ]);
 
-        return redirect()->back()->with('success', 'Transaksi berhasil ditambahkan!');
+        return redirect()->back()->with('success', 'Pengeluaran berhasil ditambahkan!');
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
+            'kegiatan'  => 'required|string|max:255',
+            'nama'      => 'required|string|max:255',
+            'waktu'     => 'required|date',
             'metode'    => 'required|string',
             'nominal'   => 'required|numeric|min:0',
             'status'    => 'required|string',
@@ -83,11 +93,15 @@ class RiwayatController extends Controller
 
         $transaksi = Transaksi::findOrFail($id);
         $transaksi->update([
+            'kegiatan'          => $request->kegiatan,
+            'nama'              => $request->nama,
+            'waktu'             => $request->waktu,
+            'nominal'           => $request->nominal,
             'tipe_pembayaran'   => $request->metode,
             'status_transaksi'  => $request->status,
         ]);
 
-        return redirect()->back()->with('success', 'Transaksi berhasil diupdate!');
+        return redirect()->back()->with('success', 'Pengeluaran berhasil diupdate!');
     }
 
     public function destroy($id)

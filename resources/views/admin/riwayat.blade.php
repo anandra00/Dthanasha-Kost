@@ -73,8 +73,8 @@
             <table class="w-full text-left">
                 <thead class="bg-zinc-100 text-zinc-500 text-[10px] uppercase tracking-widest border-b border-zinc-200">
                     <tr>
-                        <th class="px-6 py-4">Order ID</th>
-                        <th class="px-6 py-4 text-center">Penghuni</th>
+                        <th class="px-6 py-4">Keterangan / Order ID</th>
+                        <th class="px-6 py-4 text-center">Penghuni / Pihak Terkait</th>
                         <th class="px-6 py-4 text-center">Tanggal</th>
                         <th class="px-6 py-4 text-center">Metode</th>
                         <th class="px-6 py-4 text-right">Nominal</th>
@@ -86,26 +86,26 @@
                     @forelse($transaksis as $trx)
                         <tr class="hover:bg-zinc-50 transition-all group">
                             <td class="px-6 py-4 text-sm font-bold text-zinc-900 group-hover:text-[#334155] transition-colors">
-                                <span class="truncate block max-w-[180px]">{{ $trx->order_id }}</span>
+                                <span class="truncate block max-w-[180px]">{{ $trx->kegiatan ?? $trx->order_id }}</span>
                             </td>
                             <td class="px-6 py-4 text-sm text-center text-zinc-600 font-medium">
-                                {{ $trx->tagihan?->penghuni?->nama_penghuni ?? '-' }}
+                                {{ $trx->tagihan?->penghuni?->nama_penghuni ?? $trx->nama ?? '-' }}
                             </td>
                             <td class="px-6 py-4 text-sm text-center text-zinc-500 font-medium">
-                                {{ $trx->created_at->translatedFormat('d M Y') }}
+                                {{ $trx->waktu ? \Carbon\Carbon::parse($trx->waktu)->translatedFormat('d M Y') : $trx->created_at->translatedFormat('d M Y') }}
                             </td>
                             <td class="px-6 py-4 text-center">
                                 <span class="bg-zinc-100 border border-zinc-200 text-zinc-600 text-[10px] uppercase tracking-widest font-black px-3 py-1 rounded-lg">
                                     {{ $trx->tipe_pembayaran ?? '-' }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 text-sm font-black text-right {{ $trx->status_transaksi == 'Settlement' ? 'text-emerald-600' : 'text-zinc-600' }}">
-                                Rp {{ number_format($trx->tagihan?->nominal_tagihan ?? 0, 0, ',', '.') }}
+                            <td class="px-6 py-4 text-sm font-black text-right {{ $trx->id_tagihan ? 'text-emerald-600' : 'text-red-600' }}">
+                                Rp {{ number_format($trx->tagihan?->nominal_tagihan ?? $trx->nominal ?? 0, 0, ',', '.') }}
                             </td>
                             <td class="px-6 py-4 text-center">
-                                @if($trx->status_transaksi == 'Settlement')
-                                    <span class="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] uppercase tracking-widest font-black px-3 py-1.5 rounded-lg">Settlement</span>
-                                @elseif($trx->status_transaksi == 'Pending')
+                                @if(in_array($trx->status_transaksi, ['Settlement', 'berhasil']))
+                                    <span class="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] uppercase tracking-widest font-black px-3 py-1.5 rounded-lg">Berhasil</span>
+                                @elseif(in_array($trx->status_transaksi, ['Pending', 'menunggu']))
                                     <span class="bg-amber-50 text-amber-600 border border-amber-100 text-[10px] uppercase tracking-widest font-black px-3 py-1.5 rounded-lg">Pending</span>
                                 @else
                                     <span class="bg-red-50 text-red-600 border border-red-100 text-[10px] uppercase tracking-widest font-black px-3 py-1.5 rounded-lg">{{ $trx->status_transaksi }}</span>
@@ -113,10 +113,12 @@
                             </td>
                             <td class="px-6 py-4 text-center">
                                 <div class="flex items-center justify-center gap-2">
-                                    <button onclick="bukaModalEdit('{{ $trx->order_id }}', '{{ $trx->order_id }}', '{{ $trx->tipe_pembayaran }}', '{{ $trx->tagihan?->nominal_tagihan ?? 0 }}', '{{ $trx->status_transaksi }}')" 
+                                    @if(is_null($trx->id_tagihan))
+                                    <button onclick="bukaModalEdit('{{ $trx->order_id }}', '{{ $trx->order_id }}', '{{ $trx->kegiatan }}', '{{ $trx->nama }}', '{{ $trx->waktu }}', '{{ $trx->tipe_pembayaran }}', '{{ $trx->nominal }}', '{{ $trx->status_transaksi }}')" 
                                         class="text-blue-500 hover:text-blue-700 bg-blue-50 p-2 rounded-lg transition-colors">
                                         <i class="ph ph-pencil-simple text-lg"></i>
                                     </button>
+                                    @endif
                                     <form action="{{ url('/admin/hapus_riwayat/'.$trx->order_id) }}" method="POST" class="inline">
                                         @csrf @method('DELETE')
                                         <button type="submit" onclick="return confirm('Yakin ingin menghapus transaksi ini?')" class="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded-lg transition-colors">
@@ -144,12 +146,12 @@
                 <div class="p-4 hover:bg-zinc-50 transition-all">
                     <div class="flex items-start justify-between mb-3">
                         <div class="min-w-0 flex-1">
-                            <p class="text-sm font-bold text-zinc-900 truncate">{{ $trx->order_id }}</p>
-                            <p class="text-xs text-zinc-500 mt-0.5">{{ $trx->created_at->translatedFormat('d M Y') }}</p>
+                            <p class="text-sm font-bold text-zinc-900 truncate">{{ $trx->kegiatan ?? $trx->order_id }}</p>
+                            <p class="text-xs text-zinc-500 mt-0.5">{{ $trx->waktu ? \Carbon\Carbon::parse($trx->waktu)->translatedFormat('d M Y') : $trx->created_at->translatedFormat('d M Y') }}</p>
                         </div>
-                        @if($trx->status_transaksi == 'Settlement')
-                            <span class="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[9px] uppercase tracking-widest font-black px-2 py-1 rounded-lg shrink-0 ml-2">Settlement</span>
-                        @elseif($trx->status_transaksi == 'Pending')
+                        @if(in_array($trx->status_transaksi, ['Settlement', 'berhasil']))
+                            <span class="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[9px] uppercase tracking-widest font-black px-2 py-1 rounded-lg shrink-0 ml-2">Berhasil</span>
+                        @elseif(in_array($trx->status_transaksi, ['Pending', 'menunggu']))
                             <span class="bg-amber-50 text-amber-600 border border-amber-100 text-[9px] uppercase tracking-widest font-black px-2 py-1 rounded-lg shrink-0 ml-2">Pending</span>
                         @else
                             <span class="bg-red-50 text-red-600 border border-red-100 text-[9px] uppercase tracking-widest font-black px-2 py-1 rounded-lg shrink-0 ml-2">{{ $trx->status_transaksi }}</span>
@@ -157,18 +159,20 @@
                     </div>
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
-                            <span class="text-xs text-zinc-500">{{ $trx->tagihan?->penghuni?->nama_penghuni ?? '-' }}</span>
+                            <span class="text-xs text-zinc-500">{{ $trx->tagihan?->penghuni?->nama_penghuni ?? $trx->nama ?? '-' }}</span>
                             <span class="bg-zinc-100 border border-zinc-200 text-zinc-600 text-[9px] uppercase font-black px-2 py-0.5 rounded">{{ $trx->tipe_pembayaran ?? '-' }}</span>
                         </div>
-                        <p class="text-sm font-black {{ $trx->status_transaksi == 'Settlement' ? 'text-emerald-600' : 'text-zinc-600' }}">
-                            Rp {{ number_format($trx->tagihan?->nominal_tagihan ?? 0, 0, ',', '.') }}
+                        <p class="text-sm font-black {{ $trx->id_tagihan ? 'text-emerald-600' : 'text-red-600' }}">
+                            Rp {{ number_format($trx->tagihan?->nominal_tagihan ?? $trx->nominal ?? 0, 0, ',', '.') }}
                         </p>
                     </div>
                     <div class="flex gap-2 mt-3">
-                        <button onclick="bukaModalEdit('{{ $trx->order_id }}', '{{ $trx->order_id }}', '{{ $trx->tipe_pembayaran }}', '{{ $trx->tagihan?->nominal_tagihan ?? 0 }}', '{{ $trx->status_transaksi }}')" 
+                        @if(is_null($trx->id_tagihan))
+                        <button onclick="bukaModalEdit('{{ $trx->order_id }}', '{{ $trx->order_id }}', '{{ $trx->kegiatan }}', '{{ $trx->nama }}', '{{ $trx->waktu }}', '{{ $trx->tipe_pembayaran }}', '{{ $trx->nominal }}', '{{ $trx->status_transaksi }}')" 
                             class="text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1">
                             <i class="ph ph-pencil-simple"></i> Edit
                         </button>
+                        @endif
                         <form action="{{ url('/admin/hapus_riwayat/'.$trx->order_id) }}" method="POST">
                             @csrf @method('DELETE')
                             <button type="submit" onclick="return confirm('Yakin?')" class="text-red-600 bg-red-50 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1">
@@ -190,20 +194,20 @@
         </div>
     </div>
 
-    <!-- MODAL TAMBAH TRANSAKSI -->
+    <!-- MODAL TAMBAH PENGELUARAN -->
     <div id="modalTambah" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl scale-95 transition-all max-h-[90vh] overflow-y-auto no-scrollbar">
-            <h2 class="text-lg sm:text-xl font-black text-zinc-900 mb-6 text-center uppercase tracking-wide">Tambah Riwayat Transaksi</h2>
+            <h2 class="text-lg sm:text-xl font-black text-zinc-900 mb-6 text-center uppercase tracking-wide">Catat Pengeluaran</h2>
             <form action="{{ route('admin.tambah-riwayat') }}" method="POST" class="space-y-4">
                 @csrf
                 <div>
                     <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nama Kegiatan</label>
-                    <input type="text" name="kegiatan" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
+                    <input type="text" name="kegiatan" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required placeholder="Cth: Bayar Listrik, Perbaikan Atap">
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Pihak Terkait</label>
-                        <input type="text" name="nama" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required placeholder="Cth: Pemilik / Penghuni">
+                        <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Pihak Terkait / Tujuan</label>
+                        <input type="text" name="nama" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required placeholder="Cth: PLN / Tukang / PDAM">
                     </div>
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Tanggal</label>
@@ -212,10 +216,10 @@
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Metode</label>
+                        <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Metode Pembayaran</label>
                         <select name="metode" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
-                            <option value="Transfer">Transfer</option>
                             <option value="Cash">Cash</option>
+                            <option value="Transfer">Transfer</option>
                             <option value="E-Wallet">E-Wallet</option>
                         </select>
                     </div>
@@ -228,42 +232,50 @@
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Status</label>
                         <select name="status" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
-                            <option value="Settlement">Settlement</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Expire">Expire</option>
+                            <option value="Settlement">Selesai (Settlement)</option>
+                            <option value="Pending">Menunggu (Pending)</option>
                         </select>
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Bukti File</label>
-                        <input type="text" name="bukti" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" placeholder="Link GDrive dll">
                     </div>
                 </div>
                 <div class="flex gap-3 pt-6 border-t border-zinc-100">
                     <button type="button" onclick="tutupModal('modalTambah')" class="flex-1 px-4 py-3.5 rounded-xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm uppercase tracking-wide">Batal</button>
-                    <button type="submit" class="flex-1 px-4 py-3.5 rounded-xl bg-[#18181B] text-white font-bold hover:bg-[#334155] shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide">Simpan Data</button>
+                    <button type="submit" class="flex-1 px-4 py-3.5 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide flex items-center justify-center gap-2"><i class="ph ph-minus-circle"></i> Catat Pengeluaran</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- MODAL EDIT TRANSAKSI -->
+    <!-- MODAL EDIT PENGELUARAN -->
     <div id="modalEdit" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl scale-95 transition-all max-h-[90vh] overflow-y-auto no-scrollbar">
-            <h2 class="text-lg sm:text-xl font-black text-zinc-900 mb-6 text-center uppercase tracking-wide">Edit Transaksi</h2>
+            <h2 class="text-lg sm:text-xl font-black text-zinc-900 mb-6 text-center uppercase tracking-wide">Edit Pengeluaran</h2>
             <form id="formEditRiwayat" method="POST" class="space-y-4">
                 @csrf @method('PUT')
                 <div>
                     <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Order ID</label>
                     <input type="text" id="edit_order_id" class="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-100 text-sm font-bold text-zinc-500" readonly>
                 </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nama Kegiatan</label>
+                    <input type="text" id="edit_kegiatan" name="kegiatan" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Pihak Terkait</label>
+                        <input type="text" id="edit_nama" name="nama" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Tanggal</label>
+                        <input type="date" id="edit_waktu" name="waktu" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
+                    </div>
+                </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Metode</label>
                         <select id="edit_metode" name="metode" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
-                            <option value="Transfer">Transfer</option>
                             <option value="Cash">Cash</option>
+                            <option value="Transfer">Transfer</option>
                             <option value="E-Wallet">E-Wallet</option>
-                            <option value="Transfer Bank">Transfer Bank</option>
                         </select>
                     </div>
                     <div>
@@ -281,7 +293,7 @@
                 </div>
                 <div class="flex gap-3 pt-6 border-t border-zinc-100">
                     <button type="button" onclick="tutupModal('modalEdit')" class="flex-1 px-4 py-3.5 rounded-xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm uppercase tracking-wide">Batal</button>
-                    <button type="submit" class="flex-1 px-4 py-3.5 rounded-xl bg-[#18181B] text-white font-bold hover:bg-[#334155] shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide">Update Transaksi</button>
+                    <button type="submit" class="flex-1 px-4 py-3.5 rounded-xl bg-[#18181B] text-white font-bold hover:bg-[#334155] shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide">Update Pengeluaran</button>
                 </div>
             </form>
         </div>
@@ -303,8 +315,8 @@
             data: {
                 labels: chartLabels,
                 datasets: [
-                    { label: 'Pemasukan', data: chartPemasukan, backgroundColor: '#18181B', borderRadius: 8, barPercentage: 0.5, categoryPercentage: 0.4 },
-                    { label: 'Pengeluaran', data: chartPengeluaran, backgroundColor: '#E4E4E7', borderRadius: 8, barPercentage: 0.5, categoryPercentage: 0.4 }
+                    { label: 'Pemasukan', data: chartPemasukan, backgroundColor: '#10B981', borderRadius: 8, barPercentage: 0.5, categoryPercentage: 0.4 },
+                    { label: 'Pengeluaran', data: chartPengeluaran, backgroundColor: '#EF4444', borderRadius: 8, barPercentage: 0.5, categoryPercentage: 0.4 }
                 ]
             },
             options: {
@@ -322,12 +334,33 @@
 
         function bukaModalTambah() { document.getElementById('modalTambah').classList.remove('hidden'); }
         
-        function bukaModalEdit(id, orderId, metode, nominal, status) {
+        function bukaModalEdit(id, orderId, kegiatan, nama, waktu, metode, nominal, status) {
             document.getElementById('formEditRiwayat').action = '/admin/edit_riwayat/' + id;
             document.getElementById('edit_order_id').value = orderId;
+            document.getElementById('edit_kegiatan').value = kegiatan;
+            document.getElementById('edit_nama').value = nama;
+            
+            // Format waktu untuk input type="date"
+            if(waktu) {
+                // Ensure it's in YYYY-MM-DD format
+                const d = new Date(waktu);
+                if (!isNaN(d.getTime())) {
+                    document.getElementById('edit_waktu').value = d.toISOString().split('T')[0];
+                } else {
+                    document.getElementById('edit_waktu').value = waktu.split(' ')[0];
+                }
+            }
+            
             document.getElementById('edit_metode').value = metode;
             document.getElementById('edit_nominal').value = nominal;
-            document.getElementById('edit_status').value = status;
+            
+            // Normalize status (berhasil -> Settlement, menunggu -> Pending)
+            let normalizedStatus = status;
+            if(status.toLowerCase() === 'berhasil') normalizedStatus = 'Settlement';
+            if(status.toLowerCase() === 'menunggu') normalizedStatus = 'Pending';
+            if(status.toLowerCase() === 'gagal') normalizedStatus = 'Expire';
+            
+            document.getElementById('edit_status').value = normalizedStatus;
             document.getElementById('modalEdit').classList.remove('hidden');
         }
         
