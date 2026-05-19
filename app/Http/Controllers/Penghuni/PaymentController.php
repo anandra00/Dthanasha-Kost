@@ -23,7 +23,6 @@ class PaymentController extends Controller
     public function halamanPembayaran(Request $request)
     {
         $user = Auth::user();
-        $grossAmount = 1200000;
         $modalData = null;
         $orderId = $request->query('order_id');
 
@@ -62,7 +61,7 @@ class PaymentController extends Controller
                 ->get();
         }
 
-        return view('penghuni.pembayaran_penghuni', compact('grossAmount', 'modalData', 'modalStatus', 'tagihanSaatIni', 'riwayatTagihan'));
+        return view('penghuni.pembayaran_penghuni', compact('modalData', 'modalStatus', 'tagihanSaatIni', 'riwayatTagihan'));
     }
 
     public function prosesBayar(Request $request)

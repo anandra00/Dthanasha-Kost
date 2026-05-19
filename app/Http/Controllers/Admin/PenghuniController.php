@@ -55,7 +55,6 @@ class PenghuniController extends Controller
             'jk' => 'required|string',
             'kontak' => 'required|string',
             'kontak_ortu' => 'required|string',
-            'email' => 'nullable|email|unique:users,email',
             'nama_akun' => 'required|string|unique:users,username', // Pastikan tabel users ada kolom 'username'
             'password' => 'required|string|min:6',
         ]);
@@ -64,7 +63,6 @@ class PenghuniController extends Controller
         $user = User::create([
             'name' => $request->nama,
             'username' => $request->nama_akun,
-            'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'penghuni', // Buka komen ini jika kamu punya kolom role di tabel users
         ]);

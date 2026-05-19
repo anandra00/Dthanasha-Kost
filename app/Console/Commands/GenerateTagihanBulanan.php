@@ -37,13 +37,12 @@ class GenerateTagihanBulanan extends Command
             $tagihanSudahAda = Tagihan::where('id_penghuni', $p->id)
                                       ->where('periode_bulan', $periodeBulanIni)
                                       ->exists();
-
             if (!$tagihanSudahAda) {
                 Tagihan::create([
                     'id_penghuni'     => $p->id,
                     'periode_bulan'   => $periodeBulanIni,
                     'status_tagihan'  => 'Belum Lunas',
-                    'nominal_tagihan' => 1000000, 
+                    'nominal_tagihan' => $p->kamar->harga_kamar,
                     'jatuh_tempo'     => $jatuhTempo,
                 ]);
                 $jumlahDitagih++;
