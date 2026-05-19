@@ -156,8 +156,8 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Email</label>
-                    <input type="email" name="email" id="tambah_email" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
+                    <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Email (Opsional)</label>
+                    <input type="email" name="email" id="tambah_email" placeholder="Bisa dikosongi (diisi penghuni nanti)" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900">
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Password Login</label>
