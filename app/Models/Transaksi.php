@@ -9,7 +9,7 @@ class Transaksi extends Model
 {
     use HasFactory;
 
-    protected $table = 'log_transaksi';
+    protected $table = 'transaksi';
 
     // Primary key adalah order_id (string), bukan auto-increment id
     protected $primaryKey = 'order_id';

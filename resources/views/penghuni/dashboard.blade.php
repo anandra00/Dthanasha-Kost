@@ -152,4 +152,77 @@
             </div>
         </div>
     </div>
+    @if($errors->any())
+        <div class="fixed top-4 right-4 z-[110] bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl shadow-lg">
+            <strong class="font-bold">Oops!</strong>
+            <span class="block sm:inline text-sm">{{ $errors->first() }}</span>
+        </div>
+    @endif
+
+    @if(is_null(auth()->user()->email))
+        
+        <div class="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center">
+            <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl scale-100 transition-all mx-4">
+                <div class="w-16 h-16 bg-zinc-100 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-zinc-200 shadow-inner">
+                    <i class="ph ph-envelope-simple-open text-3xl text-zinc-900 font-bold"></i>
+                </div>
+                <h2 class="text-xl font-black text-gray-900 mb-2 text-center uppercase tracking-wide">Satu Langkah Lagi!</h2>
+                <p class="text-[13px] text-zinc-500 font-medium text-center mb-8 leading-relaxed">
+                    Untuk keamanan akun dan menerima notifikasi tagihan kos, wajib menghubungkan akun ini dengan email yang aktif.
+                </p>
+                <form action="{{ route('penghuni.submit-email') }}" method="POST" class="space-y-6">
+                    @csrf
+                    <div>
+                        <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Alamat Email</label>
+                        <input type="email" name="email" placeholder="contoh@email.com" class="w-full px-4 py-3.5 rounded-xl bg-zinc-50 border border-zinc-200 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#18181B] transition-all text-sm font-bold text-zinc-900" required>
+                    </div>
+                    <div class="flex flex-col gap-3 pt-2">
+                        <button type="submit" class="w-full px-4 py-3.5 rounded-xl bg-[#18181B] text-white font-bold hover:bg-[#334155] shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide flex justify-center items-center gap-2">
+                            <span>Kirim Kode OTP</span>
+                        </button>
+                        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form-modal').submit();" class="w-full text-center px-4 py-3.5 rounded-xl bg-white border border-zinc-200 text-zinc-600 font-bold hover:bg-zinc-50 transition-all text-sm uppercase tracking-wide">
+                            Kembali ke Login
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    @elseif(is_null(auth()->user()->email_verified_at))
+
+        <div class="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center">
+            <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl scale-100 transition-all mx-4">
+                <div class="w-16 h-16 bg-zinc-100 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-zinc-200 shadow-inner">
+                    <i class="ph ph-shield-check text-3xl text-zinc-900 font-bold"></i>
+                </div>
+                <h2 class="text-xl font-black text-gray-900 mb-2 text-center uppercase tracking-wide">Verifikasi Email</h2>
+                <p class="text-[13px] text-zinc-500 font-medium text-center mb-8 leading-relaxed">
+                    Kode 6 digit telah dikirim ke <span class="font-bold text-zinc-900">{{ auth()->user()->email }}</span>. Masukkan kode di bawah ini.
+                </p>
+                <form action="{{ route('penghuni.verify-otp') }}" method="POST" class="space-y-6">
+                    @csrf
+                    <div>
+                        <input type="text" name="otp" maxlength="6" placeholder="• • • • • •" class="w-full text-center tracking-[1em] font-black text-2xl px-4 py-4 rounded-xl bg-zinc-50 border border-zinc-200 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#18181B] transition-all text-zinc-900" required autocomplete="off">
+                    </div>
+                    <div class="flex flex-col gap-3 pt-2">
+                        <button type="submit" class="w-full px-4 py-3.5 rounded-xl bg-[#18181B] text-white font-bold hover:bg-[#334155] shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide flex justify-center items-center gap-2">
+                            <span>Verifikasi Sekarang</span>
+                        </button>
+                        <button type="button" onclick="document.getElementById('reset-email-form').submit();" class="w-full text-center px-4 py-3.5 rounded-xl bg-white border border-zinc-200 text-zinc-600 font-bold hover:bg-zinc-50 transition-all text-[11px] uppercase tracking-widest">
+                            Salah Email? Ganti Email
+                        </button>
+                    </div>
+                </form>
+                
+                <form id="reset-email-form" action="{{ route('penghuni.reset-email') }}" method="POST" class="hidden">
+                    @csrf
+                </form>
+            </div>
+        </div>
+
+    @endif
+
+    <form id="logout-form-modal" action="{{ route('logout') }}" method="POST" class="hidden">
+        @csrf
+    </form>
 @endsection

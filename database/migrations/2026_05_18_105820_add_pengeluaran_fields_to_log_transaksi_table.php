@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('log_transaksi', function (Blueprint $table) {
+        Schema::table('transaksi', function (Blueprint $table) {
             $table->string('kegiatan')->nullable();
             $table->string('nama')->nullable();
             $table->decimal('nominal', 15, 2)->nullable();

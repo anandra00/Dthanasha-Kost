@@ -8,6 +8,7 @@ use App\Http\Controllers\Penghuni\ProfileController as PenghuniProfileController
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\PenghuniController;
 use App\Http\Controllers\Penghuni\PaymentController;
+use App\Http\Controllers\Penghuni\EmailController;
 use App\Http\Controllers\Admin\WaitingListController;
 use App\Http\Controllers\Admin\KamarController;
 use App\Http\Controllers\Admin\PembayaranController;
@@ -60,6 +61,14 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
 // ROUTE SISI PENGHUNI
 // ==========================================
 Route::middleware(['auth', 'role:penghuni'])->group(function () { 
+
+    Route::post('/penghuni/submit-email', [EmailController::class, 'submitEmail'])->name('penghuni.submit-email');
+    
+    // Route buat submit OTP
+    Route::post('/penghuni/verify-otp', [EmailController::class, 'verifyOtp'])->name('penghuni.verify-otp');
+    
+    // Route buat ngebatalin/ganti email kalau user typo
+    Route::post('/penghuni/reset-email', [EmailController::class, 'resetEmail'])->name('penghuni.reset-email');
     
     // --- Views Penghuni ---
     Route::get('penghuni/dashboard', [DashboardController::class, 'index'])->name('penghuni.dashboard');

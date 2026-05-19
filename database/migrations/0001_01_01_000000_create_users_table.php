@@ -16,6 +16,8 @@ return new class extends Migration {
             $table->string('username')->unique(); // Tambahin ini buat username
             $table->string('email')->nullable()->unique(); // Dibikin nullable karena akun penghuni lu emailnya null
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('otp_code')->nullable();
+            $table->timestamp('otp_expires_at')->nullable();
             $table->string('password');
             $table->string('role')->default('penghuni'); // Tambahin ini buat role (owner/penghuni)
             $table->rememberToken();
