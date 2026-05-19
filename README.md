@@ -1,59 +1,150 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Dthanasha Kost - Sistem Manajemen Rumah Kost Modern
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Dthanasha Kost adalah sistem manajemen kost berbasis web yang dibangun menggunakan **Laravel 11** dan **Tailwind CSS**. Sistem ini memfasilitasi pemilik kost (Admin) dan penghuni kost dalam mengelola tagihan bulanan, pencatatan transaksi, manajemen kamar, serta integrasi pembayaran otomatis menggunakan **Midtrans Payment Gateway**.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🎯 Fitur Utama
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Sisi Pemilik Kost (Admin / Owner)
+- **Dashboard Analitik:** Ringkasan total pendapatan, pengeluaran, daftar tagihan tertunggak, dan grafik keuangan tahunan.
+- **Manajemen Kamar:** Pembuatan kamar lengkap dengan tipe, harga, dan status (Kosong/Terisi).
+- **Data Penghuni:** Registrasi akun penghuni, alokasi kamar, manajemen profil, hingga *import* data dari Waiting List.
+- **Waiting List:** Pencatatan antrean calon penghuni kost.
+- **Manajemen Pembayaran:** Validasi pembayaran manual (cash/transfer) dan rekap transaksi dari Midtrans.
+- **Riwayat Transaksi:** Pencatatan pemasukan otomatis dari tagihan, serta pencatatan **pengeluaran manual** (seperti biaya listrik, kebersihan, atau perbaikan infrastruktur).
+- **Pengaturan Global:** Pengaturan nomor WhatsApp pemilik (untuk penerimaan keluhan) dan *setting* tanggal jatuh tempo tagihan setiap bulannya.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Sisi Penghuni
+- **Dashboard:** Pengecekan status kamar dan status tagihan bulan berjalan.
+- **Pembayaran Tagihan:**
+  - **Otomatis:** Integrasi *pop-up* Snap Midtrans untuk pembayaran menggunakan e-Wallet (Gopay, ShopeePay, dll), Virtual Account, atau QRIS.
+  - **Manual:** Upload bukti transfer jika penghuni tidak menggunakan metode Midtrans.
+- **Lapor Keluhan:** Tombol *shortcut* untuk mengirim pesan keluhan langsung ke WhatsApp pemilik (otomatis **terkunci/disable** jika penghuni belum melunasi tagihan aktif).
+- **Profil:** Mengubah data pribadi seperti Kontak, Nomor Orang Tua, Email, dan Password.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 💻 Tech Stack
+- **Framework:** Laravel (PHP)
+- **Frontend / Styling:** Tailwind CSS, Alpine.js, Blade Components
+- **Authentication:** Laravel Breeze (dimodifikasi untuk sistem *Role-Based Access Control* : `owner` & `penghuni`)
+- **Database:** MySQL
+- **Integrasi Pihak Ketiga:** Midtrans API (Payment Gateway)
+- **Ikon & Font:** Phosphor Icons, FontAwesome, Google Fonts (Plus Jakarta Sans & Inter)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🚀 Panduan Instalasi (Development)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Berikut adalah langkah-langkah untuk melakukan konfigurasi proyek di *local environment* Anda (menggunakan XAMPP, Laragon, dll).
 
-### Premium Partners
+### 1. Prasyarat
+- PHP >= 8.2
+- Composer
+- Node.js & npm
+- MySQL / MariaDB
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 2. Clone Repositori
+```bash
+git clone https://github.com/username/dthanasha-kost.git
+cd dthanasha-kost
+```
 
-## Contributing
+### 3. Install Dependensi PHP & Node
+```bash
+composer install
+npm install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. Konfigurasi Environment (`.env`)
+Salin file environment dan atur koneksi database:
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-## Code of Conduct
+Buka file `.env` dan pastikan konfigurasi berikut sudah sesuai:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=dthanasha
+DB_USERNAME=root
+DB_PASSWORD=
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# KONFIGURASI MIDTRANS
+MIDTRANS_MERCHANT_ID=isi_merchant_id_anda
+MIDTRANS_CLIENT_KEY=isi_client_key_anda
+MIDTRANS_SERVER_KEY=isi_server_key_anda
+MIDTRANS_IS_PRODUCTION=false
+```
 
-## Security Vulnerabilities
+### 5. Migrasi & Seeding Database
+Jalankan migrasi untuk membuat tabel, lalu lakukan *seeding* untuk membuat akun Super Admin dan Pengaturan awal.
+```bash
+php artisan migrate --seed
+```
+*(Catatan: Akun login bawaan bisa dicek di dalam file `DatabaseSeeder.php`)*
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 6. Build Frontend Asset & Jalankan Server
+Buka 2 tab terminal terpisah:
+```bash
+# Terminal 1: Build dan watch Tailwind CSS
+npm run dev
 
-## License
+# Terminal 2: Jalankan web server Laravel
+php artisan serve
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Aplikasi sekarang dapat diakses melalui `http://127.0.0.1:8000`.
+
+---
+
+## ⚙️ Cron Job & Robot Tagihan Otomatis
+
+Sistem Dthanasha menggunakan **Laravel Scheduler** untuk membuat tagihan secara otomatis untuk seluruh penghuni aktif pada **tanggal 1 setiap bulannya**.
+
+Di *local development*, Anda bisa menjalankannya secara manual dengan:
+```bash
+php artisan schedule:work
+```
+
+### Setup di Server Produksi (cPanel / VPS)
+Agar robot tagihan berjalan otomatis di latar belakang, tambahkan *Cron Job* berikut di server Anda (berjalan setiap 1 menit):
+```bash
+* * * * * cd /path-to-project/dthanasha && php artisan schedule:run >> /dev/null 2>&1
+```
+
+*(Tagihan pertengahan bulan: Jika penghuni masuk di tanggal 15, tagihannya tidak akan otomatis dibuat bulan tersebut. Pembayaran bulan pertama harus dimasukkan ke dalam menu **Riwayat -> Tambah Catatan Pemasukan**).*
+
+---
+
+## 🛠️ Konfigurasi Email Lupa Password
+
+Sistem ini mendukung fitur *Forgot Password*. Namun secara default, pengiriman email pada environment *local* diarahkan ke file log (`MAIL_MAILER=log`). 
+
+Untuk mengaktifkannya:
+1. Daftar layanan SMTP seperti **Mailtrap** atau **Gmail App Password**.
+2. Ubah `.env` Anda:
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=your_username
+MAIL_PASSWORD=your_password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="admin@dthanasha.com"
+MAIL_FROM_NAME="Dthanasha Kost"
+```
+
+---
+
+## 🪲 Troubleshooting / Masalah Umum
+
+- **Gambar/Aset tidak muncul?** Pastikan Anda sudah menjalankan perintah `php artisan storage:link`.
+- **Notifikasi Midtrans (Webhook) tidak masuk di Localhost?** Saat Anda mengetes Midtrans di local, API Midtrans tidak bisa mengirimkan notifikasi balik (*webhook*) ke `localhost`. Gunakan **Ngrok** atau letakkan aplikasi di server *live*.
+
+---
+
+*Dikembangkan dengan ❤️ untuk kemudahan manajemen rumah kost.*

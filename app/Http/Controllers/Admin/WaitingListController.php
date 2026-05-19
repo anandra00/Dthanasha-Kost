@@ -10,7 +10,7 @@ class WaitingListController extends Controller
 {
     public function index()
     {
-        $antrean = WaitingList::orderBy('created_at', 'desc')->get();
+        $antrean = WaitingList::orderBy('created_at', 'desc')->paginate(5);
         
         $totalPria = WaitingList::where('jenis_kelamin', 'Pria')->count();
         $totalWanita = WaitingList::where('jenis_kelamin', 'Wanita')->count();
