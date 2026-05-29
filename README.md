@@ -81,7 +81,7 @@ MIDTRANS_IS_PRODUCTION=false
 ```
 
 ### 5. Migrasi & Seeding Database
-Jalankan migrasi untuk membuat tabel, lalu lakukan *seeding* untuk membuat akun Super Admin dan Pengaturan awal.
+Jalankan migrasi untuk membuat tabel, lalu lakukan *seeding* untuk membuat akun Admin dan Pengaturan awal.
 ```bash
 php artisan migrate --seed
 ```

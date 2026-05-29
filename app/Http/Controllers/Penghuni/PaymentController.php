@@ -43,6 +43,53 @@ class PaymentController extends Controller
 
             $transaksi = Transaksi::with('tagihan')->where('order_id', $orderId)->first();
 
+            // FALLBACK LOCALHOST: Sinkronisasi status dari Midtrans jika webhook gagal masuk (karena di localhost)
+            if ($transaksi && $transaksi->status_transaksi === 'menunggu') {
+                try {
+                    \Midtrans\Config::$serverKey = config('midtrans.server_key');
+                    \Midtrans\Config::$isProduction = config('midtrans.is_production');
+                    \Midtrans\Config::$curlOptions = [
+                        CURLOPT_SSL_VERIFYPEER => false,
+                        CURLOPT_SSL_VERIFYHOST => false,
+                        CURLOPT_HTTPHEADER => [],
+                    ];
+                    
+                    $status = \Midtrans\Transaction::status($orderId);
+                    $transactionStatus = $status->transaction_status;
+                    $type = $status->payment_type ?? null;
+                    $fraud = $status->fraud_status ?? null;
+                    $tagihan = $transaksi->tagihan;
+
+                    if ($transactionStatus == 'capture') {
+                        if ($type == 'credit_card') {
+                            if ($fraud == 'challenge') {
+                                $transaksi->update(['status_transaksi' => 'menunggu']);
+                            } else {
+                                $transaksi->update(['status_transaksi' => 'berhasil']);
+                                if ($tagihan)
+                                    $tagihan->update(['status_tagihan' => 'Lunas', 'tanggal_bayar' => now()]);
+                            }
+                        }
+                    } else if ($transactionStatus == 'settlement') {
+                        $transaksi->update([
+                            'status_transaksi' => 'berhasil',
+                            'tipe_pembayaran' => $type
+                        ]);
+                        if ($tagihan) {
+                            $tagihan->update([
+                                'status_tagihan' => 'Lunas',
+                                'tanggal_bayar' => now()
+                            ]);
+                        }
+                    } else if (in_array($transactionStatus, ['deny', 'expire', 'cancel'])) {
+                        $transaksi->update(['status_transaksi' => 'gagal']);
+                    }
+                    $transaksi->refresh();
+                } catch (\Exception $e) {
+                    Log::error('Midtrans Sync Error: ' . $e->getMessage());
+                }
+            }
+
             if ($transaksi) {
                 $modalData = $transaksi;
             }
