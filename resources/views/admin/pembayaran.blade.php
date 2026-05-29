@@ -4,7 +4,6 @@
 @section('search_placeholder', 'Cari nama penghuni atau nomor kamar...')
 
 @section('content')
-    <!-- SUMMARY CARDS -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 max-w-4xl">
         <div class="bg-white p-6 rounded-2xl card-shadow border border-zinc-50 flex items-center justify-between group">
             <div>
@@ -35,7 +34,6 @@
         </div>
     </div>
 
-    <!-- FILTER -->
     <div class="flex items-center gap-4 mb-8">
         <select class="px-5 py-2.5 rounded-xl border border-zinc-200 bg-white text-sm font-semibold outline-none card-shadow cursor-pointer text-zinc-700 focus:ring-2 focus:ring-[#334155]">
             <option>Semua Status</option>
@@ -45,13 +43,14 @@
         </select>
     </div>
 
-    <!-- GRID DATA PEMBAYARAN -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         @forelse ($tagihans as $tagihan)
         @php
             $namaPenghuni = $tagihan->penghuni?->nama_penghuni ?? 'Unknown';
             $nomorKamar = $tagihan->penghuni?->kamar?->nomor_kamar ?? '-';
+            $urlBuktiJS = $tagihan->bukti_transfer ? asset('storage/' . $tagihan->bukti_transfer) : '';
         @endphp
+        
         <div class="bg-white w-full rounded-[1.25rem] p-5 card-shadow border border-zinc-100 flex flex-col gap-5 hover:shadow-lg hover:border-zinc-200 transition-all group">
             <div class="flex justify-between items-start">
                 <div class="bg-[#18181B] text-white w-[65px] h-[65px] rounded-2xl flex items-center justify-center font-bold text-xl shadow-sm tracking-wide">
@@ -75,19 +74,21 @@
             </div>
             @endif
 
-            @if($tagihan->status_tagihan == 'Belum Lunas')
-                <button onclick="bukaModalKonfirmasi({{ $tagihan->id }}, '{{ addslashes($namaPenghuni) }}', '{{ $nomorKamar }}', 'Belum Lunas', '{{ $tagihan->nominal_tagihan }}')" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl w-full text-sm shadow-md transition-all active:scale-95 mt-auto flex justify-center items-center gap-2">
-                    <i class="ph-fill ph-warning-circle text-lg"></i> Belum Lunas
-                </button>
-            @elseif($tagihan->status_tagihan == 'Menunggu Konfirmasi')
-                <button onclick="bukaModalKonfirmasi({{ $tagihan->id }}, '{{ addslashes($namaPenghuni) }}', '{{ $nomorKamar }}', 'Menunggu Konfirmasi', '{{ $tagihan->nominal_tagihan }}')" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl w-full text-sm shadow-md transition-all active:scale-95 mt-auto flex justify-center items-center gap-2">
-                    <i class="ph-fill ph-clock-countdown text-lg"></i> Menunggu Konfirmasi
-                </button>
-            @else
-                <button onclick="bukaModalKonfirmasi({{ $tagihan->id }}, '{{ addslashes($namaPenghuni) }}', '{{ $nomorKamar }}', 'Lunas', '{{ $tagihan->nominal_tagihan }}')" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl w-full text-sm shadow-md transition-all active:scale-95 mt-auto flex justify-center items-center gap-2">
-                    <i class="ph-fill ph-check-circle text-lg"></i> Lunas
-                </button>
-            @endif
+            <div class="mt-auto pt-2">
+                @if($tagihan->status_tagihan == 'Belum Lunas')
+                    <button onclick="bukaModalKonfirmasi({{ $tagihan->id }}, '{{ addslashes($namaPenghuni) }}', '{{ $nomorKamar }}', 'Belum Lunas', '{{ number_format($tagihan->nominal_tagihan, 0, ',', '.') }}', '{{ $urlBuktiJS }}')" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl w-full text-sm shadow-md transition-all active:scale-95 flex justify-center items-center gap-2">
+                        <i class="ph-fill ph-warning-circle text-lg"></i> Belum Lunas
+                    </button>
+                @elseif($tagihan->status_tagihan == 'Menunggu Konfirmasi')
+                    <button onclick="bukaModalKonfirmasi({{ $tagihan->id }}, '{{ addslashes($namaPenghuni) }}', '{{ $nomorKamar }}', 'Menunggu Konfirmasi', '{{ number_format($tagihan->nominal_tagihan, 0, ',', '.') }}', '{{ $urlBuktiJS }}')" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl w-full text-sm shadow-md transition-all active:scale-95 flex justify-center items-center gap-2">
+                        <i class="ph-fill ph-clock-countdown text-lg"></i> Menunggu Konfirmasi
+                    </button>
+                @else
+                    <button onclick="bukaModalKonfirmasi({{ $tagihan->id }}, '{{ addslashes($namaPenghuni) }}', '{{ $nomorKamar }}', 'Lunas', '{{ number_format($tagihan->nominal_tagihan, 0, ',', '.') }}', '{{ $urlBuktiJS }}')" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl w-full text-sm shadow-md transition-all active:scale-95 flex justify-center items-center gap-2">
+                        <i class="ph-fill ph-check-circle text-lg"></i> Lunas
+                    </button>
+                @endif
+            </div>
         </div>
         @empty
         <div class="col-span-full text-center py-10">
@@ -96,48 +97,66 @@
         @endforelse
     </div>
 
-    <!-- MODAL KONFIRMASI PEMBAYARAN -->
     <div id="modalKonfirmasi" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center">
-        <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl scale-95 transition-all max-h-[90vh] overflow-y-auto no-scrollbar">
-            <h2 id="modal_judul" class="text-xl font-black text-zinc-900 mb-6 text-center uppercase tracking-wide">Konfirmasi Pembayaran</h2>
-            <form id="formPembayaran" method="POST" class="space-y-4">
+        <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl scale-95 transition-all max-h-[90vh] overflow-y-auto no-scrollbar relative">
+            
+            <button type="button" onclick="tutupModal('modalKonfirmasi')" class="absolute top-6 right-6 text-zinc-400 hover:text-zinc-900 transition-colors">
+                <i class="ph ph-x text-xl font-bold"></i>
+            </button>
+
+            <h2 id="modal_judul" class="text-xl font-black text-zinc-900 mb-6 text-center uppercase tracking-wide">Detail Tagihan</h2>
+            
+            <form id="formPembayaran" method="POST" class="space-y-5">
                 @csrf
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nama</label>
-                        <input type="text" id="modal_nama" name="nama" class="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-100 font-bold focus:outline-none text-zinc-600 text-sm" readonly>
+                
+                <div class="bg-zinc-50 p-5 rounded-2xl border border-zinc-100 space-y-3">
+                    <div class="flex justify-between items-center border-b border-zinc-200 pb-2">
+                        <span class="text-xs font-bold text-zinc-500 uppercase">Nama</span>
+                        <span id="text_nama" class="text-sm font-black text-zinc-900"></span>
                     </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nomor Kamar</label>
-                        <input type="text" id="modal_kamar" name="nomor_kamar" class="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-100 font-bold focus:outline-none text-zinc-600 text-sm" readonly>
+                    <div class="flex justify-between items-center border-b border-zinc-200 pb-2">
+                        <span class="text-xs font-bold text-zinc-500 uppercase">Kamar</span>
+                        <span id="text_kamar" class="text-sm font-black text-zinc-900 bg-zinc-200 px-2 py-0.5 rounded"></span>
                     </div>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Status</label>
-                        <input type="text" id="modal_status" name="status" class="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-100 font-bold focus:outline-none text-zinc-600 text-sm" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nominal (Rp)</label>
-                        <input type="number" id="modal_nominal" name="nominal" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
+                    <div class="flex justify-between items-center border-b border-zinc-200 pb-2">
+                        <span class="text-xs font-bold text-zinc-500 uppercase">Nominal</span>
+                        <span id="text_nominal" class="text-sm font-black text-zinc-900"></span>
                     </div>
                 </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Metode Pembayaran</label>
-                    <select id="modal_metode" name="metode_pembayaran" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900">
-                        <option value="">Pilih Metode...</option>
-                        <option value="Transfer Bank">Transfer Bank</option>
-                        <option value="Cash">Cash</option>
-                        <option value="E-Wallet">E-Wallet (OVO/Dana/Gopay)</option>
+
+                <div id="area_link_bukti" class="hidden">
+                    <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Bukti Transfer (Klik untuk melihat)</label>
+                    <a id="btn_link_bukti" href="#" target="_blank" class="w-full flex items-center justify-between px-4 py-3 bg-white border border-zinc-200 hover:bg-zinc-50 hover:border-zinc-300 rounded-xl transition-all group/btn active:scale-95">
+                        <div class="flex items-center gap-3 overflow-hidden">
+                            <div class="w-8 h-8 bg-zinc-100 border border-zinc-200 rounded-lg flex items-center justify-center text-zinc-500 group-hover/btn:text-zinc-900 transition-colors shrink-0">
+                                <i class="ph ph-image text-lg"></i>
+                            </div>
+                            <span id="text_nama_file" class="text-[12px] font-bold text-zinc-600 truncate group-hover/btn:text-zinc-900 transition-colors">
+                            </span>
+                        </div>
+                        <i class="ph ph-arrow-up-right text-zinc-400 group-hover/btn:text-zinc-900 transition-colors shrink-0 text-sm"></i>
+                    </a>
+                </div>
+
+                <div id="area_no_bukti" class="hidden">
+                    <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Lampiran Bukti</label>
+                    <div class="w-full px-4 py-3 bg-zinc-50 border border-zinc-100 rounded-xl flex items-center gap-3 text-zinc-400">
+                        <i class="ph ph-file-dashed text-lg"></i>
+                        <span class="text-[12px] font-medium">Tidak ada lampiran diunggah.</span>
+                    </div>
+                </div>
+
+                <div id="area_edit_status">
+                    <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Ubah Status Pembayaran</label>
+                    <select id="modal_status" name="status_tagihan" class="w-full px-4 py-3.5 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#18181B] transition-all text-sm font-bold text-zinc-900 cursor-pointer">
+                        <option value="Belum Lunas">Belum Lunas</option>
+                        <option value="Menunggu Konfirmasi">Menunggu Konfirmasi</option>
+                        <option value="Lunas">Lunas</option>
                     </select>
                 </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Bukti Pembayaran (Link/File)</label>
-                    <input type="text" id="modal_bukti" name="bukti_pembayaran" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" placeholder="Masukkan link bukti bayar">
-                </div>
-                <div id="modal_action_buttons" class="flex flex-col gap-3 pt-6 border-t border-zinc-100">
-                    <!-- Tombol di-inject via JS -->
-                </div>
+
+                <div id="modal_action_buttons" class="flex flex-col gap-3 pt-4 border-t border-zinc-100">
+                    </div>
             </form>
         </div>
     </div>
@@ -145,56 +164,65 @@
 
 @section('scripts')
     <script>
-        function bukaModalKonfirmasi(id, nama, kamar, status, nominal) { 
+        function bukaModalKonfirmasi(id, nama, kamar, status, nominal, urlBukti) { 
+            // 1. Set URL Form
             document.getElementById('formPembayaran').action = '/admin/proses_pembayaran/' + id;
             
-            document.getElementById('modal_nama').value = nama;
-            document.getElementById('modal_kamar').value = kamar;
-            document.getElementById('modal_status').value = status;
-            document.getElementById('modal_nominal').value = nominal;
-            document.getElementById('modal_metode').value = "";
-            document.getElementById('modal_bukti').value = "";
+            // 2. Isi teks statis
+            document.getElementById('text_nama').innerText = nama;
+            document.getElementById('text_kamar').innerText = kamar;
+            document.getElementById('text_nominal').innerText = 'Rp ' + nominal;
+            
+            // 3. Set Dropdown Status ke posisi saat ini
+            const selectStatus = document.getElementById('modal_status');
+            selectStatus.value = status;
+            
+            // 4. KACAMATA SKEPTIS: Atur Tampilan Tombol Link di Dalem Modal
+            const areaLink = document.getElementById('area_link_bukti');
+            const areaNoLink = document.getElementById('area_no_bukti');
+            const btnLink = document.getElementById('btn_link_bukti');
+            const textNamaFile = document.getElementById('text_nama_file');
+            
+            if (urlBukti && urlBukti !== '') {
+                areaLink.classList.remove('hidden');
+                areaNoLink.classList.add('hidden');
+                btnLink.href = urlBukti;
+                
+                // Ambil nama filenya aja dari ujung URL
+                const fileName = urlBukti.substring(urlBukti.lastIndexOf('/') + 1);
+                textNamaFile.innerText = fileName;
+            } else {
+                areaLink.classList.add('hidden');
+                areaNoLink.classList.remove('hidden');
+            }
 
+            // 5. Atur Tombol berdasarkan Status Awal
             const actionContainer = document.getElementById('modal_action_buttons');
-            const judulModal = document.getElementById('modal_judul');
-            const inputs = document.querySelectorAll('#modal_nominal, #modal_metode, #modal_bukti');
+            const areaEditStatus = document.getElementById('area_edit_status');
+            const urlNotif = "{{ url('/kirim_notifikasi') }}";
 
             if (status === 'Lunas') {
-                judulModal.innerText = "Detail Pembayaran";
-                inputs.forEach(input => {
-                    input.setAttribute('disabled', true);
-                    input.removeAttribute('required');
-                    input.classList.add('bg-zinc-50', 'text-zinc-500');
-                    input.classList.remove('bg-white', 'text-zinc-900');
-                });
+                document.getElementById('modal_judul').innerText = "Rincian Tagihan Lunas";
+                areaEditStatus.classList.add('hidden');
                 actionContainer.innerHTML = `
-                    <button type="button" onclick="tutupModal('modalKonfirmasi')" class="w-full px-4 py-3.5 rounded-xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm uppercase tracking-wide">
-                        Tutup Detail
+                    <button type="button" onclick="tutupModal('modalKonfirmasi')" class="w-full px-4 py-3.5 rounded-xl bg-[#18181B] text-white font-bold hover:bg-[#334155] shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide">
+                        Tutup Jendela
                     </button>
                 `;
             } else {
-                judulModal.innerText = "Konfirmasi Pembayaran";
-                inputs.forEach(input => {
-                    input.removeAttribute('disabled');
-                    input.setAttribute('required', true);
-                    input.classList.remove('bg-zinc-50', 'text-zinc-500');
-                    input.classList.add('bg-white', 'text-zinc-900');
-                });
-                document.getElementById('modal_bukti').removeAttribute('required');
-                
-                const urlNotif = "{{ url('/kirim_notifikasi') }}";
+                document.getElementById('modal_judul').innerText = "Validasi Pembayaran";
+                areaEditStatus.classList.remove('hidden');
                 actionContainer.innerHTML = `
-                    <div class="flex gap-3">
-                        <button type="button" onclick="tutupModal('modalKonfirmasi')" class="flex-1 px-4 py-3.5 rounded-xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm uppercase tracking-wide">Batal</button>
-                        <button type="submit" class="flex-1 px-4 py-3.5 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-600 shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide flex items-center justify-center gap-2">
-                            <i class="ph ph-check-circle text-lg"></i> Konfirmasi
-                        </button>
-                    </div>
-                    <button type="button" onclick="window.location.href='${urlNotif}'" class="w-full px-4 py-3.5 rounded-xl bg-yellow-50 border border-yellow-100 text-yellow-600 font-bold hover:bg-yellow-100 transition-all active:scale-95 flex items-center justify-center gap-2 text-sm uppercase tracking-wide mt-2">
-                        <i class="ph-fill ph-bell text-xl"></i> Kirim Notifikasi Pembayaran
+                    <button type="submit" class="w-full px-4 py-3.5 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-600 shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide flex items-center justify-center gap-2">
+                        <i class="ph ph-floppy-disk text-lg"></i> Simpan Perubahan Status
+                    </button>
+                    <button type="button" onclick="window.location.href='${urlNotif}'" class="w-full px-4 py-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 font-bold hover:bg-amber-100 transition-all active:scale-95 flex items-center justify-center gap-2 text-xs uppercase tracking-widest mt-1">
+                        <i class="ph-fill ph-bell-ringing text-lg"></i> Kirim Notifikasi Tagihan
                     </button>
                 `;
             }
+
+            // 6. Buka Modalnya!
             document.getElementById('modalKonfirmasi').classList.remove('hidden'); 
         }
 

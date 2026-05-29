@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\PenghuniController;
 use App\Http\Controllers\Penghuni\PaymentController;
 use App\Http\Controllers\Penghuni\EmailController;
+use App\Http\Controllers\Penghuni\KeluhanController;
 use App\Http\Controllers\Admin\WaitingListController;
 use App\Http\Controllers\Admin\KamarController;
 use App\Http\Controllers\Admin\PembayaranController;
@@ -60,7 +61,7 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
 // ==========================================
 // ROUTE SISI PENGHUNI
 // ==========================================
-Route::middleware(['auth', 'role:penghuni'])->group(function () { 
+Route::middleware(['auth', 'role:penghuni', 'wajib.email'])->group(function () { 
 
     Route::post('/penghuni/submit-email', [EmailController::class, 'submitEmail'])->name('penghuni.submit-email');
     
@@ -69,6 +70,9 @@ Route::middleware(['auth', 'role:penghuni'])->group(function () {
     
     // Route buat ngebatalin/ganti email kalau user typo
     Route::post('/penghuni/reset-email', [EmailController::class, 'resetEmail'])->name('penghuni.reset-email');
+
+    // Route POST buat nge-trigger fungsi ke WA
+    Route::post('penghuni/keluhan/wa', [DashboardController::class, 'laporKeWa'])->name('penghuni.keluhan');
     
     // --- Views Penghuni ---
     Route::get('penghuni/dashboard', [DashboardController::class, 'index'])->name('penghuni.dashboard');
@@ -86,7 +90,8 @@ Route::middleware(['auth', 'role:penghuni'])->group(function () {
     Route::get('penghuni/pembayaran', [PaymentController::class, 'halamanPembayaran'])->name('penghuni.pembayaran');
     Route::post('penghuni/proses-bayar', [PaymentController::class, 'prosesBayar'])->name('penghuni.proses-bayar');
 
-    Route::post('/proses_bayar_manual', [PaymentController::class, 'prosesBayarManual']);
+    Route::post('/proses_bayar_manual', [PaymentController::class, 'prosesBayarManual'])->name('penghuni.proses-pembayaran-manual');
+    Route::post('/penghuni/submit-keluhan', [KeluhanController::class, 'submitKeluhan'])->name('penghuni.submit-keluhan');
 });
 Route::post('/midtrans/webhook', [PaymentController::class, 'webhook']);
 

@@ -135,7 +135,7 @@
                 <div>
                     <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nomor
                         Telepon</label>
-                    <input type="text" name="telepon"
+                    <input type="text" name="telepon" placeholder="Awali dengan 628..."
                         class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900"
                         required>
                 </div>
@@ -178,7 +178,7 @@
                 <div>
                     <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nomor
                         Telepon</label>
-                    <input type="text" id="edit_telepon" name="telepon"
+                    <input type="text" id="edit_telepon" name="telepon" placeholder="Awali dengan 628..."
                         class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900"
                         required>
                 </div>

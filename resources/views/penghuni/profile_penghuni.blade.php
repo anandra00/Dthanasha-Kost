@@ -9,6 +9,11 @@
 @endsection
 
 @section('content')
+    @if(auth()->user()->is_locked)
+        
+        <x-lock-screen />
+
+    @else
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Kolom Kiri: Profil -->
         <div class="space-y-6">
@@ -127,4 +132,5 @@
             }
         }
     </script>
+    @endif
 @endsection

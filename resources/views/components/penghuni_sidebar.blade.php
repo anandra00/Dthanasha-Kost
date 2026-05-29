@@ -9,7 +9,6 @@
             <i class="ph ph-x text-xl"></i>
         </button>
     </div>
-    
     <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto no-scrollbar">
         <a href="{{ route('penghuni.dashboard') }}" class="sidebar-link {{ request()->routeIs('penghuni.dashboard') ? 'active-link font-semibold' : 'font-medium hover:text-white' }} flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all">
             <i class="ph ph-squares-four text-lg {{ request()->routeIs('penghuni.dashboard') ? 'text-white' : '' }}"></i> Dashboard

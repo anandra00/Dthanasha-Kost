@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->timestamp('otp_expires_at')->nullable();
             $table->string('password');
             $table->string('role')->default('penghuni'); // Tambahin ini buat role (owner/penghuni)
+            $table->boolean('is_locked')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

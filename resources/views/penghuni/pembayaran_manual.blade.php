@@ -69,7 +69,7 @@
         <!-- Form Upload -->
         <div>
             <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide mb-4 flex items-center gap-2">Upload Bukti Pembayaran <i class="ph ph-upload-simple text-lg"></i></h3>
-            <form action="{{ url('/proses_bayar_manual') }}" method="POST" enctype="multipart/form-data" class="bg-white p-8 rounded-3xl card-shadow border border-gray-50 flex flex-col h-[calc(100%-2.5rem)]">
+            <form action="{{ route('penghuni.proses-pembayaran-manual') }}" method="POST" enctype="multipart/form-data" class="bg-white p-8 rounded-3xl card-shadow border border-gray-50 flex flex-col h-[calc(100%-2.5rem)]">
                 @csrf
                 <div class="flex-1 flex flex-col justify-center">
                     <div class="relative w-full h-64 border-2 border-dashed border-zinc-300 bg-zinc-50 rounded-2xl flex flex-col items-center justify-center text-center hover:bg-zinc-100 hover:border-zinc-400 transition-all cursor-pointer group">

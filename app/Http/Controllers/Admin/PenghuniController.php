@@ -53,8 +53,8 @@ class PenghuniController extends Controller
             'nama' => 'required|string|max:255',
             'usia' => 'required|integer',
             'jk' => 'required|string',
-            'kontak' => 'required|string',
-            'kontak_ortu' => 'required|string',
+            'kontak' => ['nullable','string', 'max:20', 'regex:/^628[0-9]{7,12}$/'],
+            'kontak_ortu' => ['nullable','string', 'max:20', 'regex:/^628[0-9]{7,12}$/'],
             'nama_akun' => 'required|string|unique:users,username', // Pastikan tabel users ada kolom 'username'
             'password' => 'required|string|min:6',
         ]);
@@ -91,11 +91,28 @@ class PenghuniController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'kamar_id' => 'nullable|exists:kamar,id',
-            'usia' => 'nullable|integer|min:1',
+            'usia' => 'nullable|integer|min:0',
             'jk' => 'nullable|string|in:L,P',
-            'kontak' => 'nullable|string|max:20',
-            'kontak_ortu' => 'nullable|string|max:20',
+            'kontak' => ['nullable','string', 'max:20', 'regex:/^628[0-9]{7,12}$/'],
+            'kontak_ortu' => ['nullable','string', 'max:20', 'regex:/^628[0-9]{7,12}$/'],
             'email' => 'nullable|email',
+        ], [
+            'nama.required'   => 'Nama penghuni tidak boleh kosong.',
+            'nama.max'        => 'Nama penghuni terlalu panjang (maksimal 255 karakter).',
+            
+            'kamar_id.exists' => 'Pilihan kamar tidak ditemukan di dalam sistem.',
+            
+            'usia.min'        => 'Usia tidak valid (tidak boleh angka minus).',
+            
+            'jk.in'           => 'Pilihan jenis kelamin tidak valid.',
+            
+            'kontak.regex'    => 'Nomor WA penghuni harus diawali 628 dan berisi 10-15 digit angka.',
+            'kontak.max'      => 'Nomor WA penghuni terlalu panjang.',
+            
+            'kontak_ortu.regex' => 'Nomor WA orang tua harus diawali 628 dan berisi 10-15 digit angka.',
+            'kontak_ortu.max'   => 'Nomor WA orang tua terlalu panjang.',
+            
+            'email.email'     => 'Format email tidak valid (pastikan menggunakan tanda @ dan domain yang benar).',
         ]);
 
         $penghuni = Penghuni::findOrFail($id);

@@ -25,7 +25,7 @@ class KamarController extends Controller
     {
         $request->validate([
             'nomor_kamar' => 'required|string|max:255|unique:kamar',
-            'harga_kamar' => 'required|integer',
+            'harga_kamar' => 'required|integer|min:0',
             'jenis_kamar' => 'required|string',
             'status_kamar' => 'required|string',
         ]);

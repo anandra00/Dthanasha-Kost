@@ -12,6 +12,11 @@
 @section('content')
     <h1 class="text-2xl font-black text-gray-900 mb-8">Selamat datang, {{ $nama }}!</h1>
 
+    @if(auth()->user()->is_locked)
+        
+        <x-lock-screen />
+
+    @else
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
         <!-- Card Status Tagihan -->
        <x-card-tagihan :tagihan="$tagihanSaatIni" />
@@ -139,15 +144,15 @@
                         </div>
                     </div>
                 @else
-                    <a href="{{ $waAdmin ? 'https://wa.me/'.$waAdmin->nilai : '#' }}" target="_blank" class="group bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 p-5 rounded-2xl transition-all active:scale-95 flex items-center justify-between">
+                    <button type="button" onclick="document.getElementById('modalKeluhan').classList.remove('hidden')" class="w-full group bg-white border border-zinc-200 hover:bg-zinc-50 p-5 rounded-2xl transition-all shadow-sm active:scale-95 flex items-center justify-between">
                         <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-zinc-900 border border-zinc-200">
-                                <i class="ph ph-chat-centered-text text-xl"></i>
+                            <div class="w-10 h-10 bg-zinc-50 border border-zinc-200 rounded-xl flex items-center justify-center group-hover:bg-white transition-colors">
+                                <i class="ph ph-whatsapp-logo text-xl text-zinc-700 group-hover:text-zinc-900 transition-colors"></i>
                             </div>
-                            <span class="text-zinc-900 font-bold text-sm">Lapor Keluhan</span>
+                            <span class="text-zinc-700 font-bold text-sm group-hover:text-zinc-900 transition-colors">Hubungi Owner</span>
                         </div>
-                        <i class="ph ph-caret-right text-zinc-400"></i>
-                    </a>
+                        <i class="ph ph-caret-right text-zinc-300 group-hover:text-zinc-500 transition-colors"></i>
+                    </button>
                 @endif
             </div>
         </div>
@@ -225,4 +230,6 @@
     <form id="logout-form-modal" action="{{ route('logout') }}" method="POST" class="hidden">
         @csrf
     </form>
+    @endif
+    <x-modal-keluhan />
 @endsection

@@ -116,7 +116,7 @@
                     </div>
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Harga Kamar</label>
-                        <input type="number" name="harga_kamar" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all font-bold text-zinc-900 text-sm" required>
+                        <input type="number" name="harga_kamar" min="0" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all font-bold text-zinc-900 text-sm" required>
                     </div>
                 </div>
                 <div class="flex gap-3 pt-6 border-t border-zinc-100">
@@ -136,7 +136,7 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nomor Kamar</label>
-                        <input type="text" id="detail_nomor" name="nomor_kamar" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all font-bold text-zinc-900 text-sm" required>
+                        <input type="text" id="detail_nomor" name="nomor_kamar" min="0" max="100" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all font-bold text-zinc-900 text-sm" required>
                     </div>
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Status Kamar</label>
@@ -156,7 +156,7 @@
                     </div>
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Harga Kamar</label>
-                        <input type="number" id="detail_harga" name="harga_kamar" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all font-bold text-zinc-900 text-sm" required>
+                        <input type="number" id="detail_harga" name="harga_kamar" min="0" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all font-bold text-zinc-900 text-sm" required>
                     </div>
                 </div>
 

@@ -94,61 +94,28 @@
         </div>
     </div>
 
-    <!-- Modal Pembayaran Berhasil -->
-    <div id="modalBerhasil" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center">
-        <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl scale-95 transition-all text-center">
-            <h2 class="text-xl font-black text-gray-900 mb-6">Pembayaran Berhasil</h2>
-            <div class="flex justify-center mb-6"><i class="ph-fill ph-check-circle text-green-600 text-7xl"></i></div>
-            <div class="space-y-4 mb-8 text-left bg-zinc-50 p-4 rounded-xl border border-zinc-100">
-                <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Order ID</span><span class="text-sm font-medium text-zinc-700">{{ isset($modalData) ? $modalData->order_id : '-' }}</span></div>
-                <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Periode Pembayaran</span><span class="text-sm font-medium text-zinc-700">{{ isset($modalData) && $modalData->tagihan ? $modalData->tagihan->periode_bulan : '-' }}</span></div>
-                <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Tanggal Transaksi</span><span class="text-sm font-medium text-zinc-700">{{ isset($modalData) ? \Carbon\Carbon::parse($modalData->created_at)->format('d M Y, H:i') : '-' }}</span></div>
-                <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Status Pembayaran</span><span class="text-sm font-bold text-green-600">{{ ucfirst($modalStatus ?? '') }}</span></div>
-                <div class="flex justify-between items-center pt-2 border-t border-zinc-200"><span class="text-sm font-bold text-zinc-900">Nominal</span><span class="text-base font-black text-zinc-900">Rp {{ isset($modalData) && $modalData->tagihan ? number_format($modalData->tagihan->nominal_tagihan, 0, ',', '.') : '-' }}</span></div>
-            </div>
-            <button onclick="window.location.href='{{ route('penghuni.pembayaran') }}'" class="w-full px-4 py-3 rounded-xl bg-zinc-200 text-zinc-700 font-bold hover:bg-zinc-300 transition-all text-sm">Kembali</button>
-        </div>
-    </div>
-
-    <!-- Modal Pembayaran Gagal -->
-    <div id="modalGagal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center">
-        <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl scale-95 transition-all text-center">
-            <h2 class="text-xl font-black text-gray-900 mb-6">Pembayaran Gagal</h2>
-            <div class="flex justify-center mb-6"><i class="ph-fill ph-warning-circle text-red-600 text-7xl"></i></div>
-            <div class="space-y-4 mb-8 text-left bg-zinc-50 p-4 rounded-xl border border-zinc-100">
-                <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Order ID</span><span class="text-sm font-medium text-zinc-700">{{ isset($modalData) ? $modalData->order_id : '-' }}</span></div>
-                <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Periode Pembayaran</span><span class="text-sm font-medium text-zinc-700">{{ isset($modalData) && $modalData->tagihan ? $modalData->tagihan->periode_bulan : '-' }}</span></div>
-                <div class="flex justify-between items-center"><span class="text-sm font-bold text-zinc-900">Status Pembayaran</span><span class="text-sm font-bold text-red-600">Gagal / Dibatalkan</span></div>
-            </div>
-            <div class="flex gap-3">
-                <button onclick="window.location.href='{{ route('penghuni.pembayaran') }}'" class="flex-1 px-4 py-3 rounded-xl bg-zinc-200 text-zinc-700 font-bold hover:bg-zinc-300 transition-all text-sm">Kembali</button>
-                <a href="{{ route('penghuni.pembayaran-manual') }}" class="flex-1 px-4 py-3 rounded-xl bg-blue-500 text-white font-bold hover:bg-blue-600 shadow-md transition-all text-sm active:scale-95 flex items-center justify-center">Bayar Manual</a>
-            </div>
-        </div>
-    </div>
+    <x-modal-status-pembayaran :modal-data="$modalData ?? null" :modal-status="$modalStatus ?? null" />
 @endsection
 
 @section('scripts')
     <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
     
     <script>
-        function bukaModalBerhasil() { 
-            document.getElementById('modalBerhasil').classList.remove('hidden'); 
-        }
-        function bukaModalGagal() { 
-            document.getElementById('modalGagal').classList.remove('hidden'); 
-        }
-        function tutupModal(id) { 
-            document.getElementById(id).classList.add('hidden'); 
+        // Cuma butuh 1 fungsi buat buka modal gabungan
+        function bukaModalStatus() { 
+            const modal = document.getElementById('modalStatusPembayaran');
+            if (modal) {
+                modal.classList.remove('hidden'); 
+            }
         }
 
-        // Auto-open modal dari callback
+        // Auto-open modal dari callback URL
         document.addEventListener('DOMContentLoaded', function() {
             let statusDariUrl = "{{ $modalStatus ?? '' }}";
-            if (statusDariUrl === 'success' || statusDariUrl === 'pending') {
-                bukaModalBerhasil();
-            } else if (statusDariUrl === 'failed') {
-                bukaModalGagal();
+            
+            // Kalau variabel statusnya ada isinya (success / pending / failed), langsung tembak buka!
+            if (statusDariUrl !== '') {
+                bukaModalStatus();
             }
         });
 

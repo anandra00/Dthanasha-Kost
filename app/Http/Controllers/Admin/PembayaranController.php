@@ -25,30 +25,29 @@ class PembayaranController extends Controller
 
     public function konfirmasi(Request $request, $id)
     {
+
         $request->validate([
-            'nominal' => 'required|numeric',
-            'metode_pembayaran' => 'required|string',
-            'bukti_pembayaran' => 'nullable|string',
+            'status_tagihan' => 'required|in:Belum Lunas,Menunggu Konfirmasi,Lunas'
         ]);
 
         $tagihan = Tagihan::findOrFail($id);
 
         // Update tabel tagihan
         $tagihan->update([
-            'status_tagihan' => 'Lunas',
-            'tanggal_bayar' => now(),
-            'nominal_tagihan' => $request->nominal,
-            'bukti_transfer' => $request->bukti_pembayaran,
+            'status_tagihan' => $request->status_tagihan,
         ]);
 
         // Catat riwayat ke log_transaksi
-        Transaksi::create([
-            'order_id' => 'MANUAL-' . time() . '-' . $tagihan->id,
-            'id_tagihan' => $tagihan->id,
-            'tipe_pembayaran' => $request->metode_pembayaran,
-            'status_transaksi' => 'Settlement', 
+        if ($request->status_tagihan == 'Lunas') {
+            Transaksi::create([
+                'order_id' => 'MANUAL-' . time() . '-' . $tagihan->id,
+                'id_tagihan' => $tagihan->id,
+                'status_transaksi' => 'berhasil', 
+            ]);
+            $tagihan->update([
+                'tanggal_bayar' => now(),
         ]);
-
-        return redirect()->back()->with('success', 'Pembayaran berhasil dikonfirmasi!');
+        }
+        return redirect()->back()->with('success', 'Status tagihan berhasil diperbarui');
     }
 }

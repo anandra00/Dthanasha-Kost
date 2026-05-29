@@ -22,9 +22,20 @@ class PengaturanController extends Controller
     public function update(Request $request)
     {   
         $request->validate([
-                'deadline' => 'required|integer|min:1|max:28',
-                'wa_admin' => 'required|string',
-                'email_admin' => 'required|string',
+            // Wajib angka, minimal 5, maksimal 28
+            'deadline'    => 'required|integer|min:5|max:28',
+            
+            // Wajib string, format regex: awalan 628, diikuti 7-12 digit angka (total 10-15 digit)
+            'wa_admin'    => ['required', 'string', 'regex:/^628[0-9]{7,12}$/'],
+            
+            // Wajib email valid, dan cek DNS domainnya (misal gmail.com beneran ada apa nggak)
+            'email_admin' => 'required|email:rfc,dns',
+        ], [
+            // Pesan error custom biar UX-nya dapet
+            'deadline.min' => 'Deadline minimal tanggal 5.',
+            'deadline.max' => 'Deadline maksimal tanggal 28 (menghindari bug Februari).',
+            'wa_admin.regex' => 'Nomor WA harus diawali 628 dan berisi angka yang valid (10-15 digit).',
+            'email_admin.email' => 'Format email tidak valid atau domain tidak ditemukan.',
         ]);
 
         $dataSettings = [

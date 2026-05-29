@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Penghuni;
 use Illuminate\Http\Request;
 use App\Services\MidtransService;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
 use App\Models\Transaksi;
 use App\Models\Tagihan;
 use App\Models\Penghuni;
@@ -46,16 +47,46 @@ class PaymentController extends Controller
                 $modalData = $transaksi;
             }
         }
+
         $penghuni = Penghuni::where('id_user', $user->id)->first();
         $tagihanSaatIni = null;
         $riwayatTagihan = collect();
 
         if ($penghuni) {
-            $tagihanSaatIni = Tagihan::where('id_penghuni', $penghuni->id)
+            // 1. Cari yang BENER-BENER utang dan butuh dibayar
+            $daftarBelumLunas = Tagihan::where('id_penghuni', $penghuni->id)
                 ->where('status_tagihan', 'Belum Lunas')
-                ->latest()
-                ->first();
+                ->orderBy('jatuh_tempo', 'asc')
+                ->get();
 
+            // 2. Cari yang lagi ngantri di-acc Bapak Kos
+            $daftarMenunggu = Tagihan::where('id_penghuni', $penghuni->id)
+                ->where('status_tagihan', 'Menunggu Konfirmasi')
+                ->orderBy('jatuh_tempo', 'asc')
+                ->get();
+
+            // 3. LOGIKA PRIORITAS CARD!
+            if ($daftarBelumLunas->isNotEmpty()) {
+                // Prioritas 1: Tampilin yang belum lunas biar dia bayar
+                $tagihanSaatIni = (object) [
+                    'status_tagihan'  => 'Belum Lunas',
+                    'periode_bulan'   => $daftarBelumLunas->pluck('periode_bulan')->join(', '), 
+                    'jatuh_tempo'     => $daftarBelumLunas->first()->jatuh_tempo, 
+                    'nominal_tagihan' => $daftarBelumLunas->sum('nominal_tagihan'),
+                ];
+            } elseif ($daftarMenunggu->isNotEmpty()) {
+                // Prioritas 2: Kalau udah bayar semua tapi belum di-acc, tampilin status kuningnya
+                $tagihanSaatIni = (object) [
+                    'status_tagihan'  => 'Menunggu Konfirmasi',
+                    'periode_bulan'   => $daftarMenunggu->pluck('periode_bulan')->join(', '), 
+                    'jatuh_tempo'     => $daftarMenunggu->first()->jatuh_tempo, 
+                    'nominal_tagihan' => $daftarMenunggu->sum('nominal_tagihan'),
+                ];
+            } else {
+                $tagihanSaatIni = null;
+            }
+
+            // Riwayat tagihan tetep nampilin semua (termasuk yang lunas & nunggu)
             $riwayatTagihan = Tagihan::where('id_penghuni', $penghuni->id)
                 ->orderBy('created_at', 'desc')
                 ->get();
@@ -71,20 +102,32 @@ class PaymentController extends Controller
 
         // 1. Cari tagihan milik user ini yang statusnya MASIH BELUM LUNAS
         // Asumsi: id_penghuni di tabel tagihan itu nyambung ke tabel users. 
-        $tagihan = Tagihan::where('id_penghuni', $penghuni->id)
+        $tagihans = Tagihan::where('id_penghuni', $penghuni->id)
             ->where('status_tagihan', 'Belum Lunas')
-            ->first();
+            ->orderBy('jatuh_tempo', 'asc')
+            ->get();
 
         // 2. Kalau tagihannya nggak ada (alias udah lunas semua), stop prosesnya!
-        if (!$tagihan) {
+        if ($tagihans->isEmpty()) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'UDAH LUNAS, NGAPAIN BAYAR LAGI'
             ], 404);
         }
 
+        $tagihanUtama = $tagihans->first();
+
+        $transaksiPending = Transaksi::where('id_tagihan', $tagihanUtama->id)->where('status_transaksi', 'menunggu')->first();
+        if ($transaksiPending && $transaksiPending->snap_token){
+            return response()->json([
+                'status' => 'success',
+                'snap_token' => $transaksiPending->snap_token,
+                'pesan' => 'melanjutkan pembayaran'
+        ]);
+        }
         // 3. Ambil nominal ASLI dari database, jangan di-hardcode!
-        $grossAmount = $tagihan->nominal_tagihan;
+        $grossAmount = $tagihans->sum('nominal_tagihan');
+        $periodeGabungan = $tagihans->pluck('periode_bulan')->join(', ');
 
         $orderId = 'TRX-' . time() . '-' . $user->id;
 
@@ -96,11 +139,11 @@ class PaymentController extends Controller
         $itemDetails = [
             [
                 // 4. Panggil ->id karena $tagihan itu objek
-                'id' => 'TAGIHAN-' . $tagihan->id,
+                'id' => 'TAGIHAN-' . $tagihans->first()->id,
                 'price' => $grossAmount,
                 'quantity' => 1,
                 // Nama tagihannya kita bikin keren pake periode bulan dari database
-                'name' => 'Tagihan Kost ' . $tagihan->periode_bulan
+                'name' => 'Tagihan Kost ' . $periodeGabungan
             ]
         ];
 
@@ -113,10 +156,12 @@ class PaymentController extends Controller
 
         Transaksi::create([
             'order_id' => $orderId,
-            'id_tagihan' => $tagihan->id, // Panggil ->id lagi
+            'id_tagihan' => $tagihans->first()->id, // Panggil ->id lagi
             'snap_token' => $snapToken,
             'status_transaksi' => 'menunggu',
-            'tipe_pembayaran' => null,
+            'tipe_pembayaran'  => null,
+            'nominal' => $grossAmount, // Masukin total duit akumulasi ke sini
+            'nama' => $periodeGabungan, // Masukin gabungan bulannya ke sini
         ]);
 
         return response()->json([
@@ -127,67 +172,65 @@ class PaymentController extends Controller
     // =========================================================
     // METHOD 2: WEBHOOK / NOTIFICATION HANDLER (WAJIB ADA!)
     // =========================================================
-    public function webhook(Request $request)
-    {
-        try {
-            $transaction = $request->transaction_status;
-            $type = $request->payment_type;
-            $orderId = $request->order_id;
-            $fraud = $request->fraud_status;
+public function webhook(Request $request)
+{
+    try {
+        $transaction = $request->transaction_status;
+        $type = $request->payment_type;
+        $orderId = $request->order_id;
+        
+        // fraud_status dibuang karena cuma kepake di kartu kredit
 
-            // Tambahin Log ini sementara buat mata-mata (Cek di laravel.log nanti)
-            Log::info('Webhook Midtrans Masuk! Nyari Order ID: ' . $orderId);
+        Log::info('Webhook Midtrans Masuk! Nyari Order ID: ' . $orderId);
 
-            $transaksi = Transaksi::where('order_id', $orderId)->first();
+        $transaksi = Transaksi::where('order_id', $orderId)->first();
 
-            if (!$transaksi) {
-                return response()->json(['message' => 'Transaksi tidak ditemukan bro. ID yang dicari: ' . $orderId], 404);
-            }
-
-            // 2. Cari tagihannya lewat id_tagihan yang udah disimpen di tabel transaksi
-            $tagihan = Tagihan::where('id', $transaksi->id_tagihan)->first();
-
-            // LOGIKA PENGECEKAN STATUS DARI MIDTRANS
-            if ($transaction == 'capture') {
-                if ($type == 'credit_card') {
-                    if ($fraud == 'challenge') {
-                        $transaksi->update(['status_transaksi' => 'menunggu']);
-                    } else {
-                        $transaksi->update(['status_transaksi' => 'berhasil']);
-                        if ($tagihan)
-                            $tagihan->update(['status_tagihan' => 'Lunas']);
-                    }
-                }
-            } else if ($transaction == 'settlement') {
-                // INI STATUS KALO PAKE GOPAY/QRIS/VA
-                // Perhatiin nama kolomnya: status_transaksi (bukan status)
-                $transaksi->update([
-                    'status_transaksi' => 'berhasil',
-                    'tipe_pembayaran' => $type
-                ]);
-
-                // Update tabel tagihannya jadi Lunas (Pake L gede biar sama kayak seeder lu)
-                if ($tagihan) {
-                    $tagihan->update([
-                        'status_tagihan' => 'Lunas',
-                        'tanggal_bayar' => now() // Sekalian catet tanggal lunasnya
-                    ]);
-                }
-
-            } else if ($transaction == 'pending') {
-                $transaksi->update(['status_transaksi' => 'menunggu']);
-
-            } else if ($transaction == 'deny' || $transaction == 'expire' || $transaction == 'cancel') {
-                $transaksi->update(['status_transaksi' => 'gagal']);
-            }
-
-            return response()->json(['message' => 'Webhook berhasil diproses']);
-
-        } catch (\Exception $e) {
-            Log::error('Midtrans Webhook Error: ' . $e->getMessage());
-            return response()->json(['message' => 'Error dari server'], 500);
+        // 1. CEK DULU ADA APA NGGAK. Kalau nggak ada, stop di sini!
+        if (!$transaksi) {
+            return response()->json(['message' => 'Transaksi tidak ditemukan bro. ID: ' . $orderId], 404);
         }
+
+        $tagihanPerwakilan = Tagihan::where('id', $transaksi->id_tagihan)->first();
+
+        // 2. CEK LAGI ADA APA NGGAK. Kalau aman, baru tarik id_penghuni-nya!
+        if (!$tagihanPerwakilan) {
+            return response()->json(['message' => 'Tagihan tidak ditemukan bro.'], 404);
+        }
+        $idPenghuni = $tagihanPerwakilan->id_penghuni;
+
+        // LOGIKA PENGECEKAN STATUS DARI MIDTRANS (Fokus QRIS/VA/E-Wallet)
+        if ($transaction == 'settlement') {
+            
+            $transaksi->update([
+                'status_transaksi' => 'berhasil',
+                'tipe_pembayaran' => $type
+            ]);
+
+            // 3. JURUS SAPU BERSIH YANG BENAR!
+            // Cari SEMUA tagihan berdasarkan 'id_penghuni', bukan 'id' tagihan perwakilan
+            Tagihan::where('id_penghuni', $idPenghuni)
+                   ->where('status_tagihan', 'Belum Lunas')
+                   ->update([
+                       'status_tagihan' => 'Lunas',
+                       'tanggal_bayar' => now() 
+                   ]);
+
+            $this->bukaKunciPenghuni($idPenghuni);
+
+        } else if ($transaction == 'pending') {
+            $transaksi->update(['status_transaksi' => 'menunggu']);
+
+        } else if (in_array($transaction, ['deny', 'expire', 'cancel'])) {
+            $transaksi->update(['status_transaksi' => 'gagal']);
+        }
+
+        return response()->json(['message' => 'Webhook berhasil diproses']);
+
+    } catch (\Exception $e) {
+        Log::error('Midtrans Webhook Error: ' . $e->getMessage());
+        return response()->json(['message' => 'Error dari server'], 500);
     }
+}
 
     public function halamanManual(Request $request)
     {
@@ -218,27 +261,48 @@ class PaymentController extends Controller
             return redirect()->back()->with('error', 'Data penghuni tidak ditemukan.');
         }
 
-        $tagihan = Tagihan::where('id_penghuni', $penghuni->id)
-            ->where('status_tagihan', 'Belum Lunas')
-            ->first();
+    $tagihan = Tagihan::where('id_penghuni', $penghuni->id)
+        ->where('status_tagihan', 'Belum Lunas')
+        ->get(); 
 
-        if (!$tagihan) {
-            return redirect()->back()->with('error', 'Tidak ada tagihan yang harus dibayar.');
+    // Karena pakenya get(), ngecek kosongnya pake isEmpty()
+    if ($tagihan->isEmpty()) {
+        return redirect()->back()->with('error', 'Tidak ada tagihan yang harus dibayar.');
+    }
+
+    if ($request->hasFile('bukti_transfer')) {
+        $file = $request->file('bukti_transfer');
+        
+        // 2. RACIK NAMA FILE
+        $filename = time() . '_' . $file->getClientOriginalName();
+        
+        // 3. PAKE STORE_AS BIAR NAMA CUSTOM-NYA KEKUNCI!
+        // Fotonya bakal nyasar di storage/app/public/bukti_transfer/nama_custom.jpg
+        $path = $file->storeAs('bukti_transfer', $filename, 'public');
+
+        // 4. SEKARANG FOREACH-NYA AMAN JAYA!
+        foreach($tagihan as $t){
+            $t->update([
+                'status_tagihan' => 'Menunggu Konfirmasi',
+                'bukti_transfer' => $path,
+            ]);
         }
 
-        if ($request->hasFile('bukti_transfer')) {
-            $file = $request->file('bukti_transfer');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/bukti'), $filename);
-
-            $tagihan->update([
-                'status_tagihan' => 'Menunggu Konfirmasi',
-                'bukti_transfer' => 'uploads/bukti/' . $filename,
-            ]);
-
-            return redirect()->route('penghuni.pembayaran')->with('success', 'Bukti pembayaran berhasil diunggah. Menunggu konfirmasi admin.');
+        return redirect()->route('penghuni.pembayaran')->with('success', 'Bukti pembayaran berhasil diunggah. Menunggu konfirmasi admin.');
         }
 
         return redirect()->back()->with('error', 'Gagal mengunggah bukti pembayaran.');
+    }
+
+    private function bukaKunciPenghuni($id){
+        $penghuni = Penghuni::find($id);
+        if($penghuni){
+            $user = User::where('id', $penghuni->id_user)->first();
+            if($user->is_locked){
+                $user->update([
+                    'is_locked' => false,
+                ]);
+            }
+        }
     }
 }

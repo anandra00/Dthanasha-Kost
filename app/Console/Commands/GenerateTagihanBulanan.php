@@ -8,6 +8,7 @@ use App\Models\Tagihan;
 use App\Models\Pengaturan;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
 
 class GenerateTagihanBulanan extends Command
 {
@@ -34,9 +35,16 @@ class GenerateTagihanBulanan extends Command
         $jatuhTempo = Carbon::now()->setDay($tanggalDeadline)->endOfDay();
 
         foreach ($penghuniAktif as $p) {
+            $penghuni = User::where('id', $p->id_user)->first();
             $tagihanSudahAda = Tagihan::where('id_penghuni', $p->id)
                                       ->where('periode_bulan', $periodeBulanIni)
                                       ->exists();
+
+            $tagihanNunggak = Tagihan::where('id_penghuni', $p->id)
+                                      ->where('periode_bulan', '!=', $periodeBulanIni)
+                                      ->where('status_tagihan', 'Belum Lunas')
+                                      ->exists();
+
             if (!$tagihanSudahAda) {
                 Tagihan::create([
                     'id_penghuni'     => $p->id,
@@ -46,6 +54,11 @@ class GenerateTagihanBulanan extends Command
                     'jatuh_tempo'     => $jatuhTempo,
                 ]);
                 $jumlahDitagih++;
+            }
+            if ($tagihanNunggak) {
+                $userPenghuni = User::find($p->id_user);
+                
+                $userPenghuni?->update(['is_locked' => true]);
             }
         }
 

@@ -8,62 +8,72 @@
 @endsection
 
 @section('content')
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-10">
-        <div class="bg-white p-5 sm:p-6 rounded-2xl card-shadow border border-gray-50 group transition-all">
-            <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors">
-                    <i class="ph ph-users text-2xl text-black font-bold"></i>
+    <!-- SUMMARY CARDS -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-10">
+        
+        <div class="bg-white p-4 rounded-xl card-shadow border border-zinc-100 group hover:border-zinc-200 transition-all">
+            <div class="flex items-center justify-between mb-3">
+                <div class="w-9 h-9 bg-zinc-50 rounded-lg flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-100 transition-colors">
+                    <i class="ph ph-users text-lg text-zinc-900 font-bold"></i>
                 </div>
             </div>
-            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Total Penghuni</p>
-            <p class="text-3xl font-black text-gray-900">{{ $totalPenghuni }}</p>
+            <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-0.5">Total Penghuni</p>
+            <p class="text-2xl font-black text-zinc-900">{{ $totalPenghuni }}</p>
         </div>
 
-        <div class="bg-white p-5 sm:p-6 rounded-2xl card-shadow border border-gray-50 group transition-all">
-            <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors">
-                    <i class="ph ph-door text-2xl text-black"></i>
+        <div class="bg-white p-4 rounded-xl card-shadow border border-zinc-100 group hover:border-zinc-200 transition-all">
+            <div class="flex items-center justify-between mb-3">
+                <div class="w-9 h-9 bg-zinc-50 rounded-lg flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-100 transition-colors">
+                    <i class="ph ph-door text-lg text-zinc-900"></i>
                 </div>
             </div>
-            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Total Kamar</p>
-            <p class="text-3xl font-black text-gray-900">{{ $totalKamar }}</p>
+            <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-0.5">Total Kamar</p>
+            <p class="text-2xl font-black text-zinc-900">{{ $totalKamar }}</p>
         </div>
 
-        <div class="bg-white p-5 sm:p-6 rounded-2xl card-shadow border border-gray-50 group transition-all">
-            <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors">
-                    <i class="ph ph-door-open text-2xl text-black"></i>
+        <div class="bg-white p-4 rounded-xl card-shadow border border-zinc-100 group hover:border-zinc-200 transition-all">
+            <div class="flex items-center justify-between mb-3">
+                <div class="w-9 h-9 bg-zinc-50 rounded-lg flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-100 transition-colors">
+                    <i class="ph ph-door-open text-lg text-zinc-900"></i>
                 </div>
             </div>
-            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kamar Kosong</p>
-            <p class="text-3xl font-black text-black-600">{{ $kamarKosong }}</p>
+            <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-0.5">Kamar Kosong</p>
+            <p class="text-2xl font-black text-zinc-900">{{ $kamarKosong }}</p>
         </div>
 
-        <div class="bg-white p-5 sm:p-6 rounded-2xl card-shadow border border-gray-50 group transition-all">
-            <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors">
-                    <i class="ph ph-wallet text-2xl text-black"></i>
+        <div class="bg-white p-4 rounded-xl card-shadow border border-zinc-100 group hover:border-zinc-200 transition-all">
+            <div class="flex items-center justify-between mb-3">
+                <div class="w-9 h-9 bg-zinc-50 rounded-lg flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-100 transition-colors">
+                    <i class="ph ph-wallet text-lg text-zinc-900"></i>
                 </div>
             </div>
-            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Keuntungan</p>
-            <p class="text-xl sm:text-2xl font-black text-green-600">Rp {{ number_format($keuntungan, 0, ',', '.') }}</p>
+            <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-0.5">Keuntungan</p>
+            <p class="text-lg sm:text-xl font-black text-green-600 truncate">Rp {{ number_format($keuntungan, 0, ',', '.') }}</p>
         </div>
     </div>
 
+    <!-- MAIN DASHBOARD CONTENT -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+        
+        <!-- KOLOM KIRI (Chart Bar & Tabel Transaksi) -->
         <div class="lg:col-span-2 space-y-6 lg:space-y-8">
+            
+            <!-- Bar Chart -->
             <div class="bg-white p-5 sm:p-8 rounded-3xl card-shadow border border-gray-50">
                 <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide mb-6">Pemasukan & Pengeluaran Mingguan</h3>
-                <div class="h-[220px] sm:h-[280px] w-full"><canvas id="barChart"></canvas></div>
+                <div class="h-[220px] sm:h-[280px] w-full">
+                    <canvas id="barChart"></canvas>
+                </div>
             </div>
 
+            <!-- Tabel Transaksi -->
             <div class="bg-white rounded-3xl card-shadow border border-gray-50 overflow-hidden">
                 <div class="p-4 sm:p-6 border-b border-gray-50 flex justify-between items-center">
                     <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide">Transaksi Terakhir</h3>
                     <a href="{{ route('admin.riwayat') }}" class="text-xs font-bold text-[#334155] hover:underline uppercase">Lihat Semua</a>
                 </div>
 
-                <!-- Desktop Table -->
+                <!-- Desktop Table (Muncul di layar gede) -->
                 <div class="hidden sm:block">
                     <table class="w-full text-left">
                         <thead class="bg-zinc-50 text-zinc-400 text-[10px] uppercase tracking-widest border-b border-zinc-100">
@@ -91,7 +101,7 @@
                     </table>
                 </div>
 
-                <!-- Mobile Cards -->
+                <!-- Mobile Cards (Muncul di layar HP) -->
                 <div class="sm:hidden divide-y divide-zinc-50">
                     @forelse($transaksiTerakhir as $trx)
                         <div class="p-4">
@@ -111,7 +121,10 @@
             </div>
         </div>
 
+        <!-- KOLOM KANAN (Jatuh Tempo & Okupansi) -->
         <div class="space-y-6 lg:space-y-8">
+            
+            <!-- List Jatuh Tempo -->
             <div class="bg-white p-5 sm:p-6 rounded-3xl card-shadow border border-gray-50">
                 <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide mb-6">Lewat Jatuh Tempo</h3>
                 <div class="space-y-3">
@@ -138,6 +151,7 @@
                 </div>
             </div>
 
+            <!-- Chart Okupansi Kamar -->
             <div class="bg-white p-5 sm:p-8 rounded-3xl card-shadow border border-gray-50 flex flex-col items-center">
                 <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide mb-8 self-start">Okupansi Kamar</h3>
                 <div class="relative w-32 h-32 sm:w-40 sm:h-40 mb-8">
@@ -145,15 +159,20 @@
                 </div>
                 <div class="w-full space-y-2">
                     <div class="flex items-center justify-between px-3 py-2 bg-zinc-50 rounded-xl">
-                        <span class="flex items-center gap-2 text-xs font-bold text-zinc-600 uppercase tracking-wider"><div class="w-2 h-2 bg-zinc-300 rounded-sm"></div> Tersedia</span>
+                        <span class="flex items-center gap-2 text-xs font-bold text-zinc-600 uppercase tracking-wider">
+                            <div class="w-2 h-2 bg-zinc-300 rounded-sm"></div> Tersedia
+                        </span>
                         <span class="text-sm font-black text-zinc-900">{{ $kamarKosong }}</span>
                     </div>
                     <div class="flex items-center justify-between px-3 py-2 bg-zinc-900 rounded-xl">
-                        <span class="flex items-center gap-2 text-xs font-bold text-zinc-200 uppercase tracking-wider"><div class="w-2 h-2 bg-white rounded-sm"></div> Terisi</span>
+                        <span class="flex items-center gap-2 text-xs font-bold text-zinc-200 uppercase tracking-wider">
+                            <div class="w-2 h-2 bg-white rounded-sm"></div> Terisi
+                        </span>
                         <span class="text-sm font-black text-white">{{ $kamarTerisi }}</span>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 @endsection
@@ -167,6 +186,7 @@
         const chartPemasukan = @json($chartPemasukan);
         const chartPengeluaran = @json($chartPengeluaran);
 
+        // Config Bar Chart
         const barCtx = document.getElementById('barChart').getContext('2d');
         new Chart(barCtx, {
             type: 'bar',
@@ -187,6 +207,7 @@
             }
         });
 
+        // Config Donut Chart
         const donutCtx = document.getElementById('donutChart').getContext('2d');
         new Chart(donutCtx, {
             type: 'doughnut',
@@ -200,7 +221,11 @@
                     cutout: '75%'
                 }] 
             },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false, 
+                plugins: { legend: { display: false } } 
+            }
         });
     </script>
 @endsection
