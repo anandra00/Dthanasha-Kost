@@ -4,34 +4,38 @@
 @section('search_placeholder', 'Cari nama penghuni atau nomor kamar...')
 
 @section('content')
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 max-w-4xl">
-        <div class="bg-white p-6 rounded-2xl card-shadow border border-zinc-50 flex items-center justify-between group">
+<div class="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 mb-8 md:mb-10 w-full">
+        
+        <div class="bg-white p-4 md:p-6 rounded-xl md:rounded-2xl card-shadow border border-zinc-50 flex items-center justify-between group transition-all">
             <div>
-                <p class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Sudah Membayar</p>
-                <p class="text-3xl font-black text-zinc-900">{{ $sudahMembayar }}</p>
+                <p class="text-[10px] md:text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-0.5 md:mb-1">Sudah Membayar</p>
+                <p class="text-xl md:text-3xl font-black text-zinc-900">{{ $sudahMembayar }}</p>
             </div>
-            <div class="w-14 h-14 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors">
-                <i class="ph-fill ph-check-circle text-2xl text-emerald-500"></i>
+            <div class="w-10 h-10 md:w-14 md:h-14 bg-zinc-100 rounded-lg md:rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors shrink-0">
+                <i class="ph-fill ph-check-circle text-lg md:text-2xl text-emerald-500"></i>
             </div>
         </div>
-        <div class="bg-white p-6 rounded-2xl card-shadow border border-zinc-50 flex items-center justify-between group">
+
+        <div class="bg-white p-4 md:p-6 rounded-xl md:rounded-2xl card-shadow border border-zinc-50 flex items-center justify-between group transition-all">
             <div>
-                <p class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Menunggu Konfirmasi</p>
-                <p class="text-3xl font-black text-zinc-900">{{ $menungguKonfirmasi }}</p>
+                <p class="text-[10px] md:text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-0.5 md:mb-1">Menunggu</p>
+                <p class="text-xl md:text-3xl font-black text-zinc-900">{{ $menungguKonfirmasi }}</p>
             </div>
-            <div class="w-14 h-14 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors">
-                <i class="ph-fill ph-clock-countdown text-2xl text-amber-500"></i>
+            <div class="w-10 h-10 md:w-14 md:h-14 bg-zinc-100 rounded-lg md:rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors shrink-0">
+                <i class="ph-fill ph-clock-countdown text-lg md:text-2xl text-amber-500"></i>
             </div>
         </div>
-        <div class="bg-white p-6 rounded-2xl card-shadow border border-zinc-50 flex items-center justify-between group">
+
+        <div class="col-span-2 lg:col-span-1 bg-white p-4 md:p-6 rounded-xl md:rounded-2xl card-shadow border border-red-50 flex items-center justify-between group transition-all hover:border-red-100">
             <div>
-                <p class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Belum Membayar</p>
-                <p class="text-3xl font-black text-zinc-900">{{ $belumMembayar }}</p>
+                <p class="text-[10px] md:text-[11px] font-bold text-red-400 uppercase tracking-widest mb-0.5 md:mb-1">Belum Membayar</p>
+                <p class="text-xl md:text-3xl font-black text-red-600">{{ $belumMembayar }}</p>
             </div>
-            <div class="w-14 h-14 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors">
-                <i class="ph-fill ph-warning-circle text-2xl text-red-500"></i>
+            <div class="w-10 h-10 md:w-14 md:h-14 bg-red-50 rounded-lg md:rounded-xl flex items-center justify-center border border-red-100 group-hover:bg-red-100 transition-colors shrink-0">
+                <i class="ph-fill ph-warning-circle text-lg md:text-2xl text-red-500"></i>
             </div>
         </div>
+
     </div>
 
     <div class="flex items-center gap-4 mb-8">
@@ -216,7 +220,10 @@
                     <button type="submit" class="w-full px-4 py-3.5 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-600 shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide flex items-center justify-center gap-2">
                         <i class="ph ph-floppy-disk text-lg"></i> Simpan Perubahan Status
                     </button>
-                    <button type="button" onclick="window.location.href='${urlNotif}'" class="w-full px-4 py-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 font-bold hover:bg-amber-100 transition-all active:scale-95 flex items-center justify-center gap-2 text-xs uppercase tracking-widest mt-1">
+                    <button type="button" 
+                        onclick="window.location.href='${urlNotif}'" 
+                        onclick="if(this.form.checkValidity()){ this.innerHTML='<i class=\'ph ph-spinner animate-spin text-lg\'></i> Menyimpan...'; this.classList.remove('hover:bg-[#334155]', 'active:scale-95'); this.disabled=true; this.form.submit(); }
+                        class="w-full px-4 py-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 font-bold hover:bg-amber-100 transition-all active:scale-95 flex items-center justify-center gap-2 text-xs uppercase tracking-widest mt-1">
                         <i class="ph-fill ph-bell-ringing text-lg"></i> Kirim Notifikasi Tagihan
                     </button>
                 `;

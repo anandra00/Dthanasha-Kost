@@ -120,58 +120,80 @@
         });
 
         const payButton = document.getElementById('pay-button');
-        if (payButton) {
-            payButton.onclick = async function(e) {
-                e.preventDefault();
-                
-                const btn = this;
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '<i class="ph ph-spinner text-3xl animate-spin"></i><span class="font-bold text-sm">Memproses...</span>';
-                btn.disabled = true;
+// 1. BIKIN GEMBOK DI LUAR FUNGSI
+let isProcessingPayment = false; 
 
-                try {
-                    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+if (payButton) {
+    payButton.onclick = async function(e) {
+        e.preventDefault();
+        
+        // 2. CEK GEMBOK: Kalo lagi proses, tendang klik selanjutnya!
+        if (isProcessingPayment) return; 
+        
+        // 3. KUNCI GEMBOKNYA
+        isProcessingPayment = true; 
+        
+        const btn = this;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="ph ph-spinner text-3xl animate-spin"></i><span class="font-bold text-sm">Memproses...</span>';
+        btn.disabled = true;
 
-                    const response = await fetch('{{ route('penghuni.proses-bayar') }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken
-                        }
-                    });
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
-                    const data = await response.json();
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-
-                    if(data.status === 'success') {
-                        window.snap.pay(data.snap_token, {
-                            onSuccess: function(result){
-                                window.location.href = "{{ route('penghuni.pembayaran') }}?order_id=" + result.order_id + "&status=success";
-                            },
-                            onPending: function(result){
-                                window.location.href = "{{ route('penghuni.pembayaran') }}?order_id=" + result.order_id + "&status=pending";
-                            },
-                            onError: function(result){
-                                window.location.href = "{{ route('penghuni.pembayaran') }}?order_id=" + result.order_id + "&status=failed";
-                            },
-                            onClose: function(){
-                                alert("Pembayaran belum selesai. Silakan coba lagi.");
-                            }
-                        });
-                    } else if (data.status === 'error'){
-                        alert(data.message);
-                    } else {
-                        alert("Gagal memproses token, coba lagi.");
-                    }
-
-                } catch (error) {
-                    console.error(error);
-                    alert("Ada gangguan di server!");
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
+            const response = await fetch('{{ route('penghuni.proses-bayar') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
                 }
-            };
+            });
+
+            const data = await response.json();
+            
+            // Note: Jangan langsung buka gembok disini kalo Midtrans sukses muncul
+            // Biarin tombol tetep disabled pas popup Midtrans lagi kebuka
+
+            if(data.status === 'success') {
+                window.snap.pay(data.snap_token, {
+                    onSuccess: function(result){
+                        window.location.href = "{{ route('penghuni.pembayaran') }}?order_id=" + result.order_id + "&status=success";
+                    },
+                    onPending: function(result){
+                        window.location.href = "{{ route('penghuni.pembayaran') }}?order_id=" + result.order_id + "&status=pending";
+                    },
+                    onError: function(result){
+                        window.location.href = "{{ route('penghuni.pembayaran') }}?order_id=" + result.order_id + "&status=failed";
+                    },
+                    onClose: function(){
+                        alert("Pembayaran belum selesai. Silakan coba lagi.");
+                        // 4. BUKA GEMBOK KALO USER NGE-CLOSE POPUP MIDTRANS
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                        isProcessingPayment = false; 
+                    }
+                });
+            } else if (data.status === 'error'){
+                alert(data.message);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                isProcessingPayment = false; // Buka gembok
+            } else {
+                alert("Gagal memproses token, coba lagi.");
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                isProcessingPayment = false; // Buka gembok
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert("Ada gangguan di server!");
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            // 5. BUKA GEMBOK KALO ERROR
+            isProcessingPayment = false; 
         }
+    };
+}
     </script>
 @endsection

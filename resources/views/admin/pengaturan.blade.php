@@ -71,7 +71,10 @@
             </div>
 
             <div class="pt-6 border-t border-zinc-100 flex justify-end">
-                <button type="submit" class="px-8 py-3.5 rounded-xl bg-[#18181B] text-white font-bold hover:bg-[#334155] shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide flex items-center gap-2">
+                <button 
+                    type="submit" 
+                    onclick="if(this.form.checkValidity()){ this.innerHTML='<i class=\'ph ph-spinner animate-spin text-lg\'></i> Menyimpan...'; this.classList.remove('hover:bg-[#334155]', 'active:scale-95'); this.disabled=true; this.form.submit(); }"
+                    class="px-8 py-3.5 rounded-xl bg-[#18181B] text-white font-bold hover:bg-[#334155] shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide flex items-center gap-2">
                     <i class="ph ph-floppy-disk text-lg"></i> Simpan Pengaturan
                 </button>
             </div>

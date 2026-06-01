@@ -20,6 +20,11 @@ class WaitingListController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'nama' => 'required|string',
+            'jenis_kelamin' => 'nullable',
+            'no_telepon' => ['nullable','string', 'max:20', 'regex:/^628[0-9]{7,12}$/'],
+        ]);
         WaitingList::create([
             'nama' => $request->nama,
             'jenis_kelamin' => $request->jenis_kelamin,
@@ -31,6 +36,12 @@ class WaitingListController extends Controller
 
     public function update(Request $request)
     {
+        $request->validate([
+            'nama' => 'required|string',
+            'jenis_kelamin' => 'nullable',
+            'no_telepon' => ['nullable','string', 'max:20', 'regex:/^628[0-9]{7,12}$/'],
+        ]);
+
         $antrean = WaitingList::findOrFail($request->id);
         $antrean->update([
             'nama' => $request->nama,

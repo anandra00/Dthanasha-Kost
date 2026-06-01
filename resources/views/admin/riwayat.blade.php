@@ -9,46 +9,60 @@
 
 @section('content')
     <!-- KARTU SUMMARY KEUANGAN -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-10">
-        <div class="bg-white p-5 sm:p-6 rounded-2xl card-shadow border border-zinc-50 flex items-center gap-4 sm:gap-5 group transition-all">
-            <div class="w-12 h-12 sm:w-14 sm:h-14 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center border border-emerald-100 group-hover:bg-emerald-100 transition-colors shrink-0">
-                <i class="ph-fill ph-arrow-down-left text-xl sm:text-2xl"></i>
-            </div>
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 mb-8 md:mb-10 w-full">
+        
+        <div class="bg-white p-4 md:p-6 rounded-xl md:rounded-2xl card-shadow border border-emerald-50 flex items-center justify-between group transition-all hover:border-emerald-100">
             <div class="min-w-0">
-                <p class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Pemasukan</p>
-                <p class="text-lg sm:text-2xl font-black text-emerald-600 truncate">Rp {{ number_format($totalPemasukan, 0, ',', '.') }}</p>
+                <p class="text-[10px] md:text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-0.5 md:mb-1">Pemasukan</p>
+                <p class="text-xl md:text-3xl font-black text-emerald-600 truncate">Rp {{ number_format($totalPemasukan, 0, ',', '.') }}</p>
+            </div>
+            <div class="w-10 h-10 md:w-14 md:h-14 bg-emerald-50 text-emerald-600 rounded-lg md:rounded-xl flex items-center justify-center border border-emerald-100 group-hover:bg-emerald-100 transition-colors shrink-0">
+                <i class="ph-fill ph-arrow-down-left text-lg md:text-2xl"></i>
             </div>
         </div>
-        <div class="bg-white p-5 sm:p-6 rounded-2xl card-shadow border border-zinc-50 flex items-center gap-4 sm:gap-5 group transition-all">
-            <div class="w-12 h-12 sm:w-14 sm:h-14 bg-red-50 text-red-600 rounded-xl flex items-center justify-center border border-red-100 group-hover:bg-red-100 transition-colors shrink-0">
-                <i class="ph-fill ph-arrow-up-right text-xl sm:text-2xl"></i>
-            </div>
+
+        <div class="bg-white p-4 md:p-6 rounded-xl md:rounded-2xl card-shadow border border-red-50 flex items-center justify-between group transition-all hover:border-red-100">
             <div class="min-w-0">
-                <p class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Pengeluaran</p>
-                <p class="text-lg sm:text-2xl font-black text-red-600 truncate">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</p>
+                <p class="text-[10px] md:text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-0.5 md:mb-1">Pengeluaran</p>
+                <p class="text-xl md:text-3xl font-black text-red-600 truncate">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</p>
+            </div>
+            <div class="w-10 h-10 md:w-14 md:h-14 bg-red-50 text-red-600 rounded-lg md:rounded-xl flex items-center justify-center border border-red-100 group-hover:bg-red-100 transition-colors shrink-0">
+                <i class="ph-fill ph-arrow-up-right text-lg md:text-2xl"></i>
             </div>
         </div>
-        <div class="bg-white p-5 sm:p-6 rounded-2xl card-shadow border border-zinc-50 flex items-center gap-4 sm:gap-5 group transition-all sm:col-span-2 lg:col-span-1">
-            <div class="w-12 h-12 sm:w-14 sm:h-14 bg-zinc-100 text-[#334155] rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors shrink-0">
-                <i class="ph-fill ph-wallet text-xl sm:text-2xl"></i>
-            </div>
+
+        <div class="col-span-2 lg:col-span-1 bg-white p-4 md:p-6 rounded-xl md:rounded-2xl card-shadow border border-zinc-100 flex items-center justify-between group transition-all hover:border-zinc-200">
             <div class="min-w-0">
-                <p class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Keuntungan Bersih</p>
-                <p class="text-lg sm:text-2xl font-black text-zinc-900 truncate">Rp {{ number_format($keuntungan, 0, ',', '.') }}</p>
+                <p class="text-[10px] md:text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-0.5 md:mb-1">Keuntungan Bersih</p>
+                <p class="text-xl md:text-3xl font-black text-zinc-900 truncate">Rp {{ number_format($keuntungan, 0, ',', '.') }}</p>
+            </div>
+            <div class="w-10 h-10 md:w-14 md:h-14 bg-zinc-100 text-[#334155] rounded-lg md:rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors shrink-0">
+                <i class="ph-fill ph-wallet text-lg md:text-2xl"></i>
             </div>
         </div>
     </div>
-
+    
     <!-- GRAFIK MINGGUAN -->
     <div class="bg-white p-5 sm:p-8 rounded-3xl card-shadow border border-zinc-50 mb-8 sm:mb-10">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-3">
             <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide">Pemasukan & Pengeluaran Mingguan</h3>
             <div class="flex gap-4 text-xs font-bold text-zinc-500 uppercase tracking-widest">
-                <span class="flex items-center gap-2"><div class="w-3 h-3 bg-[#18181B] rounded-full"></div> Pemasukan</span>
-                <span class="flex items-center gap-2"><div class="w-3 h-3 bg-zinc-200 rounded-full border border-zinc-300"></div> Pengeluaran</span>
+                <span class="flex items-center gap-2"><div class="w-3 h-3 bg-emerald-600 rounded-full border border-zinc-300"></div> Pemasukan</span>
+                <span class="flex items-center gap-2"><div class="w-3 h-3 bg-red-600 rounded-full border border-zinc-300"></div> Pengeluaran</span>
             </div>
         </div>
-        <div class="h-[220px] sm:h-[300px] w-full"><canvas id="barChart"></canvas></div>
+        <div class="flex justify-between items-center mb-4">
+        <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide">Statistik Keuangan</h3>
+        
+        <select id="chartFilter" onchange="updateChartData()" class="text-xs border border-zinc-200 bg-zinc-50 rounded-lg px-3 py-1.5 outline-none font-bold text-zinc-600 cursor-pointer focus:ring-2 focus:ring-[#334155] transition-all">
+            <option value="hari">7 Hari Terakhir</option>
+            <option value="bulan">6 Bulan Terakhir</option>
+        </select>
+    </div>
+
+    <div class="h-64 w-full">
+        <canvas id="barChart"></canvas>
+    </div>
     </div>
 
     <!-- TABEL RIWAYAT TRANSAKSI -->
@@ -70,127 +84,125 @@
 
         <!-- Desktop Table -->
         <div class="overflow-x-auto hidden sm:block">
-            <table class="w-full text-left">
-                <thead class="bg-zinc-100 text-zinc-500 text-[10px] uppercase tracking-widest border-b border-zinc-200">
-                    <tr>
-                        <th class="px-6 py-4">Keterangan / Order ID</th>
-                        <th class="px-6 py-4 text-center">Penghuni / Pihak Terkait</th>
-                        <th class="px-6 py-4 text-center">Tanggal</th>
-                        <th class="px-6 py-4 text-center">Metode</th>
-                        <th class="px-6 py-4 text-right">Nominal</th>
-                        <th class="px-6 py-4 text-center">Status</th>
-                        <th class="px-6 py-4 text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-zinc-100">
-                    @forelse($transaksis as $trx)
-                        <tr class="hover:bg-zinc-50 transition-all group">
-                            <td class="px-6 py-4 text-sm font-bold text-zinc-900 group-hover:text-[#334155] transition-colors">
-                                <span class="truncate block max-w-[180px]">{{ $trx->kegiatan ?? $trx->order_id }}</span>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-center text-zinc-600 font-medium">
-                                {{ $trx->tagihan?->penghuni?->nama_penghuni ?? $trx->nama ?? '-' }}
-                            </td>
-                            <td class="px-6 py-4 text-sm text-center text-zinc-500 font-medium">
-                                {{ $trx->waktu ? \Carbon\Carbon::parse($trx->waktu)->translatedFormat('d M Y') : $trx->created_at->translatedFormat('d M Y') }}
-                            </td>
-                            <td class="px-6 py-4 text-center">
-                                <span class="bg-zinc-100 border border-zinc-200 text-zinc-600 text-[10px] uppercase tracking-widest font-black px-3 py-1 rounded-lg">
-                                    {{ $trx->tipe_pembayaran ?? '-' }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-sm font-black text-right {{ $trx->id_tagihan ? 'text-emerald-600' : 'text-red-600' }}">
-                                Rp {{ number_format($trx->tagihan?->nominal_tagihan ?? $trx->nominal ?? 0, 0, ',', '.') }}
-                            </td>
-                            <td class="px-6 py-4 text-center">
-                                @if(in_array($trx->status_transaksi, ['Settlement', 'berhasil']))
-                                    <span class="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] uppercase tracking-widest font-black px-3 py-1.5 rounded-lg">Berhasil</span>
-                                @elseif(in_array($trx->status_transaksi, ['Pending', 'menunggu']))
-                                    <span class="bg-amber-50 text-amber-600 border border-amber-100 text-[10px] uppercase tracking-widest font-black px-3 py-1.5 rounded-lg">Pending</span>
-                                @else
-                                    <span class="bg-red-50 text-red-600 border border-red-100 text-[10px] uppercase tracking-widest font-black px-3 py-1.5 rounded-lg">{{ $trx->status_transaksi }}</span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 text-center">
-                                <div class="flex items-center justify-center gap-2">
-                                    @if(is_null($trx->id_tagihan))
-                                    <button onclick="bukaModalEdit('{{ $trx->order_id }}', '{{ $trx->order_id }}', '{{ $trx->kegiatan }}', '{{ $trx->nama }}', '{{ $trx->waktu }}', '{{ $trx->tipe_pembayaran }}', '{{ $trx->nominal }}', '{{ $trx->status_transaksi }}')" 
-                                        class="text-blue-500 hover:text-blue-700 bg-blue-50 p-2 rounded-lg transition-colors">
-                                        <i class="ph ph-pencil-simple text-lg"></i>
-                                    </button>
-                                    @endif
-                                    <form action="{{ url('/admin/hapus_riwayat/'.$trx->order_id) }}" method="POST" class="inline">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" onclick="return confirm('Yakin ingin menghapus transaksi ini?')" class="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded-lg transition-colors">
-                                            <i class="ph ph-trash text-lg"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7" class="px-6 py-12 text-center text-sm font-bold text-zinc-400">
-                                <i class="ph ph-empty text-4xl mb-2 block"></i>
-                                Belum ada data transaksi.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+    <table class="w-full text-left">
+        <thead class="bg-zinc-100 text-zinc-500 text-[10px] uppercase tracking-widest border-b border-zinc-200">
+            <tr>
+                <th class="px-6 py-4">Keterangan</th>
+                <th class="px-6 py-4 text-center">Pihak Terkait</th>
+                <th class="px-6 py-4 text-center">Tanggal</th>
+                <th class="px-6 py-4 text-center">Metode</th>
+                <th class="px-6 py-4 text-right">Nominal</th>
+                <th class="px-6 py-4 text-center">Status</th>
+                <th class="px-6 py-4 text-center">Aksi</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-zinc-100">
+            @forelse($riwayats as $row)
+                <tr class="hover:bg-zinc-50 transition-all group">
+                    <td class="px-6 py-4 text-sm font-bold text-zinc-900 group-hover:text-[#334155] transition-colors">
+                        <span class="truncate block max-w-[180px]">{{ $row->keterangan }}</span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-center text-zinc-600 font-medium">
+                        {{ $row->pihak }}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-center text-zinc-500 font-medium">
+                        {{ $row->tanggal->translatedFormat('d M Y') }}
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <span class="bg-zinc-100 border border-zinc-200 text-zinc-600 text-[10px] uppercase tracking-widest font-black px-3 py-1 rounded-lg">
+                            {{ $row->metode }}
+                        </span>
+                    </td>
+                    
+                    <td class="px-6 py-4 text-sm font-black text-right {{ $row->tipe == 'pemasukan' ? 'text-emerald-600' : 'text-red-600' }}">
+                        {{ $row->tipe == 'pemasukan' ? '+' : '-' }} Rp {{ number_format($row->nominal, 0, ',', '.') }}
+                    </td>
+                    
+                    <td class="px-6 py-4 text-center">
+                        @if(in_array(strtolower($row->status), ['settlement', 'berhasil']))
+                            <span class="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] uppercase tracking-widest font-black px-3 py-1.5 rounded-lg">Berhasil</span>
+                        @elseif(in_array(strtolower($row->status), ['pending', 'menunggu']))
+                            <span class="bg-amber-50 text-amber-600 border border-amber-100 text-[10px] uppercase tracking-widest font-black px-3 py-1.5 rounded-lg">Pending</span>
+                        @else
+                            <span class="bg-red-50 text-red-600 border border-red-100 text-[10px] uppercase tracking-widest font-black px-3 py-1.5 rounded-lg">{{ $row->status }}</span>
+                        @endif
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <div class="flex items-center justify-center gap-2">
+                            <form action="{{ $row->tipe == 'pemasukan' ? url('/admin/hapus_riwayat/'.$row->id) : url('/admin/hapus_pengeluaran/'.$row->id) }}" method="POST" class="inline">
+                                @csrf @method('DELETE')
+                                <button type="submit" onclick="return confirm('Yakin ingin menghapus catatan ini?')" class="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded-lg transition-colors">
+                                    <i class="ph ph-trash text-lg"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="7" class="px-6 py-12 text-center text-sm font-bold text-zinc-400">
+                        <i class="ph ph-empty text-4xl mb-2 block"></i>
+                        Belum ada catatan keuangan.
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-6">
+    {{ $riwayats->links() }}
+</div>
 
         <!-- Mobile Cards -->
         <div class="sm:hidden divide-y divide-zinc-100">
-            @forelse($transaksis as $trx)
-                <div class="p-4 hover:bg-zinc-50 transition-all">
-                    <div class="flex items-start justify-between mb-3">
-                        <div class="min-w-0 flex-1">
-                            <p class="text-sm font-bold text-zinc-900 truncate">{{ $trx->kegiatan ?? $trx->order_id }}</p>
-                            <p class="text-xs text-zinc-500 mt-0.5">{{ $trx->waktu ? \Carbon\Carbon::parse($trx->waktu)->translatedFormat('d M Y') : $trx->created_at->translatedFormat('d M Y') }}</p>
-                        </div>
-                        @if(in_array($trx->status_transaksi, ['Settlement', 'berhasil']))
-                            <span class="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[9px] uppercase tracking-widest font-black px-2 py-1 rounded-lg shrink-0 ml-2">Berhasil</span>
-                        @elseif(in_array($trx->status_transaksi, ['Pending', 'menunggu']))
-                            <span class="bg-amber-50 text-amber-600 border border-amber-100 text-[9px] uppercase tracking-widest font-black px-2 py-1 rounded-lg shrink-0 ml-2">Pending</span>
-                        @else
-                            <span class="bg-red-50 text-red-600 border border-red-100 text-[9px] uppercase tracking-widest font-black px-2 py-1 rounded-lg shrink-0 ml-2">{{ $trx->status_transaksi }}</span>
-                        @endif
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-zinc-500">{{ $trx->tagihan?->penghuni?->nama_penghuni ?? $trx->nama ?? '-' }}</span>
-                            <span class="bg-zinc-100 border border-zinc-200 text-zinc-600 text-[9px] uppercase font-black px-2 py-0.5 rounded">{{ $trx->tipe_pembayaran ?? '-' }}</span>
-                        </div>
-                        <p class="text-sm font-black {{ $trx->id_tagihan ? 'text-emerald-600' : 'text-red-600' }}">
-                            Rp {{ number_format($trx->tagihan?->nominal_tagihan ?? $trx->nominal ?? 0, 0, ',', '.') }}
-                        </p>
-                    </div>
-                    <div class="flex gap-2 mt-3">
-                        @if(is_null($trx->id_tagihan))
-                        <button onclick="bukaModalEdit('{{ $trx->order_id }}', '{{ $trx->order_id }}', '{{ $trx->kegiatan }}', '{{ $trx->nama }}', '{{ $trx->waktu }}', '{{ $trx->tipe_pembayaran }}', '{{ $trx->nominal }}', '{{ $trx->status_transaksi }}')" 
-                            class="text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1">
-                            <i class="ph ph-pencil-simple"></i> Edit
-                        </button>
-                        @endif
-                        <form action="{{ url('/admin/hapus_riwayat/'.$trx->order_id) }}" method="POST">
-                            @csrf @method('DELETE')
-                            <button type="submit" onclick="return confirm('Yakin?')" class="text-red-600 bg-red-50 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1">
-                                <i class="ph ph-trash"></i> Hapus
-                            </button>
-                        </form>
-                    </div>
+    @forelse($riwayats as $row)
+        <div class="p-4 hover:bg-zinc-50 transition-all">
+            <div class="flex items-start justify-between mb-3">
+                <div class="min-w-0 flex-1">
+                    <p class="text-sm font-bold text-zinc-900 truncate">{{ $row->keterangan }}</p>
+                    <p class="text-xs text-zinc-500 mt-0.5">{{ $row->tanggal->translatedFormat('d M Y') }}</p>
                 </div>
-            @empty
-                <div class="p-8 text-center text-sm font-bold text-zinc-400">
-                    Belum ada data transaksi.
+                
+                @if(in_array(strtolower($row->status), ['settlement', 'berhasil']))
+                    <span class="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[9px] uppercase tracking-widest font-black px-2 py-1 rounded-lg shrink-0 ml-2">Berhasil</span>
+                @elseif(in_array(strtolower($row->status), ['pending', 'menunggu']))
+                    <span class="bg-amber-50 text-amber-600 border border-amber-100 text-[9px] uppercase tracking-widest font-black px-2 py-1 rounded-lg shrink-0 ml-2">Pending</span>
+                @else
+                    <span class="bg-red-50 text-red-600 border border-red-100 text-[9px] uppercase tracking-widest font-black px-2 py-1 rounded-lg shrink-0 ml-2">{{ $row->status }}</span>
+                @endif
+            </div>
+            
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-zinc-500">{{ $row->pihak }}</span>
+                    <span class="bg-zinc-100 border border-zinc-200 text-zinc-600 text-[9px] uppercase font-black px-2 py-0.5 rounded">{{ $row->metode }}</span>
                 </div>
-            @endforelse
+                <p class="text-sm font-black {{ $row->tipe == 'pemasukan' ? 'text-emerald-600' : 'text-red-600' }}">
+                    {{ $row->tipe == 'pemasukan' ? '+' : '-' }} Rp {{ number_format($row->nominal, 0, ',', '.') }}
+                </p>
+            </div>
+            
+            <div class="flex gap-2 mt-3">
+                <form action="{{ $row->tipe == 'pemasukan' ? url('/admin/hapus_riwayat/'.$row->id) : url('/admin/hapus_pengeluaran/'.$row->id) }}" method="POST">
+                    @csrf @method('DELETE')
+                    <button type="submit" onclick="return confirm('Yakin ingin menghapus catatan ini?')" class="text-red-600 bg-red-50 border border-red-100 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-100 active:scale-95 transition-all flex items-center gap-1">
+                        <i class="ph ph-trash"></i> Hapus
+                    </button>
+                </form>
+            </div>
         </div>
+    @empty
+        <div class="p-8 text-center text-sm font-bold text-zinc-400">
+            <i class="ph ph-empty text-3xl mb-2 block"></i>
+            Belum ada catatan keuangan.
+        </div>
+    @endforelse
+</div>
 
         <!-- Pagination -->
         <div class="p-4 sm:p-6 border-t border-zinc-100 bg-white">
-            {{ $transaksis->links() }}
+            {{ $riwayats->links() }}
         </div>
     </div>
 
@@ -228,18 +240,12 @@
                         <input type="number" name="nominal" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
                     </div>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Status</label>
-                        <select name="status" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
-                            <option value="Settlement">Selesai (Settlement)</option>
-                            <option value="Pending">Menunggu (Pending)</option>
-                        </select>
-                    </div>
-                </div>
                 <div class="flex gap-3 pt-6 border-t border-zinc-100">
                     <button type="button" onclick="tutupModal('modalTambah')" class="flex-1 px-4 py-3.5 rounded-xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm uppercase tracking-wide">Batal</button>
-                    <button type="submit" class="flex-1 px-4 py-3.5 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide flex items-center justify-center gap-2"><i class="ph ph-minus-circle"></i> Catat Pengeluaran</button>
+                    <button 
+                        type="submit" 
+                        onclick="if(this.form.checkValidity()){ this.innerHTML='<i class=\'ph ph-spinner animate-spin text-lg\'></i> Menyimpan...'; this.classList.remove('hover:bg-[#334155]', 'active:scale-95'); this.disabled=true; this.form.submit(); }" class="flex-1 px-4 py-3 rounded-xl bg-red-50 text-red-600 font-bold hover:bg-red-100 border border-red-100 transition-all active:scale-95 flex items-center justify-center gap-2 text-sm uppercase"
+                        class="flex-1 px-4 py-3.5 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide flex items-center justify-center gap-2"><i class="ph ph-minus-circle"></i> Catat Pengeluaran</button>
                 </div>
             </form>
         </div>
@@ -309,28 +315,59 @@
         const chartPemasukan = @json($chartPemasukan);
         const chartPengeluaran = @json($chartPengeluaran);
 
+       let myChart; // Variabel penampung chart
+
+        // 1. Inisialisasi awal (Pake data default dari backend biar pas pertama buka langsung ada isinya)
         const barCtx = document.getElementById('barChart').getContext('2d');
-        new Chart(barCtx, {
+        
+        myChart = new Chart(barCtx, {
             type: 'bar',
             data: {
-                labels: chartLabels,
+                labels: @json($chartLabels), // Bawaan dari fungsi index() lu yang sekarang
                 datasets: [
-                    { label: 'Pemasukan', data: chartPemasukan, backgroundColor: '#10B981', borderRadius: 8, barPercentage: 0.5, categoryPercentage: 0.4 },
-                    { label: 'Pengeluaran', data: chartPengeluaran, backgroundColor: '#EF4444', borderRadius: 8, barPercentage: 0.5, categoryPercentage: 0.4 }
+                    { label: 'Pemasukan', data: @json($chartPemasukan), backgroundColor: '#059669', borderRadius: 4, barPercentage: 0.6, categoryPercentage: 0.5 },
+                    { label: 'Pengeluaran', data: @json($chartPengeluaran), backgroundColor: '#dc2626', borderRadius: 4, barPercentage: 0.6, categoryPercentage: 0.5 }
                 ]
             },
             options: {
-                responsive: true, maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { callbacks: { label: function(c) { return c.dataset.label + ': ' + formatRupiah(c.parsed.y); } } }
-                },
+                responsive: true, 
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
                 scales: { 
                     y: { beginAtZero: true, grid: { color: '#F1F5F9', drawBorder: false }, ticks: { display: false } }, 
-                    x: { grid: { display: false }, ticks: { font: { family: 'Plus Jakarta Sans', size: 12, weight: '600' }, color: '#94A3B8' } } 
+                    x: { grid: { display: false }, ticks: { font: { family: 'Plus Jakarta Sans', size: 11, weight: '600' }, color: '#94A3B8' } } 
                 }
             }
         });
+
+        // 2. Fungsi sakti buat manggil data baru pake AJAX
+        async function updateChartData() {
+            const filter = document.getElementById('chartFilter').value;
+            const filterElement = document.getElementById('chartFilter');
+            
+            // Bikin dropdown disabled bentar biar ga dispam klik
+            filterElement.disabled = true;
+
+            try {
+                // Tarik data dari Route baru yang kita bikin
+                const response = await fetch(`/admin/chart-data?filter=${filter}`);
+                const data = await response.json();
+
+                // Suntik data baru ke chart
+                myChart.data.labels = data.labels;
+                myChart.data.datasets[0].data = data.pemasukan;
+                myChart.data.datasets[1].data = data.pengeluaran;
+                
+                // Animasiin perubahannya!
+                myChart.update();
+            } catch (error) {
+                console.error("Gagal ngambil data chart:", error);
+                alert("Gagal memuat grafik!");
+            } finally {
+                // Buka lagi dropdownnya
+                filterElement.disabled = false;
+            }
+        }
 
         function bukaModalTambah() { document.getElementById('modalTambah').classList.remove('hidden'); }
         

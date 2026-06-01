@@ -5,7 +5,7 @@
 
 @section('content')
     <!-- SUMMARY CARDS -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         <div class="bg-white p-6 rounded-2xl card-shadow border border-gray-50 flex items-center justify-between group">
             <div>
                 <p class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Terisi</p>
@@ -54,7 +54,8 @@
     <!-- GRID KAMAR -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         @forelse ($kamars as $kamar)
-        <div class="bg-white w-full rounded-[1.25rem] p-5 card-shadow border border-zinc-100 flex flex-col gap-5 hover:shadow-lg hover:border-zinc-200 transition-all group">
+    
+        <div class="bg-white w-full rounded-[1.25rem] p-5 shadow-lg shadow-zinc-200/50 border border-zinc-100 flex flex-col gap-5 hover:shadow-2xl hover:border-zinc-300 transition-all duration-300 group">
             <div class="flex justify-between items-start">
                 <div class="bg-[#18181B] text-white w-[65px] h-[65px] rounded-2xl flex items-center justify-center font-bold text-2xl shadow-sm tracking-wide">{{ $kamar->nomor_kamar }}</div>
                 <div class="text-right flex flex-col items-end">
@@ -68,11 +69,13 @@
                 </div>
             </div>
             <div class="flex gap-2 h-11">
-                <button onclick='bukaModalDetail({{ $kamar->id }}, "{{ $kamar->nomor_kamar }}", "{{ $kamar->status_kamar }}", "{{ $kamar->jenis_kamar }}", "{{ $kamar->harga_kamar }}", @json($kamar->penghuni))' class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-bold rounded-xl flex-1 text-[13px] transition-all active:scale-95">Detail</button>
-                <form action="{{ url('/admin/hapus_kamar/'.$kamar->id) }}" method="POST" class="h-full">
-                    @csrf @method('DELETE')
-                    <button type="submit" onclick="return confirm('Yakin ingin menghapus kamar ini?')" class="bg-red-50 hover:bg-red-100 text-red-500 w-11 h-full rounded-xl flex items-center justify-center transition-all active:scale-95"><i class="ph ph-trash text-lg"></i></button>
-                </form>
+                <button onclick='bukaModalDetail({{ $kamar->id }}, "{{ $kamar->nomor_kamar }}", "{{ $kamar->jenis_kamar }}", "{{ $kamar->jenis_kamar }}", "{{ $kamar->harga_kamar }}", @json($kamar->penghuni))' class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-bold rounded-xl flex-1 text-[13px] transition-all active:scale-95">Detail</button>
+                <button 
+                    type="button" 
+                    onclick="bukaModalHapus({{ $kamar->id }}, '{{ $kamar->nomor_kamar }}', '{{ $kamar->jenis_kamar }}', @json($kamar->penghuni))"
+                    class="bg-red-50 hover:bg-red-100 text-red-500 w-11 h-full rounded-xl flex items-center justify-center transition-all active:scale-95">
+                    <i class="ph ph-trash text-lg"></i>
+                </button>
             </div>
         </div>
         @empty
@@ -121,7 +124,7 @@
                 </div>
                 <div class="flex gap-3 pt-6 border-t border-zinc-100">
                     <button type="button" onclick="tutupModal('modalTambah')" class="flex-1 px-4 py-3.5 rounded-xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm uppercase tracking-wide">Batal</button>
-                    <button type="submit" class="flex-1 px-4 py-3.5 rounded-xl bg-[#18181B] text-white font-bold hover:bg-[#334155] shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide">Simpan</button>
+                    <button type="submit" onclick="if(this.form.checkValidity()){ this.innerHTML='<i class=\'ph ph-spinner animate-spin text-lg\'></i> Menyimpan...'; this.classList.remove('hover:bg-[#334155]', 'active:scale-95'); this.disabled=true; this.form.submit(); }" class="flex-1 px-4 py-3.5 rounded-xl bg-[#18181B] text-white font-bold hover:bg-[#334155] shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide">Simpan</button>
                 </div>
             </form>
         </div>
@@ -192,6 +195,51 @@
             </form>
         </div>
     </div>
+
+    <!-- MODAL HAPUS -->
+    <div id="modalHapus" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4 isolate">
+        <div class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl transition-all max-h-[90vh] overflow-y-auto no-scrollbar">
+            <h2 class="text-xl font-black text-zinc-900 mb-6 text-center uppercase tracking-wide">Hapus Kamar</h2>
+            <form id="formHapusKamar" method="POST" class="space-y-4">
+                @csrf @method('DELETE')
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-1">Nomor Kamar</label>
+                        <input type="text" id="hapus_nomor" class="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-100 text-zinc-900 font-bold text-sm" readonly>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-1">Jenis Kamar</label>
+                        <input type="text" id="hapus_jenis" class="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-100 text-zinc-900 font-bold text-sm" readonly>
+                    </div>
+                </div>
+
+                <!-- Ganti ID disini biar ga bentrok sama modal detail -->
+                <div id="hapus_penghuni_container" class="hidden mt-6 pt-6 border-t border-zinc-100">
+                    <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide mb-4 flex items-center gap-2">
+                        <i class="ph-fill ph-user-circle text-lg text-red-500"></i> Kamar Sedang Terisi!
+                    </h3>
+                    <div class="bg-red-50/50 p-4 rounded-xl border border-red-100 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-red-400">Nama Lengkap</span>
+                            <span class="text-sm font-bold text-red-600" id="hapus_info_nama"></span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-red-400">Usia & Gender</span>
+                            <span class="text-sm font-bold text-red-600" id="hapus_info_usia_gender"></span>
+                        </div>
+                        <p class="text-[10px] text-red-500 mt-2 font-medium">*Menghapus kamar ini mungkin akan mempengaruhi data penghuni di atas.</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col-reverse sm:flex-row gap-3 pt-6 border-t border-zinc-100">
+                    <button type="button" onclick="tutupModal('modalHapus')" class="flex-1 px-4 py-3 rounded-xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm uppercase">Batal</button>
+                    <button type="submit" onclick="this.innerHTML='<i class=\'ph ph-spinner animate-spin text-lg\'></i> Memproses...'; this.classList.remove('hover:bg-red-100', 'active:scale-95'); this.disabled=true; this.form.submit();" class="flex-1 px-4 py-3 rounded-xl bg-red-50 text-red-600 font-bold hover:bg-red-100 border border-red-100 transition-all active:scale-95 flex items-center justify-center gap-2 text-sm uppercase">
+                        <i class="fas fa-trash-alt"></i> Hapus
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
@@ -224,6 +272,31 @@
             document.getElementById('modalDetail').classList.remove('hidden');
         }
         
+       function bukaModalHapus(id, nomor, jenis, penghuni) {
+            // 1. Panggil form yang bener
+            document.getElementById('formHapusKamar').action = '/admin/hapus_kamar/' + id;
+            
+            // 2. Panggil parameter yang bener (nomor dan jenis, BUKAN nama dan usia)
+            document.getElementById('hapus_nomor').value = nomor;
+            document.getElementById('hapus_jenis').value = jenis;
+            
+            // 3. Handle data penghuni dengan ID container yang baru
+            const containerPenghuni = document.getElementById('hapus_penghuni_container');
+            if (penghuni) {
+                containerPenghuni.classList.remove('hidden');
+                document.getElementById('hapus_info_nama').textContent = penghuni.nama_penghuni || '-';
+                
+                const usia = penghuni.usia ? penghuni.usia + ' thn' : '';
+                const gender = penghuni.jenis_kelamin || '';
+                document.getElementById('hapus_info_usia_gender').textContent = (usia && gender) ? `${usia} - ${gender}` : (usia || gender || '-');
+            } else {
+                containerPenghuni.classList.add('hidden');
+            }
+
+            // 4. Buka modalnya
+            document.getElementById('modalHapus').classList.remove('hidden');
+        }
+
         function tutupModal(modalId) { document.getElementById(modalId).classList.add('hidden'); }
     </script>
 @endsection

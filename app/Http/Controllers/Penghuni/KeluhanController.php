@@ -12,7 +12,6 @@ class KeluhanController extends Controller
 {
     public function submitKeluhan(Request $request)
     {
-        // Validasi input form
         $request->validate([
             'isi_keluhan' => 'required|string|max:500'
         ]);
@@ -20,16 +19,13 @@ class KeluhanController extends Controller
         $user = auth()->user();
         $penghuni = Penghuni::where('id_user', $user->id)->first();
 
-        // 1. Simpan data ke tabel keluhans!
-        // KACAMATA SKEPTIS: Sesuaikan nama kolom ('isi_keluhan', 'status', dll) sama yang ada di database lu ya!
         $keluhan = Keluhan::create([
             'id_penghuni' => $penghuni->id,
             'isi_keluhan' => $request->isi_keluhan,
-            'status_keluhan' => 'Menunggu', // Default status pas pertama masuk
+            'status_keluhan' => 'Menunggu',
             'tanggal' => now(),
         ]);
 
-        // 2. Generate Pesan Template (Sekarang udah punya data nyata!)
         $pesan = "Halo Kak, saya ingin melaporkan kendala.\n\n";
         $pesan .= "▪️ *Nama*: {$penghuni->nama_penghuni}\n";
         $pesan .= "▪️ *ID Keluhan*: KLH-{$keluhan->id}\n\n";
@@ -37,10 +33,8 @@ class KeluhanController extends Controller
 
         $nomorOwner = Pengaturan::where('kunci', 'wa_admin')->value('nilai'); 
 
-        // 4. Bikin URL API WhatsApp
         $urlWa = "https://wa.me/{$nomorOwner}?text=" . urlencode($pesan);
 
-        // 5. Lempar/Redirect user ke URL WhatsApp!
         return redirect()->away($urlWa);
     }
 }

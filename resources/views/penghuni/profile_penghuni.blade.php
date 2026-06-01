@@ -65,7 +65,7 @@
                     @csrf
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div><label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nama Lengkap</label><input type="text" name="nama" value="{{ $penghuni?->nama_penghuni ?? '' }}" class="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required></div>
-                        <div><label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Usia</label><input type="number" name="usia" value="{{ $penghuni?->usia ?? '' }}" class="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required></div>
+                        <div><label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2" min="0" max="150">Usia</label><input type="number" name="usia" value="{{ $penghuni?->usia ?? '' }}" class="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required></div>
                         <div><label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nomor Kamar <span class="text-[10px] font-normal text-zinc-400 normal-case">(Tidak bisa diubah)</span></label><input type="text" value="{{ $kamar?->nomor_kamar ?? '-' }}" class="w-full px-4 py-3 rounded-xl bg-zinc-100 border border-zinc-200 text-zinc-500 cursor-not-allowed text-sm font-bold" readonly></div>
                         <div>
                             <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Jenis Kelamin</label>
@@ -88,9 +88,11 @@
                     </div>
                     <div class="flex gap-3 pt-6 border-t border-zinc-100">
                         <button type="button" onclick="toggleEditMode()" class="flex-1 px-4 py-3.5 rounded-xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm uppercase tracking-wide">Batal</button>
-                        <button type="submit" class="flex-1 px-4 py-3.5 rounded-xl bg-[#18181B] text-white font-bold hover:bg-[#334155] shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide flex justify-center items-center gap-2">
-                            <i class="ph ph-floppy-disk text-lg"></i> Simpan Perubahan
-                        </button>
+                    <button type="submit" 
+                            onclick="if(this.form.checkValidity()){ this.innerHTML='<i class=\'ph ph-spinner animate-spin text-lg\'></i> Menyimpan...'; this.classList.remove('hover:bg-[#334155]', 'active:scale-95'); this.disabled=true; this.form.submit(); }"
+                            class="flex-1 px-4 py-3.5 rounded-xl bg-[#18181B] text-white font-bold hover:bg-[#334155] shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide flex justify-center items-center gap-2 disabled:bg-zinc-400 disabled:cursor-not-allowed">
+                        <i class="ph ph-floppy-disk text-lg"></i> Simpan Perubahan
+                    </button>
                     </div>
                 </form>
             </div>

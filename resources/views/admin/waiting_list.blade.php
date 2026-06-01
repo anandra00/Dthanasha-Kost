@@ -53,10 +53,12 @@
             <table class="w-full text-left border-collapse">
                 <thead class="bg-zinc-100 text-zinc-500 text-[10px] uppercase tracking-widest border-b border-zinc-200">
                     <tr>
-                        <th class="px-6 py-4 text-center w-[10%]">NO</th>
-                        <th class="px-6 py-4 w-[30%]">Nama Lengkap</th>
+                        <!-- KACAMATA SKEPTIS: Persentase w-[...] udah gua atur ulang biar pas 100% -->
+                        <th class="px-6 py-4 text-center w-[5%]">NO</th>
+                        <th class="px-6 py-4 w-[25%]">Nama Lengkap</th>
                         <th class="px-6 py-4 w-[20%]">Jenis Kelamin</th>
-                        <th class="px-6 py-4 w-[25%]">Nomor Kontak</th>
+                        <th class="px-6 py-4 w-[20%]">Nomor Kontak</th>
+                        <th class="px-6 py-4 text-center w-[15%]">Hubungi</th>
                         <th class="px-6 py-4 text-right w-[15%]">Aksi</th>
                     </tr>
                 </thead>
@@ -64,12 +66,21 @@
                     @forelse($antrean as $index => $a)
                         <tr class="hover:bg-zinc-50 transition-colors group waiting-list-row" data-gender="{{ $a->jenis_kelamin }}">
                             <td class="px-6 py-4 text-sm font-bold text-zinc-400 text-center">{{ $index + 1 }}</td>
-                            <td
-                                class="px-6 py-4 text-sm font-medium text-zinc-900 group-hover:text-[#334155] transition-colors">
+                            <td class="px-6 py-4 text-sm font-medium text-zinc-900 group-hover:text-[#334155] transition-colors">
                                 {{ $a->nama }}
                             </td>
                             <td class="px-6 py-4 text-sm text-zinc-600">{{ $a->jenis_kelamin }}</td>
                             <td class="px-6 py-4 text-sm font-medium text-zinc-600">{{ $a->no_telepon }}</td>
+                            
+                            <!-- KOLOM BARU: TOMBOL WA -->
+                            <td class="px-6 py-4 text-center">
+                                <a href="https://wa.me/{{ $a->no_telepon }}" target="_blank" 
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-zinc-200 hover:border-[#18181B] hover:bg-[#18181B] hover:text-zinc-400 text-zinc-700 rounded-lg text-xs font-bold transition-all shadow-sm active:scale-95 group/wa">
+                                    <i class="ph-fill ph-whatsapp-logo text-zinc-800 group-hover/wa:text-white text-sm group-hover/wa:scale-110 transition-all"></i>
+                                    Chat
+                                </a>
+                            </td>
+
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end gap-2">
                                     <button
@@ -78,22 +89,19 @@
                                         title="Edit">
                                         <i class="ph ph-pencil-simple text-base"></i>
                                     </button>
-                                    <form action="{{ url('/admin/hapus_waiting_list/' . $a->id) }}" method="POST"
-                                        class="inline">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" onclick="return confirm('Yakin ingin menghapus antrean ini?')"
-                                            class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 hover:bg-red-100 text-red-500 transition-colors shadow-sm"
-                                            title="Hapus">
-                                            <i class="ph ph-trash text-base"></i>
-                                        </button>
-                                    </form>
+                                    <button type="submit" onclick="bukaModalHapus({{ $a->id }}, '{{ $a->nama }}', '{{ $a->jenis_kelamin }}', '{{ $a->no_telepon ?? '-' }}')" 
+                                        onclick="if(this.form.checkValidity()){ this.innerHTML='<i class=\'ph ph-spinner animate-spin text-lg\'></i> Menyimpan...'; this.classList.remove('hover:bg-[#334155]', 'active:scale-95'); this.disabled=true; this.form.submit(); }"
+                                        class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 hover:bg-red-100 text-red-500 transition-colors shadow-sm"
+                                        title="Hapus">
+                                        <i class="ph ph-trash text-base"></i>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-8 text-center text-sm font-bold text-zinc-400">Belum ada data
-                                antrean.</td>
+                            <!-- KACAMATA SKEPTIS: colspan diganti jadi 6 karena nambah 1 kolom -->
+                            <td colspan="6" class="px-6 py-8 text-center text-sm font-bold text-zinc-400">Belum ada data antrean.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -143,7 +151,7 @@
                 <div class="flex gap-3 pt-6 border-t border-zinc-100">
                     <button type="button" onclick="tutupModal('modalTambah')"
                         class="flex-1 px-4 py-3.5 rounded-xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm uppercase tracking-wide">Batal</button>
-                    <button type="submit"
+                    <button type="submit" onclick="if(this.form.checkValidity()){ this.innerHTML='<i class=\'ph ph-spinner animate-spin text-lg\'></i> Menyimpan...'; this.classList.remove('hover:bg-[#334155]', 'active:scale-95'); this.disabled=true; this.form.submit(); }"
                         class="flex-1 px-4 py-3.5 rounded-xl bg-[#18181B] text-white font-bold hover:bg-[#334155] shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide">Simpan
                         Data</button>
                 </div>
@@ -186,9 +194,43 @@
                 <div class="flex gap-3 pt-6 border-t border-zinc-100">
                     <button type="button" onclick="tutupModal('modalEdit')"
                         class="flex-1 px-4 py-3.5 rounded-xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm uppercase tracking-wide">Batal</button>
-                    <button type="submit"
+                    <button type="submit" onclick="if(this.form.checkValidity()){ this.innerHTML='<i class=\'ph ph-spinner animate-spin text-lg\'></i> Menyimpan...'; this.classList.remove('hover:bg-[#334155]', 'active:scale-95'); this.disabled=true; this.form.submit(); }"
                         class="flex-1 px-4 py-3.5 rounded-xl bg-[#18181B] text-white font-bold hover:bg-[#334155] shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide">Update
                         Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="modalHapus" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center">
+        <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl max-h-[90vh] overflow-y-auto no-scrollbar">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-zinc-100 text-zinc-800 border border-zinc-200 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h2 class="text-xl font-black text-gray-900 uppercase tracking-wide">Hapus Penghuni</h2>
+            </div>
+            
+            <form id="formHapusWaitingList" method="POST" class="space-y-4">
+                @csrf @method('DELETE')
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-1">Nama</label>
+                        <input type="text" id="hapus_nama" class="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-100 text-zinc-900 font-bold text-sm" readonly>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-1">Usia</label>
+                        <input type="text" id="hapus_jk" class="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-100 text-zinc-900 font-bold text-sm" readonly>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-1">No. Kamar</label>
+                        <input type="text" id="hapus_telepon" class="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-100 text-zinc-900 font-bold text-sm" readonly>
+                    </div>
+                </div>
+                <div class="flex gap-3 pt-6 border-t border-zinc-100">
+                    <button type="button" onclick="tutupModal('modalHapus')" class="flex-1 px-4 py-3 rounded-xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm uppercase">Batal</button>
+                    <button type="submit" onclick="if(this.form.checkValidity()){ this.innerHTML='<i class=\'ph ph-spinner animate-spin text-lg\'></i> Menyimpan...'; this.classList.remove('hover:bg-[#334155]', 'active:scale-95'); this.disabled=true; this.form.submit(); }"class="flex-1 px-4 py-3 rounded-xl bg-red-50 text-red-600 font-bold hover:bg-red-100 border border-red-100 transition-all active:scale-95 flex items-center justify-center gap-2 text-sm uppercase">
+                        <i class="fas fa-trash-alt"></i> Hapus
+                    </button>
                 </div>
             </form>
         </div>
@@ -208,6 +250,14 @@
             document.getElementById('edit_telepon').value = telepon;
 
             document.getElementById('modalEdit').classList.remove('hidden');
+        }
+
+        function bukaModalHapus(id, nama, jk, telepon) {
+            document.getElementById('formHapusWaitingList').action = '/admin/hapus_waiting_list/' + id;
+            document.getElementById('hapus_nama').value = nama;
+            document.getElementById('hapus_jk').value = jk;
+            document.getElementById('hapus_telepon').value = telepon;
+            document.getElementById('modalHapus').classList.remove('hidden');
         }
 
         function tutupModal(modalId) {

@@ -10,7 +10,6 @@
 @section('content')
     <!-- SUMMARY CARDS -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-10">
-        
         <div class="bg-white p-4 rounded-xl card-shadow border border-zinc-100 group hover:border-zinc-200 transition-all">
             <div class="flex items-center justify-between mb-3">
                 <div class="w-9 h-9 bg-zinc-50 rounded-lg flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-100 transition-colors">

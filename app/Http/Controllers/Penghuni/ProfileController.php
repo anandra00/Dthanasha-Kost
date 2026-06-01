@@ -30,15 +30,19 @@ class ProfileController extends Controller
         $penghuni = Penghuni::where('id_user', $user->id)->first();
 
         $request->validate([
-            'nama'       => 'required|string|max:255',
+            'nama'  => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
             'usia'       => 'required|integer|min:1',
-            'kontak'     => 'required|string|max:20',
-            'kontak_ortu'=> 'required|string|max:20',
+            'kontak'      => ['required', 'string', 'regex:/^628[0-9]{7,13}$/'],
+            'kontak_ortu' => ['required', 'string', 'regex:/^628[0-9]{7,13}$/'],
             'jk'         => 'required|string|in:L,P',
             'email'      => 'required|email',
+        ], [
+            'nama.regex'        => 'Nama hanya boleh berisi huruf dan spasi, tidak boleh ada angka atau simbol.',
+            'usia.min'          => 'Usia minimal adalah 0 tahun.',
+            'kontak.regex'      => 'Nomor kontak harus diawali dengan 628 dan hanya berisi angka yang valid.',
+            'kontak_ortu.regex' => 'Nomor kontak orang tua harus diawali dengan 628 dan hanya berisi angka yang valid.',
         ]);
 
-        // Update data penghuni
         if ($penghuni) {
             $penghuni->update([
                 'nama_penghuni'       => $request->nama,
@@ -49,11 +53,9 @@ class ProfileController extends Controller
             ]);
         }
 
-        // Update nama dan email di user
         $user->name = $request->nama;
         $user->email = $request->email;
 
-        // Update password jika diisi
         if ($request->filled('password')) {
             $request->validate(['password' => 'string|min:6']);
             $user->password = Hash::make($request->password);

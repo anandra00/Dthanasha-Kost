@@ -8,7 +8,7 @@ use App\Models\Kamar;
 use App\Models\Tagihan;
 use App\Models\Transaksi;
 
-class DashboardController extends Controller
+class DashboardAdminController extends Controller
 {
     public function index()
     {

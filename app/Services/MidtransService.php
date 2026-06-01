@@ -38,4 +38,10 @@ class MidtransService
 
         return Snap::getSnapToken($params);
     }
+
+    public function getTransactionStatus($orderId)
+    {
+        // Constructor service ini udah otomatis nyiapin Config::$serverKey dll
+        return \Midtrans\Transaction::status($orderId);
+    }
 }

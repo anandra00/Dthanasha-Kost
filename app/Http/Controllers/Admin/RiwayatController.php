@@ -6,26 +6,23 @@ use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
 use App\Models\Tagihan;
 use Illuminate\Http\Request;
+use App\Models\Pengeluaran;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Carbon\Carbon;
 
 class RiwayatController extends Controller
 {
     public function index()
     {
-        // Ambil semua transaksi beserta relasi tagihan & penghuni
         $transaksis = Transaksi::with('tagihan.penghuni')->latest()->paginate(10);
 
-        // Hitung pemasukan (hanya dari tagihan yang lunas)
-        $totalPemasukan = Tagihan::where('status_tagihan', 'Lunas')->sum('nominal_tagihan');
+        $totalPemasukan = Transaksi::where('status_transaksi', 'berhasil')->sum('nominal');
 
-        // Hitung pengeluaran (dari transaksi manual yang id_tagihan-nya null)
-        $totalPengeluaran = Transaksi::whereNull('id_tagihan')
-                            ->whereIn('status_transaksi', ['settlement', 'berhasil'])
-                            ->sum('nominal');
+        $totalPengeluaran = Pengeluaran::sum('nominal');
 
-        // Keuntungan bersih
         $keuntungan = $totalPemasukan - $totalPengeluaran;
 
-        // Data chart mingguan - ambil transaksi 7 hari terakhir
         $chartLabels = [];
         $chartPemasukan = [];
         $chartPengeluaran = [];
@@ -38,14 +35,46 @@ class RiwayatController extends Controller
                 ->whereDate('tanggal_bayar', $date->toDateString())
                 ->sum('nominal_tagihan');
 
-            $chartPengeluaran[] = Transaksi::whereNull('id_tagihan')
-                ->whereIn('status_transaksi', ['settlement', 'berhasil'])
-                ->whereDate('waktu', $date->toDateString())
+            $chartPengeluaran[] = Pengeluaran::whereDate('tanggal', $date->toDateString())
                 ->sum('nominal');
         }
+        $pemasukan = Transaksi::with('tagihan.penghuni')->get()->map(function ($item) {
+            return (object) [
+                'id'            => $item->order_id, // ID unik buat tombol hapus/edit
+                'keterangan'    => 'Tagihan: ' . $item->order_id,
+                'pihak'         => $item->tagihan?->penghuni?->nama_penghuni ?? '-',
+                'tanggal'       => Carbon::parse($item->created_at), // Atau $item->waktu
+                'metode'        => $item->tipe_pembayaran ?? '-',
+                'nominal'       => $item->nominal ?? ($item->tagihan?->nominal_tagihan ?? 0),
+                'status'        => $item->status_transaksi,
+                'tipe'          => 'pemasukan'
+            ];
+        });
+
+        $pengeluaran = Pengeluaran::get()->map(function ($item) {
+            return (object) [
+                'id'            => $item->id,
+                'keterangan'    => $item->nama_kegiatan,
+                'pihak'         => $item->pihak_tujuan,
+                'tanggal'       => Carbon::parse($item->tanggal),
+                'metode'        => $item->metode_pembayaran,
+                'nominal'       => $item->nominal,
+                'status'        => 'Berhasil',
+                'tipe'          => 'pengeluaran'
+            ];
+        });
+
+        $gabungan = $pemasukan->concat($pengeluaran)->sortByDesc('tanggal')->values();
+
+        $perPage = 10;
+        $currentPage = Paginator::resolveCurrentPage();
+        $currentItems = $gabungan->slice(($currentPage - 1) * $perPage, $perPage);
+        $riwayats = new LengthAwarePaginator($currentItems, $gabungan->count(), $perPage, $currentPage, [
+            'path' => Paginator::resolveCurrentPath(),
+        ]);
 
         return view('admin.riwayat', compact(
-            'transaksis',
+            'riwayats', 
             'totalPemasukan',
             'totalPengeluaran',
             'keuntungan',
@@ -55,29 +84,80 @@ class RiwayatController extends Controller
         ));
     }
 
+    public function getChartData(Request $request)
+    {
+        $filter = $request->query('filter', 'hari'); 
+        $labels = [];
+        $chartPemasukan = [];
+        $chartPengeluaran = [];
+
+        if ($filter == 'hari') {
+            for ($i = 6; $i >= 0; $i--) {
+                $date = now()->subDays($i);
+                $labels[] = $date->translatedFormat('D'); 
+                
+                $chartPemasukan[] = Tagihan::where('status_tagihan', 'Lunas')
+                    ->whereDate('tanggal_bayar', $date->toDateString())
+                    ->sum('nominal_tagihan');
+                    
+                $chartPengeluaran[] = Pengeluaran::whereDate('tanggal', $date->toDateString())
+                    ->sum('nominal');
+            }
+        } elseif ($filter == 'bulan') {
+            for ($i = 5; $i >= 0; $i--) {
+                $month = now()->subMonths($i);
+                $labels[] = $month->translatedFormat('M'); // Jan, Feb, Mar...
+                
+                $chartPemasukan[] = Tagihan::where('status_tagihan', 'Lunas')
+                    ->whereYear('tanggal_bayar', $month->year)
+                    ->whereMonth('tanggal_bayar', $month->month)
+                    ->sum('nominal_tagihan');
+                    
+                $chartPengeluaran[] = Pengeluaran::whereYear('tanggal', $month->year)
+                    ->whereMonth('tanggal', $month->month)
+                    ->sum('nominal');
+            }
+        }
+
+        return response()->json([
+            'labels' => $labels,
+            'pemasukan' => $chartPemasukan,
+            'pengeluaran' => $chartPengeluaran
+        ]);
+    }
     public function store(Request $request)
     {
-        $request->validate([
-            'kegiatan'  => 'required|string|max:255',
-            'nama'      => 'required|string|max:255',
-            'waktu'     => 'required|date',
-            'metode'    => 'required|string',
-            'nominal'   => 'required|numeric|min:0',
-            'status'    => 'required|string',
+        // 1. VALIDASI LAPIS BAJA
+        $validated = $request->validate([
+            'kegiatan'  => ['required', 'string', 'max:150'], 
+            
+            'nama'      => ['required', 'string', 'max:100', 'regex:/^[a-zA-Z\s]+$/'], 
+            
+            'waktu'     => ['required', 'date', 'before_or_equal:today'], 
+            
+            'metode'    => ['required', 'string', 'in:Cash,Transfer Bank,E-Wallet'], 
+            
+            'nominal'   => ['required', 'numeric', 'min:1', 'max:1000000000'], 
+            
+            'keterangan'=> ['nullable', 'string', 'max:500'], 
+        ], [
+            'nama.regex'            => 'Nama penanggung jawab hanya boleh berisi huruf!',
+            'waktu.before_or_equal' => 'Tanggal pengeluaran tidak boleh lebih dari hari ini!',
+            'metode.in'             => 'Metode pembayaran tidak valid/tidak dikenali sistem!',
+            'nominal.min'           => 'Nominal pengeluaran tidak masuk akal (minimal Rp 500)!',
+            'nominal.max'           => 'Nominal terlalu besar, batas maksimal adalah 1 Milyar.',
         ]);
 
-        Transaksi::create([
-            'order_id'          => 'MANUAL-' . time() . '-' . rand(100, 999),
-            'id_tagihan'        => null,
-            'tipe_pembayaran'   => $request->metode,
-            'status_transaksi'  => $request->status,
-            'kegiatan'          => $request->kegiatan,
-            'nama'              => $request->nama,
-            'waktu'             => $request->waktu,
-            'nominal'           => $request->nominal,
+        Pengeluaran::create([
+            'nama_kegiatan'     => $validated['kegiatan'],
+            'pihak_tujuan'      => $validated['nama'],
+            'tanggal'           => $validated['waktu'],
+            'metode_pembayaran' => $validated['metode'],
+            'nominal'           => $validated['nominal'],
+            'keterangan'        => $validated['keterangan'] ?? null,
         ]);
 
-        return redirect()->back()->with('success', 'Pengeluaran berhasil ditambahkan!');
+        return redirect()->back()->with('success', 'Pengeluaran berhasil dicatat dengan aman!');
     }
 
     public function update(Request $request, $id)

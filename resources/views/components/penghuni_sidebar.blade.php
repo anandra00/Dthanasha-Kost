@@ -24,7 +24,9 @@
     <div class="p-6 border-t border-zinc-800">
         <form action="{{ route('logout') }}" method="POST">
             @csrf
-            <button class="flex items-center gap-3 text-sm font-medium hover:text-red-400 transition-all uppercase tracking-wider w-full">
+            <button type="submit" 
+                    onclick="this.innerHTML='<i class=\'ph ph-spinner animate-spin text-lg\'></i> Keluar...'; this.classList.remove('hover:text-red-400'); this.disabled=true; this.form.submit();"
+                    class="flex items-center gap-3 text-sm font-medium text-zinc-400 hover:text-red-400 transition-all uppercase tracking-wider w-full disabled:text-zinc-500 disabled:cursor-not-allowed">
                 <i class="ph ph-sign-out text-lg"></i> Keluar
             </button>
         </form>

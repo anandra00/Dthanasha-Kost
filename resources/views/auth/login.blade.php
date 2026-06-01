@@ -49,7 +49,10 @@
                 <a href="{{ route('password.request') }}" class="text-[11px] font-bold text-gray-500 hover:text-black transition-colors mr-3">Lupa Password?</a>
             </div>
 
-            <button type="submit" class="bg-[#e0e0e0] text-black font-bold text-sm py-2 px-14 rounded-md hover:bg-[#d1d1d1] active:scale-95 transition-all shadow-sm">
+            <button type="submit" 
+                    id="loginButton"
+                    onclick="this.innerText='Memproses...'; this.disabled=true; this.form.submit();"
+                    class="bg-[#e0e0e0] text-black font-bold text-sm py-2 px-14 rounded-md hover:bg-[#d1d1d1] active:scale-95 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                 Login
             </button>
         </form>

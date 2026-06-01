@@ -66,7 +66,7 @@ class LoginRequest extends FormRequest
      */
     public function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 10)) {
             return;
         }
 
@@ -75,7 +75,8 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'username' => trans('auth.throttle', [
+            // Ganti 'username' jadi 'login' biar nyambung sama Blade lu!
+            'login' => trans('auth.throttle', [ 
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
             ]),

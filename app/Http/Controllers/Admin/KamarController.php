@@ -10,9 +10,8 @@ class KamarController extends Controller
 {
     public function index()
     {
-        $kamars = Kamar::with('penghuni')->latest()->paginate(8); // Pagination responsif 8 item per halaman
-        
-        // Menghitung statistik untuk Summary Cards secara dinamis
+        $kamars = Kamar::with('penghuni')->latest()->paginate(8);
+
         $terisi = Kamar::where('status_kamar', 'Terisi')->count();
         $kosong = Kamar::where('status_kamar', 'Kosong')->count();
         $reguler = Kamar::where('jenis_kamar', 'Reguler')->count();

@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\DashboardAdminController as AdminDashboardController;
 use App\Http\Controllers\Admin\PengaturanController;
 use App\Http\Controllers\Admin\RiwayatController;
-use App\Http\Controllers\Penghuni\DashboardController;
+use App\Http\Controllers\Penghuni\DashboardPenghuniController as PenghuniDashboardController;
 use App\Http\Controllers\Penghuni\ProfileController as PenghuniProfileController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\PenghuniController;
@@ -51,6 +51,7 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
     Route::post('/admin/tambah_riwayat', [RiwayatController::class, 'store'])->name('admin.tambah-riwayat');
     Route::put('/admin/edit_riwayat/{id}', [RiwayatController::class, 'update'])->name('admin.edit-riwayat');
     Route::delete('/admin/hapus_riwayat/{id}', [RiwayatController::class, 'destroy'])->name('admin.hapus-riwayat');
+    Route::get('/admin/chart-data', [RiwayatController::class, 'getChartData'])->name('admin.chart-data');
 
     // ---> Route Pengaturan <---
     Route::get('/admin/pengaturan', [PengaturanController::class, 'index'])->name('admin.pengaturan');
@@ -72,10 +73,10 @@ Route::middleware(['auth', 'role:penghuni', 'wajib.email'])->group(function () {
     Route::post('/penghuni/reset-email', [EmailController::class, 'resetEmail'])->name('penghuni.reset-email');
 
     // Route POST buat nge-trigger fungsi ke WA
-    Route::post('penghuni/keluhan/wa', [DashboardController::class, 'laporKeWa'])->name('penghuni.keluhan');
+    Route::post('penghuni/keluhan/wa', [PenghuniDashboardController::class, 'laporKeWa'])->name('penghuni.keluhan');
     
     // --- Views Penghuni ---
-    Route::get('penghuni/dashboard', [DashboardController::class, 'index'])->name('penghuni.dashboard');
+    Route::get('penghuni/dashboard', [PenghuniDashboardController::class, 'index'])->name('penghuni.dashboard');
 
     Route::get('penghuni/pembayaran-manual', [PaymentController::class, 'halamanManual'])->name('penghuni.pembayaran-manual');
 
