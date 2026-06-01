@@ -21,10 +21,8 @@ class GenerateTagihanBulanan extends Command
     {
         Log::info('Scheduler Tagihan Mulai Berjalan...');
 
-        // Cari penghuni yang statusnya punya kamar aja (yang nggak punya kamar ga usah ditagih)
-        $penghuniAktif = Penghuni::with('kamar')->whereNotNull('id_kamar')->get();
-        
-        // Bikin format bulan ini, misal: "May 2026"
+        $penghuniAktif = Penghuni::with('kamar')->whereNotNull(['id_kamar', 'id_user'])->get();
+
         $periodeBulanIni = Carbon::now()->translatedFormat('F Y'); 
 
         $settingDeadline = Pengaturan::where('kunci', 'deadline')->first();
