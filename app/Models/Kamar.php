@@ -17,7 +17,12 @@ class Kamar extends Model
         'nomor_kamar',
         'status_kamar',
         'jenis_kamar',
-        'jenis_kelamin',
-        'nama_penghuni',
+        'harga_kamar',
     ];
+
+    // Relasi ke Penghuni (1 kamar ditempati 1 penghuni)
+    public function penghuni()
+    {
+        return $this->hasOne(Penghuni::class, 'id_kamar');
+    }
 }
