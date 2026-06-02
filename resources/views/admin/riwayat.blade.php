@@ -69,14 +69,14 @@
     <div class="bg-white rounded-3xl card-shadow border border-zinc-50 overflow-hidden">
         <div class="p-4 sm:p-6 border-b border-zinc-50 flex flex-col sm:flex-row justify-between items-start sm:items-center bg-zinc-50/50 gap-3">
             <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide">Riwayat Transaksi</h3>
-            <div class="flex flex-wrap gap-3 w-full sm:w-auto">
-                <select class="text-sm border border-zinc-200 bg-white rounded-xl px-4 py-2 outline-none font-semibold text-zinc-600 cursor-pointer focus:ring-2 focus:ring-[#334155] flex-1 sm:flex-none">
+            <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                <select class="text-sm border border-zinc-200 bg-white rounded-xl px-4 py-2 outline-none font-semibold text-zinc-600 cursor-pointer focus:ring-2 focus:ring-[#334155] w-full sm:w-auto">
                     <option>Semua Transaksi</option>
                     <option>Settlement</option>
                     <option>Pending</option>
                     <option>Expire</option>
                 </select>
-                <button onclick="bukaModalTambah()" class="bg-[#18181B] hover:bg-[#334155] text-white px-5 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 shadow-md active:scale-95 flex-1 sm:flex-none justify-center">
+                <button onclick="bukaModalTambah()" class="bg-[#18181B] hover:bg-[#334155] text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 shadow-md active:scale-95 w-full sm:w-auto">
                     <i class="ph ph-plus-circle text-lg"></i> Tambah
                 </button>
             </div>
@@ -155,53 +155,69 @@
 </div>
 
         <!-- Mobile Cards -->
-        <div class="sm:hidden divide-y divide-zinc-100">
-    @forelse($riwayats as $row)
-        <div class="p-4 hover:bg-zinc-50 transition-all">
-            <div class="flex items-start justify-between mb-3">
-                <div class="min-w-0 flex-1">
-                    <p class="text-sm font-bold text-zinc-900 truncate">{{ $row->keterangan }}</p>
-                    <p class="text-xs text-zinc-500 mt-0.5">{{ $row->tanggal->translatedFormat('d M Y') }}</p>
+        <div class="sm:hidden flex flex-col">
+            @forelse($riwayats as $row)
+                <div class="p-4 border-b border-zinc-100 hover:bg-zinc-50 transition-all relative">
+                    <div class="flex justify-between items-start mb-2">
+                        <!-- Info Kiri -->
+                        <div class="pr-2 flex-1 min-w-0">
+                            <p class="text-sm font-bold text-zinc-900 truncate">{{ $row->keterangan }}</p>
+                            <p class="text-xs text-zinc-500 mt-0.5 truncate">
+                                {{ $row->pihak }} 
+                                @if($row->metode) • {{ $row->metode }} @endif
+                            </p>
+                        </div>
+                        
+                        <!-- Nominal & Tanggal Kanan -->
+                        <div class="text-right shrink-0">
+                            <p class="text-sm font-black {{ $row->tipe == 'pemasukan' ? 'text-emerald-600' : 'text-red-600' }}">
+                                {{ $row->tipe == 'pemasukan' ? '+' : '-' }}Rp{{ number_format($row->nominal, 0, ',', '.') }}
+                            </p>
+                            <p class="text-[10px] text-zinc-400 mt-1 font-medium">
+                                {{ \Carbon\Carbon::parse($row->tanggal)->translatedFormat('d M Y') }}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between mt-3">
+                        <!-- Status Badge -->
+                        <div>
+                            @if(in_array(strtolower($row->status), ['settlement', 'berhasil']))
+                                <span class="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[9px] uppercase tracking-widest font-black px-2 py-1 rounded-md">Berhasil</span>
+                            @elseif(in_array(strtolower($row->status), ['pending', 'menunggu']))
+                                <span class="bg-amber-50 text-amber-600 border border-amber-100 text-[9px] uppercase tracking-widest font-black px-2 py-1 rounded-md">Pending</span>
+                            @else
+                                <span class="bg-red-50 text-red-600 border border-red-100 text-[9px] uppercase tracking-widest font-black px-2 py-1 rounded-md">{{ $row->status }}</span>
+                            @endif
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="flex gap-2">
+                            @if($row->tipe == 'pengeluaran')
+                            <button onclick="bukaModalEdit('{{ $row->id }}', '{{ $row->order_id }}', '{{ addslashes($row->keterangan) }}', '{{ addslashes($row->pihak) }}', '{{ $row->tanggal }}', '{{ $row->metode }}', '{{ $row->nominal }}', '{{ $row->status }}')" 
+                                class="text-blue-600 bg-blue-50 hover:bg-blue-100 p-1.5 rounded-lg transition-colors border border-blue-100 shadow-sm">
+                                <i class="ph ph-pencil-simple text-sm"></i>
+                            </button>
+                            @endif
+                            <form action="{{ $row->tipe == 'pemasukan' ? url('/admin/hapus_riwayat/'.$row->id) : url('/admin/hapus_pengeluaran/'.$row->id) }}" method="POST">
+                                @csrf @method('DELETE')
+                                <button type="submit" onclick="return confirm('Yakin ingin menghapus?')" class="text-red-600 bg-red-50 hover:bg-red-100 p-1.5 rounded-lg transition-colors border border-red-100 shadow-sm">
+                                    <i class="ph ph-trash text-sm"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-                
-                @if(in_array(strtolower($row->status), ['settlement', 'berhasil']))
-                    <span class="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[9px] uppercase tracking-widest font-black px-2 py-1 rounded-lg shrink-0 ml-2">Berhasil</span>
-                @elseif(in_array(strtolower($row->status), ['pending', 'menunggu']))
-                    <span class="bg-amber-50 text-amber-600 border border-amber-100 text-[9px] uppercase tracking-widest font-black px-2 py-1 rounded-lg shrink-0 ml-2">Pending</span>
-                @else
-                    <span class="bg-red-50 text-red-600 border border-red-100 text-[9px] uppercase tracking-widest font-black px-2 py-1 rounded-lg shrink-0 ml-2">{{ $row->status }}</span>
-                @endif
-            </div>
-            
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <span class="text-xs text-zinc-500">{{ $row->pihak }}</span>
-                    <span class="bg-zinc-100 border border-zinc-200 text-zinc-600 text-[9px] uppercase font-black px-2 py-0.5 rounded">{{ $row->metode }}</span>
+            @empty
+                <div class="p-8 text-center text-sm font-bold text-zinc-400">
+                    <i class="ph ph-empty text-3xl mb-2 block"></i>
+                    Belum ada catatan keuangan.
                 </div>
-                <p class="text-sm font-black {{ $row->tipe == 'pemasukan' ? 'text-emerald-600' : 'text-red-600' }}">
-                    {{ $row->tipe == 'pemasukan' ? '+' : '-' }} Rp {{ number_format($row->nominal, 0, ',', '.') }}
-                </p>
-            </div>
-            
-            <div class="flex gap-2 mt-3">
-                <form action="{{ $row->tipe == 'pemasukan' ? url('/admin/hapus_riwayat/'.$row->id) : url('/admin/hapus_pengeluaran/'.$row->id) }}" method="POST">
-                    @csrf @method('DELETE')
-                    <button type="submit" onclick="return confirm('Yakin ingin menghapus catatan ini?')" class="text-red-600 bg-red-50 border border-red-100 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-100 active:scale-95 transition-all flex items-center gap-1">
-                        <i class="ph ph-trash"></i> Hapus
-                    </button>
-                </form>
-            </div>
+            @endforelse
         </div>
-    @empty
-        <div class="p-8 text-center text-sm font-bold text-zinc-400">
-            <i class="ph ph-empty text-3xl mb-2 block"></i>
-            Belum ada catatan keuangan.
-        </div>
-    @endforelse
-</div>
 
         <!-- Pagination -->
-        <div class="p-4 sm:p-6 border-t border-zinc-100 bg-white">
+        <div class="p-4 sm:p-6 border-t border-zinc-100 bg-white overflow-x-auto no-scrollbar">
             {{ $riwayats->links() }}
         </div>
     </div>

@@ -39,7 +39,13 @@ class PaymentController extends Controller
                 $modalStatus = 'failed';
             }
 
-            $transaksi = Transaksi::with('tagihan')->where('order_id', $orderId)->first();
+            $penghuni = Penghuni::where('id_user', $user->id)->first();
+            
+            $transaksi = Transaksi::with('tagihan')->where('order_id', $orderId)
+                ->whereHas('tagihan', function($query) use ($penghuni) {
+                    $query->where('id_penghuni', $penghuni->id);
+                })
+                ->first();
 
             if ($transaksi && $transaksi->status_transaksi === 'menunggu') {
                 try {
@@ -83,8 +89,9 @@ class PaymentController extends Controller
                 $modalData = $transaksi;
             }
         }
-
-        $penghuni = Penghuni::where('id_user', $user->id)->first();
+        if (!isset($penghuni)) {
+            $penghuni = Penghuni::where('id_user', $user->id)->first();
+        }
         $tagihanSaatIni = null;
         $riwayatTagihan = collect();
 
@@ -283,21 +290,18 @@ class PaymentController extends Controller
         return redirect()->back()->with('error', 'Tidak ada tagihan yang harus dibayar.');
     }
 
-    if ($request->hasFile('bukti_transfer')) {
-        $file = $request->file('bukti_transfer');
+        if ($request->hasFile('bukti_transfer')) {
+            $file = $request->file('bukti_transfer');
+            $path = $file->store('bukti', 'public');
 
-        $filename = time() . '_' . $file->getClientOriginalName();
+            foreach($tagihan as $t){
+                $t->update([
+                    'status_tagihan' => 'Menunggu Konfirmasi',
+                    'bukti_transfer' => 'storage/' . $path,
+                ]);
+            }
 
-        $path = $file->storeAs('bukti_transfer', $filename, 'public');
-
-        foreach($tagihan as $t){
-            $t->update([
-                'status_tagihan' => 'Menunggu Konfirmasi',
-                'bukti_transfer' => $path,
-            ]);
-        }
-
-        return redirect()->route('penghuni.pembayaran')->with('success', 'Bukti pembayaran berhasil diunggah. Menunggu konfirmasi admin.');
+            return redirect()->route('penghuni.pembayaran')->with('success', 'Bukti pembayaran berhasil diunggah. Menunggu konfirmasi admin.');
         }
 
         return redirect()->back()->with('error', 'Gagal mengunggah bukti pembayaran.');

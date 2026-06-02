@@ -101,8 +101,8 @@
         @endforelse
     </div>
 
-    <div id="modalKonfirmasi" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center">
-        <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl scale-95 transition-all max-h-[90vh] overflow-y-auto no-scrollbar relative">
+    <div id="modalKonfirmasi" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl scale-95 transition-all max-h-[90vh] overflow-y-auto no-scrollbar relative">
             
             <button type="button" onclick="tutupModal('modalKonfirmasi')" class="absolute top-6 right-6 text-zinc-400 hover:text-zinc-900 transition-colors">
                 <i class="ph ph-x text-xl font-bold"></i>
@@ -127,7 +127,6 @@
                         <span id="text_nominal" class="text-sm font-black text-zinc-900"></span>
                     </div>
                 </div>
-
                 <div id="area_link_bukti" class="hidden">
                     <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Bukti Transfer (Klik untuk melihat)</label>
                     <a id="btn_link_bukti" href="#" target="_blank" class="w-full flex items-center justify-between px-4 py-3 bg-white border border-zinc-200 hover:bg-zinc-50 hover:border-zinc-300 rounded-xl transition-all group/btn active:scale-95">

@@ -35,7 +35,7 @@ class ProfileController extends Controller
             'kontak'      => ['required', 'string', 'regex:/^628[0-9]{7,13}$/'],
             'kontak_ortu' => ['required', 'string', 'regex:/^628[0-9]{7,13}$/'],
             'jk'         => 'required|string|in:L,P',
-            'email'      => 'required|email',
+            'email'      => 'required|email|unique:users,email,' . $user->id,
         ], [
             'nama.regex'        => 'Nama hanya boleh berisi huruf dan spasi, tidak boleh ada angka atau simbol.',
             'usia.min'          => 'Usia minimal adalah 0 tahun.',

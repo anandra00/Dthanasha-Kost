@@ -75,6 +75,8 @@ class PenghuniController extends Controller
 
     public function update(Request $request, $id)
     {
+        $penghuni = Penghuni::findOrFail($id);
+        
         $request->validate([
             'nama' => 'required|string|max:255',
             'kamar_id' => 'nullable|exists:kamar,id',
@@ -82,7 +84,7 @@ class PenghuniController extends Controller
             'jk' => 'nullable|string|in:L,P',
             'kontak' => ['nullable','string', 'max:20', 'regex:/^628[0-9]{7,12}$/'],
             'kontak_ortu' => ['nullable','string', 'max:20', 'regex:/^628[0-9]{7,12}$/'],
-            'email' => 'nullable|email',
+            'email' => 'nullable|email' . ($penghuni->id_user ? '|unique:users,email,' . $penghuni->id_user : '|unique:users,email'),
         ], [
             'nama.required'   => 'Nama penghuni tidak boleh kosong.',
             'nama.max'        => 'Nama penghuni terlalu panjang (maksimal 255 karakter).',
@@ -100,9 +102,9 @@ class PenghuniController extends Controller
             'kontak_ortu.max'   => 'Nomor WA orang tua terlalu panjang.',
             
             'email.email'     => 'Format email tidak valid (pastikan menggunakan tanda @ dan domain yang benar).',
+            'email.unique'    => 'Email ini sudah digunakan oleh pengguna lain.',
         ]);
 
-        $penghuni = Penghuni::findOrFail($id);
         $kamarLamaId = $penghuni->id_kamar;
         $kamarBaruId = $request->kamar_id ?: null;
 

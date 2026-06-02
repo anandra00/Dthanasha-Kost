@@ -6,11 +6,9 @@
 @section('content')
 
     <!-- KARTU SUMMARY GENDER -->
-    <div class="flex gap-6 mb-10">
-        <div
-            class="bg-white p-6 rounded-2xl card-shadow border border-gray-50 flex items-center gap-4 w-60 group transition-all">
-            <div
-                class="w-14 h-14 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors">
+    <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-8 sm:mb-10">
+        <div class="bg-white p-5 sm:p-6 rounded-2xl card-shadow border border-gray-50 flex items-center gap-4 w-full sm:w-60 group transition-all">
+            <div class="w-14 h-14 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors shrink-0">
                 <i class="ph ph-gender-male text-3xl text-black"></i>
             </div>
             <div>
@@ -18,10 +16,8 @@
                 <p class="text-3xl font-extrabold text-gray-900">{{ $totalPria ?? 0 }}</p>
             </div>
         </div>
-        <div
-            class="bg-white p-6 rounded-2xl card-shadow border border-gray-50 flex items-center gap-4 w-60 group transition-all">
-            <div
-                class="w-14 h-14 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors">
+        <div class="bg-white p-5 sm:p-6 rounded-2xl card-shadow border border-gray-50 flex items-center gap-4 w-full sm:w-60 group transition-all">
+            <div class="w-14 h-14 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors shrink-0">
                 <i class="ph ph-gender-female text-3xl text-black"></i>
             </div>
             <div>
@@ -33,23 +29,24 @@
 
     <!-- TABEL DATA WAITING LIST -->
     <div class="bg-white rounded-3xl card-shadow border border-gray-50 overflow-hidden">
-        <div class="p-6 border-b border-gray-50 flex justify-between items-center bg-gray-50">
-            <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wide">Data Waiting List</h3>
-            <div class="flex gap-3">
+        <div class="p-4 sm:p-6 border-b border-gray-50 flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-50 gap-4">
+            <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wide shrink-0">Data Waiting List</h3>
+            <div class="flex flex-wrap sm:flex-nowrap gap-3 w-full sm:w-auto">
                 <select id="filterGender" onchange="filterTabelGender()"
-                    class="text-sm border border-zinc-200 bg-white rounded-lg px-3 py-2 outline-none font-semibold text-gray-600 cursor-pointer focus:ring-2 focus:ring-[#334155]">
+                    class="text-sm border border-zinc-200 bg-white rounded-lg px-3 py-2 outline-none font-semibold text-gray-600 cursor-pointer focus:ring-2 focus:ring-[#334155] flex-1 sm:flex-none">
                     <option value="Semua">Semua Gender</option>
                     <option value="Pria">Pria</option>
                     <option value="Wanita">Wanita</option>
                 </select>
                 <button onclick="bukaModalTambah()"
-                    class="bg-[#18181B] hover:bg-[#334155] text-white px-5 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 shadow-md active:scale-95">
-                    <i class="ph ph-plus-circle text-lg"></i> Tambah Antrean
+                    class="flex-1 sm:flex-none bg-[#18181B] hover:bg-[#334155] text-white px-5 py-2 rounded-xl text-sm font-bold transition-all flex justify-center items-center gap-2 shadow-md active:scale-95">
+                    <i class="ph ph-plus-circle text-lg"></i> Tambah <span class="hidden sm:inline">Antrean</span>
                 </button>
             </div>
         </div>
 
-        <div class="overflow-x-auto">
+        <!-- Desktop Table -->
+        <div class="overflow-x-auto hidden sm:block">
             <table class="w-full text-left border-collapse">
                 <thead class="bg-zinc-100 text-zinc-500 text-[10px] uppercase tracking-widest border-b border-zinc-200">
                     <tr>
@@ -108,19 +105,43 @@
             </table>
         </div>
 
+        <!-- Mobile Cards -->
+        <div class="sm:hidden divide-y divide-zinc-100">
+            @forelse($antrean as $index => $a)
+                <div class="p-4 hover:bg-zinc-50 transition-colors group waiting-list-row" data-gender="{{ $a->jenis_kelamin }}">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="min-w-0">
+                            <p class="text-sm font-bold text-zinc-900 truncate">{{ $a->nama }}</p>
+                            <p class="text-[11px] text-zinc-500 mt-0.5">{{ $a->jenis_kelamin }}</p>
+                        </div>
+                        <span class="text-xs font-medium text-zinc-600 bg-zinc-100 px-2 py-1 rounded-md shrink-0 ml-2">{{ $a->no_telepon }}</span>
+                    </div>
+                    <div class="flex gap-2 justify-end mt-3">
+                        <button onclick="bukaModalEdit('{{ $a->id }}', '{{ $a->nama }}', '{{ $a->jenis_kelamin }}', '{{ $a->no_telepon }}')" class="px-3 py-1.5 rounded-lg bg-zinc-100 text-zinc-600 text-xs font-bold transition-colors"><i class="ph ph-pencil-simple"></i> Edit</button>
+                        <form action="{{ url('/admin/hapus_waiting_list/' . $a->id) }}" method="POST" class="inline">
+                            @csrf @method('DELETE')
+                            <button type="submit" onclick="return confirm('Yakin ingin menghapus antrean ini?')" class="px-3 py-1.5 rounded-lg bg-red-50 text-red-500 text-xs font-bold transition-colors"><i class="ph ph-trash"></i> Hapus</button>
+                        </form>
+                    </div>
+                </div>
+            @empty
+                <div class="p-8 text-center text-sm font-bold text-zinc-400">Belum ada data antrean.</div>
+            @endforelse
+        </div>
+
         <!-- PAGINATION -->
-        <div class="p-6 border-t border-zinc-100 bg-white flex flex-col md:flex-row items-center justify-between gap-4">
-            <p class="text-xs font-semibold text-zinc-400">Total: {{ $antrean->total() }} Antrean</p>
-            <div class="w-full md:w-auto overflow-x-auto no-scrollbar">
+        <div class="p-4 sm:p-6 border-t border-zinc-100 bg-white flex flex-col md:flex-row items-center justify-between gap-4">
+            <p class="text-xs font-semibold text-zinc-400 text-center w-full md:w-auto">Total: {{ $antrean->total() }} Antrean</p>
+            <div class="w-full md:w-auto overflow-x-auto no-scrollbar flex justify-center">
                 {{ $antrean->appends(request()->query())->links() }}
             </div>
         </div>
     </div>
 
     <!-- MODAL TAMBAH -->
-    <div id="modalTambah" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center">
-        <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl scale-95 transition-all">
-            <h2 class="text-xl font-black text-gray-900 mb-6 text-center uppercase tracking-wide">Tambah Waiting List</h2>
+    <div id="modalTambah" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl scale-95 transition-all max-h-[90vh] overflow-y-auto no-scrollbar">
+            <h2 class="text-lg sm:text-xl font-black text-gray-900 mb-6 text-center uppercase tracking-wide">Tambah Waiting List</h2>
             <form action="{{ url('/admin/tambah_waiting_list') }}" method="POST" class="space-y-4">
                 @csrf
                 <div>
@@ -160,9 +181,9 @@
     </div>
 
     <!-- MODAL EDIT -->
-    <div id="modalEdit" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center">
-        <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl scale-95 transition-all">
-            <h2 class="text-xl font-black text-gray-900 mb-6 text-center uppercase tracking-wide">Edit Waiting List</h2>
+    <div id="modalEdit" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl scale-95 transition-all max-h-[90vh] overflow-y-auto no-scrollbar">
+            <h2 class="text-lg sm:text-xl font-black text-gray-900 mb-6 text-center uppercase tracking-wide">Edit Waiting List</h2>
             <form id="formEdit" method="POST" class="space-y-4">
                 @csrf @method('PUT')
 

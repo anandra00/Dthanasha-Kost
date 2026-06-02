@@ -9,9 +9,9 @@
 
 @section('content')
     <!-- KARTU SUMMARY GENDER -->
-    <div class="flex gap-6 mb-10">
-        <div class="bg-white p-6 rounded-2xl card-shadow border border-gray-50 flex items-center gap-4 w-60 group transition-all">
-            <div class="w-14 h-14 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors">
+    <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-8 sm:mb-10">
+        <div class="bg-white p-5 sm:p-6 rounded-2xl card-shadow border border-gray-50 flex items-center gap-4 w-full sm:w-60 group transition-all">
+            <div class="w-14 h-14 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors shrink-0">
                 <i class="fas fa-mars text-2xl text-black"></i>
             </div>
             <div>
@@ -19,8 +19,8 @@
                 <p class="text-3xl font-extrabold text-gray-900">{{ $totalPria ?? 0 }}</p>
             </div>
         </div>
-        <div class="bg-white p-6 rounded-2xl card-shadow border border-gray-50 flex items-center gap-4 w-60 group transition-all">
-            <div class="w-14 h-14 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors">
+        <div class="bg-white p-5 sm:p-6 rounded-2xl card-shadow border border-gray-50 flex items-center gap-4 w-full sm:w-60 group transition-all">
+            <div class="w-14 h-14 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors shrink-0">
                 <i class="fas fa-venus text-2xl text-black"></i>
             </div>
             <div>
@@ -32,24 +32,25 @@
 
     <!-- TABEL DATA -->
     <div class="bg-white rounded-3xl card-shadow border border-gray-50 overflow-hidden">
-        <div class="p-6 border-b border-gray-50 flex justify-between items-center bg-gray-50">
-            <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wide">Daftar Penghuni Aktif</h3>
-            <div class="flex gap-3">
-                <select id="filterGender" onchange="filterTabelGender()" class="text-sm border border-zinc-200 bg-white rounded-lg px-3 py-2 outline-none font-semibold text-gray-600 cursor-pointer focus:ring-2 focus:ring-[#334155]">
+        <div class="p-4 sm:p-6 border-b border-gray-50 flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-50 gap-4">
+            <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wide shrink-0">Daftar Penghuni Aktif</h3>
+            <div class="flex flex-wrap sm:flex-nowrap gap-3 w-full sm:w-auto">
+                <select id="filterGender" onchange="filterTabelGender()" class="text-sm border border-zinc-200 bg-white rounded-lg px-3 py-2 outline-none font-semibold text-gray-600 cursor-pointer focus:ring-2 focus:ring-[#334155] flex-1 sm:flex-none">
                     <option value="Semua">Semua Gender</option>
                     <option value="Pria">Pria</option>
                     <option value="Wanita">Wanita</option>
                 </select>
-                <button onclick="bukaModalImport()" class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 border border-zinc-200 active:scale-95">
-                    <i class="fas fa-file-import"></i> Import Waiting List
+                <button onclick="bukaModalImport()" class="flex-1 sm:flex-none bg-zinc-100 hover:bg-zinc-200 text-zinc-700 px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 border border-zinc-200 active:scale-95">
+                    <i class="fas fa-file-import"></i> Import <span class="hidden sm:inline">Waiting List</span>
                 </button>
-                <button onclick="bukaModalTambah()" class="bg-[#18181B] hover:bg-[#334155] text-white px-5 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 shadow-md active:scale-95">
-                    <i class="fas fa-plus"></i> Tambah Akun
+                <button onclick="bukaModalTambah()" class="flex-1 sm:flex-none bg-[#18181B] hover:bg-[#334155] text-white px-5 py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 shadow-md active:scale-95">
+                    <i class="fas fa-plus"></i> Tambah <span class="hidden sm:inline">Akun</span>
                 </button>
             </div>
         </div>
 
-        <div class="overflow-x-auto">
+        <!-- Desktop Table -->
+        <div class="overflow-x-auto hidden sm:block">
             <table class="w-full text-left">
                 <thead class="bg-zinc-100 text-zinc-500 text-[10px] uppercase tracking-widest border-b border-zinc-200">
                     <tr>
@@ -101,19 +102,54 @@
             </table>
         </div>
 
+        <!-- Mobile Cards -->
+        <div class="sm:hidden divide-y divide-zinc-200">
+            @forelse($penghunis as $index => $p)
+                <div class="p-4 hover:bg-zinc-50 transition-colors group penghuni-row" data-gender="{{ $p->jenis_kelamin == 'L' ? 'Pria' : 'Wanita' }}">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="min-w-0 flex-1">
+                            <p class="text-sm font-bold text-gray-900 truncate">{{ $p->nama_penghuni }}</p>
+                            <p class="text-[11px] text-gray-500 mt-0.5 truncate">{{ '@' . ($p->user->username ?? 'tidak_ada') }}</p>
+                        </div>
+                        @if($p->id_kamar)
+                            <span class="bg-blue-100 text-blue-800 text-[10px] font-black px-2 py-1 rounded-md shrink-0 ml-2">Kamar {{ $p->kamar->nomor_kamar }}</span>
+                        @else
+                            <span class="bg-zinc-200 text-zinc-800 text-[10px] font-black px-2 py-1 rounded-md shrink-0 ml-2">Belum ada kamar</span>
+                        @endif
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs text-gray-600 mb-3">
+                        <div class="flex flex-col">
+                            <span class="font-bold text-[9px] uppercase tracking-widest text-zinc-400 mb-0.5">Gender & Usia</span>
+                            <span class="font-medium">{{ $p->jenis_kelamin == 'L' ? 'Pria' : 'Wanita' }} · {{ $p->usia }} Thn</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="font-bold text-[9px] uppercase tracking-widest text-zinc-400 mb-0.5">Kontak Pribadi</span>
+                            <span class="font-medium truncate">{{ $p->no_telepon }}</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mt-2">
+                        <button onclick="bukaModalEditPenghuni({{ $p->id }}, '{{ $p->nama_penghuni }}', '{{ $p->id_kamar }}', '{{ $p->jenis_kelamin }}', '{{ $p->usia }}', '{{ $p->no_telepon }}', '{{ $p->no_telepon_orangtua }}', '{{ $p->user->email ?? '' }}')" class="flex-1 bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 active:scale-95"><i class="fas fa-edit"></i> Edit</button>
+                        <button onclick="bukaModalHapus({{ $p->id }}, '{{ $p->nama_penghuni }}', '{{ $p->usia }}', '{{ $p->kamar->nomor_kamar ?? '-' }}')" class="flex-1 bg-red-50 text-red-600 hover:bg-red-100 px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 active:scale-95"><i class="fas fa-trash"></i> Hapus</button>
+                    </div>
+                </div>
+            @empty
+                <div class="p-8 text-center text-sm font-bold text-zinc-400">Belum ada data penghuni. Silakan tambah data baru.</div>
+            @endforelse
+        </div>
+
         <!-- PAGINATION -->
-        <div class="p-6 border-t border-zinc-100 bg-white flex flex-col md:flex-row items-center justify-between gap-4">
-            <p class="text-xs font-semibold text-zinc-400">Total: {{ $penghunis->total() }} Penghuni</p>
-            <div class="w-full md:w-auto overflow-x-auto no-scrollbar">
+        <div class="p-4 sm:p-6 border-t border-zinc-100 bg-white flex flex-col md:flex-row items-center justify-between gap-4">
+            <p class="text-xs font-semibold text-zinc-400 text-center w-full md:w-auto">Total: {{ $penghunis->total() }} Penghuni</p>
+            <div class="w-full md:w-auto overflow-x-auto no-scrollbar flex justify-center">
                 {{ $penghunis->appends(request()->query())->links() }}
             </div>
         </div>
     </div>
 
     <!-- MODAL TAMBAH -->
-    <div id="modalTambah" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center">
-        <div class="bg-white w-full max-w-lg rounded-3xl p-8 shadow-2xl scale-95 transition-all max-h-[90vh] overflow-y-auto no-scrollbar">
-            <h2 class="text-xl font-black text-gray-900 mb-6 text-center uppercase tracking-wide">Tambah Akun Baru</h2>
+    <div id="modalTambah" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl scale-95 transition-all max-h-[90vh] overflow-y-auto no-scrollbar">
+            <h2 class="text-lg sm:text-xl font-black text-gray-900 mb-6 text-center uppercase tracking-wide">Tambah Akun Baru</h2>
             <form id="formTambahAkun" action="{{ route('admin.tambah-akun') }}" method="POST" class="space-y-4">
                 @csrf
                 <input type="hidden" name="waiting_list_id" id="tambah_wl_id" value="">
@@ -121,7 +157,7 @@
                     <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nama Lengkap</label>
                     <input type="text" name="nama" id="tambah_nama" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Usia</label>
                         <input type="number" name="usia" id="tambah_usia" min="0" max="200" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
@@ -134,7 +170,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Kontak Penghuni</label>
                         <input type="text" name="kontak" id="tambah_kontak" placeholder="CTH: 628..." class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
@@ -144,7 +180,7 @@
                         <input type="text" name="kontak_ortu" placeholder="CTH: 628..." class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">No. Kamar</label>
                         <input type="text" name="nomor_kamar" min="0" max="100" placeholder="Akan disambungkan nanti" class="w-full px-4 py-3 rounded-xl bg-zinc-100 border border-zinc-200 text-zinc-500 font-bold text-sm cursor-not-allowed" readonly>
@@ -167,13 +203,13 @@
     </div>
 
     <!-- MODAL EDIT PENGHUNI -->
-    <div id="modalEditPenghuni" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center">
-        <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl scale-95 transition-all max-h-[90vh] overflow-y-auto no-scrollbar">
-            <h2 class="text-xl font-black text-zinc-900 mb-6 text-center uppercase tracking-wide">Edit Data Penghuni</h2>
+    <div id="modalEditPenghuni" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl scale-95 transition-all max-h-[90vh] overflow-y-auto no-scrollbar">
+            <h2 class="text-lg sm:text-xl font-black text-zinc-900 mb-6 text-center uppercase tracking-wide">Edit Data Penghuni</h2>
             <form id="formEditPenghuni" method="POST" class="space-y-4">
                 @csrf @method('PUT')
                 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nama Penghuni</label>
                         <input type="text" id="edit_nama" name="nama" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all font-bold text-zinc-900 text-sm" required>
@@ -184,7 +220,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Gender</label>
                         <select id="edit_jk" name="jk" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
@@ -198,7 +234,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">No. Orang Tua</label>
                         <input type="text" id="edit_kontak_ortu" name="kontak_ortu" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all font-bold text-zinc-900 text-sm">
@@ -225,19 +261,19 @@
     </div>
 
     <!-- MODAL DETAIL / HAPUS -->
-    <div id="modalHapus" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center">
-        <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl max-h-[90vh] overflow-y-auto no-scrollbar">
+    <div id="modalHapus" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto no-scrollbar">
             <div class="text-center mb-6">
                 <div class="w-16 h-16 bg-zinc-100 text-zinc-800 border border-zinc-200 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl">
                     <i class="fas fa-user"></i>
                 </div>
-                <h2 class="text-xl font-black text-gray-900 uppercase tracking-wide">Hapus Penghuni</h2>
+                <h2 class="text-lg sm:text-xl font-black text-gray-900 uppercase tracking-wide">Hapus Penghuni</h2>
             </div>
             
             <form id="formHapusPenghuni" method="POST" class="space-y-4">
                 @csrf @method('DELETE')
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="col-span-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="sm:col-span-2">
                         <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-1">Nama</label>
                         <input type="text" id="hapus_nama" class="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-100 text-zinc-900 font-bold text-sm" readonly>
                     </div>
@@ -262,9 +298,9 @@
     </div>
 
     <!-- MODAL IMPORT WAITING LIST -->
-    <div id="modalImport" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center">
-        <div class="bg-white w-full max-w-lg rounded-3xl p-8 shadow-2xl scale-95 transition-all max-h-[90vh] overflow-y-auto no-scrollbar">
-            <h2 class="text-xl font-black text-gray-900 mb-6 text-center uppercase tracking-wide">Import dari Waiting List</h2>
+    <div id="modalImport" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl scale-95 transition-all max-h-[90vh] overflow-y-auto no-scrollbar">
+            <h2 class="text-lg sm:text-xl font-black text-gray-900 mb-6 text-center uppercase tracking-wide">Import dari Waiting List</h2>
             <p class="text-sm text-zinc-500 mb-4 text-center">Pilih calon penghuni untuk dibuatkan akun.</p>
             <div class="space-y-3 max-h-60 overflow-y-auto">
                 @forelse($waitingList as $wl)
