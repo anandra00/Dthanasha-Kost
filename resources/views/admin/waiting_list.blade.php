@@ -61,7 +61,7 @@
                 </thead>
                 <tbody class="divide-y divide-zinc-100">
                     @forelse($antrean as $index => $a)
-                        <tr class="hover:bg-zinc-50 transition-colors group waiting-list-row" data-gender="{{ $a->jenis_kelamin }}">
+                        <tr class="hover:bg-zinc-50 transition-colors group searchable-item waiting-list-row" data-gender="{{ $a->jenis_kelamin }}">
                             <td class="px-6 py-4 text-sm font-bold text-zinc-400 text-center">{{ $index + 1 }}</td>
                             <td class="px-6 py-4 text-sm font-medium text-zinc-900 group-hover:text-[#334155] transition-colors">
                                 {{ $a->nama }}
@@ -108,7 +108,7 @@
         <!-- Mobile Cards -->
         <div class="sm:hidden divide-y divide-zinc-100">
             @forelse($antrean as $index => $a)
-                <div class="p-4 hover:bg-zinc-50 transition-colors group waiting-list-row" data-gender="{{ $a->jenis_kelamin }}">
+                <div class="p-4 hover:bg-zinc-50 transition-colors group relative searchable-item waiting-list-row" data-gender="{{ $a->jenis_kelamin }}">
                     <div class="flex justify-between items-start mb-2">
                         <div class="min-w-0">
                             <p class="text-sm font-bold text-zinc-900 truncate">{{ $a->nama }}</p>

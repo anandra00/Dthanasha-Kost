@@ -24,10 +24,15 @@
                 <textarea name="isi_keluhan" rows="4" placeholder="Cth: Maaf Pak, kiriman dari orang tua saya telat masuk..." class="w-full px-4 py-3.5 rounded-xl bg-zinc-50 border border-zinc-200 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#18181B] transition-all text-sm font-medium text-zinc-900 resize-none" required></textarea>
             </div>
             
-            <button type="submit" class="w-full px-4 py-4 rounded-xl bg-[#18181B] text-white font-bold hover:bg-[#334155] shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide flex justify-center items-center gap-2">
-                <i class="ph ph-paper-plane-tilt text-lg"></i>
-                <span>Kirim & Buka WA</span>
-            </button>
+            <div class="flex gap-3">
+                <button type="button" onclick="document.getElementById('modalKeluhan').classList.add('hidden')" class="flex-1 px-4 py-4 rounded-xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm uppercase tracking-wide">
+                    Kembali
+                </button>
+                <button type="submit" class="flex-1 px-4 py-4 rounded-xl bg-[#18181B] text-white font-bold hover:bg-[#334155] shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide flex justify-center items-center gap-2">
+                    <i class="ph ph-paper-plane-tilt text-lg"></i>
+                    <span>Kirim via WA</span>
+                </button>
+            </div>
         </form>
     </div>
 </div>

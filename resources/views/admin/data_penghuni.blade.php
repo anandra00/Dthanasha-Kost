@@ -67,7 +67,7 @@
                 </thead>
                 <tbody class="divide-y divide-zinc-200">
                     @forelse($penghunis as $index => $p)
-                        <tr class="hover:bg-zinc-50 transition-colors group penghuni-row" data-gender="{{ $p->jenis_kelamin == 'L' ? 'Pria' : 'Wanita' }}">
+                        <tr class="hover:bg-zinc-50 transition-colors group penghuni-row searchable-item" data-gender="{{ $p->jenis_kelamin == 'L' ? 'Pria' : 'Wanita' }}">
                             <td class="px-6 py-4 text-sm font-bold text-gray-400 text-center">{{ $index + 1 }}</td>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900 group-hover:text-[#334155] transition-colors">{{ $p->nama_penghuni }}</td>
                             <td class="px-6 py-4 text-sm text-center text-gray-600">{{ $p->usia }}</td>
@@ -105,7 +105,7 @@
         <!-- Mobile Cards -->
         <div class="sm:hidden divide-y divide-zinc-200">
             @forelse($penghunis as $index => $p)
-                <div class="p-4 hover:bg-zinc-50 transition-colors group penghuni-row" data-gender="{{ $p->jenis_kelamin == 'L' ? 'Pria' : 'Wanita' }}">
+                <div class="p-4 hover:bg-zinc-50 transition-colors group penghuni-row searchable-item" data-gender="{{ $p->jenis_kelamin == 'L' ? 'Pria' : 'Wanita' }}">
                     <div class="flex items-start justify-between mb-3">
                         <div class="min-w-0 flex-1">
                             <p class="text-sm font-bold text-gray-900 truncate">{{ $p->nama_penghuni }}</p>
@@ -390,32 +390,20 @@
             const filterValue = document.getElementById('filterGender').value;
             const rows = document.querySelectorAll('.penghuni-row');
             
-            // For desktop table rows
-            let counterDesktop = 1;
-            const tbodyRows = document.querySelectorAll('tbody .penghuni-row');
-            tbodyRows.forEach(row => {
+            rows.forEach(row => {
                 const gender = row.getAttribute('data-gender');
                 if (filterValue === 'Semua' || filterValue === gender) {
-                    row.style.display = '';
-                    const numCell = row.querySelector('td:first-child');
-                    if (numCell) {
-                        numCell.textContent = counterDesktop++;
-                    }
+                    row.removeAttribute('data-hide-by-filter');
                 } else {
-                    row.style.display = 'none';
+                    row.setAttribute('data-hide-by-filter', 'true');
                 }
             });
 
-            // For mobile cards
-            const mobileCards = document.querySelectorAll('.sm\\:hidden .penghuni-row');
-            mobileCards.forEach(card => {
-                const gender = card.getAttribute('data-gender');
-                if (filterValue === 'Semua' || filterValue === gender) {
-                    card.style.display = '';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+            // Trigger global search to update visibility and numbers
+            const globalSearch = document.getElementById('globalSearch');
+            if(globalSearch) {
+                globalSearch.dispatchEvent(new Event('input'));
+            }
         }
     </script>
 @endsection

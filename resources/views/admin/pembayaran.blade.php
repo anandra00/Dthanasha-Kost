@@ -55,7 +55,7 @@
             $urlBuktiJS = $tagihan->bukti_transfer ? asset('storage/' . $tagihan->bukti_transfer) : '';
         @endphp
         
-        <div class="bg-white w-full rounded-[1.25rem] p-5 card-shadow border border-zinc-100 flex flex-col gap-5 hover:shadow-lg hover:border-zinc-200 transition-all group">
+        <div class="bg-white w-full rounded-[1.25rem] p-5 card-shadow border border-zinc-100 flex flex-col gap-5 hover:shadow-lg hover:border-zinc-200 transition-all group searchable-item">
             <div class="flex justify-between items-start">
                 <div class="bg-[#18181B] text-white w-[65px] h-[65px] rounded-2xl flex items-center justify-center font-bold text-xl shadow-sm tracking-wide">
                     {{ $nomorKamar }}

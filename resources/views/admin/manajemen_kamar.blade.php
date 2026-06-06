@@ -55,7 +55,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         @forelse ($kamars as $kamar)
     
-        <div class="bg-white w-full rounded-[1.25rem] p-5 shadow-lg shadow-zinc-200/50 border border-zinc-100 flex flex-col gap-5 hover:shadow-2xl hover:border-zinc-300 transition-all duration-300 group">
+        <div class="bg-white w-full rounded-[1.25rem] p-5 shadow-lg shadow-zinc-200/50 border border-zinc-100 flex flex-col gap-5 hover:shadow-2xl hover:border-zinc-300 transition-all duration-300 group searchable-item">
             <div class="flex justify-between items-start">
                 <div class="bg-[#18181B] text-white w-[65px] h-[65px] rounded-2xl flex items-center justify-center font-bold text-2xl shadow-sm tracking-wide">{{ $kamar->nomor_kamar }}</div>
                 <div class="text-right flex flex-col items-end">

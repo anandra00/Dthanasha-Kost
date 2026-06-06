@@ -85,7 +85,7 @@
                         </thead>
                         <tbody class="divide-y divide-zinc-50">
                             @forelse($transaksiTerakhir as $trx)
-                                <tr class="hover:bg-zinc-50/50 transition-all cursor-pointer">
+                                <tr class="hover:bg-zinc-50/50 transition-all cursor-pointer searchable-item">
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $trx->id_tagihan ? $trx->order_id : $trx->kegiatan }}</td>
                                     <td class="px-6 py-4 text-sm text-center text-gray-600">{{ $trx->id_tagihan ? ($trx->tagihan?->penghuni?->nama_penghuni ?? '-') : ($trx->nama ?? 'Pemilik') }}</td>
                                     <td class="px-6 py-4 text-sm text-zinc-500">{{ $trx->id_tagihan ? $trx->created_at->translatedFormat('d M Y') : \Carbon\Carbon::parse($trx->waktu)->translatedFormat('d M Y') }}</td>
@@ -103,7 +103,7 @@
                 <!-- Mobile Cards (Muncul di layar HP) -->
                 <div class="sm:hidden divide-y divide-zinc-50">
                     @forelse($transaksiTerakhir as $trx)
-                        <div class="p-4">
+                        <div class="p-4 searchable-item">
                             <div class="flex justify-between items-start mb-1">
                                 <p class="text-sm font-medium text-gray-900 truncate flex-1">{{ $trx->id_tagihan ? $trx->order_id : $trx->kegiatan }}</p>
                                 <p class="text-sm font-bold ml-2 {{ $trx->id_tagihan ? 'text-green-600' : 'text-red-500' }}">Rp {{ number_format($trx->id_tagihan ? ($trx->tagihan?->nominal_tagihan ?? 0) : $trx->nominal, 0, ',', '.') }}</p>
@@ -128,7 +128,7 @@
                 <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide mb-6">Lewat Jatuh Tempo</h3>
                 <div class="space-y-3">
                     @forelse($lewatJatuhTempo as $tagihan)
-                        <div class="flex items-center justify-between p-3 border border-zinc-100 rounded-2xl bg-zinc-50/50 hover:bg-white transition-all">
+                        <div class="flex items-center justify-between p-3 border border-zinc-100 rounded-2xl bg-zinc-50/50 hover:bg-white transition-all searchable-item">
                             <div class="flex items-center gap-3 min-w-0">
                                 <div class="w-10 h-10 rounded-xl bg-zinc-200 flex items-center justify-center text-zinc-600 font-bold shrink-0">
                                     {{ strtoupper(substr($tagihan->penghuni?->nama_penghuni ?? '?', 0, 1)) }}

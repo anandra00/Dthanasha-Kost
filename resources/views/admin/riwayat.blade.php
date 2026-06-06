@@ -98,7 +98,7 @@
         </thead>
         <tbody class="divide-y divide-zinc-100">
             @forelse($riwayats as $row)
-                <tr class="hover:bg-zinc-50 transition-all group">
+                <tr class="hover:bg-zinc-50 transition-all group searchable-item">
                     <td class="px-6 py-4 text-sm font-bold text-zinc-900 group-hover:text-[#334155] transition-colors">
                         <span class="truncate block max-w-[180px]">{{ $row->keterangan }}</span>
                     </td>
@@ -157,7 +157,7 @@
         <!-- Mobile Cards -->
         <div class="sm:hidden flex flex-col">
             @forelse($riwayats as $row)
-                <div class="p-4 border-b border-zinc-100 hover:bg-zinc-50 transition-all relative">
+                <div class="p-4 border-b border-zinc-100 hover:bg-zinc-50 transition-all relative searchable-item">
                     <div class="flex justify-between items-start mb-2">
                         <!-- Info Kiri -->
                         <div class="pr-2 flex-1 min-w-0">

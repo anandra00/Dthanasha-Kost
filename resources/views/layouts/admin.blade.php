@@ -101,47 +101,34 @@
                 searchInput.addEventListener('input', function() {
                     const filter = this.value.toLowerCase();
                     
-                    // Filter Desktop Tables
+                    // Filter Desktop Tables and Mobile Cards that have class .searchable-item
+                    const items = document.querySelectorAll('.searchable-item');
+                    items.forEach(item => {
+                        const text = item.textContent.toLowerCase();
+                        if (text.includes(filter)) {
+                            // Cek jika item ini juga sedang di-filter oleh sistem lain (seperti filter gender di data penghuni)
+                            // Jika ada atribut data-hide-by-filter, jangan ditampilkan
+                            if (item.getAttribute('data-hide-by-filter') !== 'true') {
+                                item.style.display = '';
+                            }
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+
+                    // Re-numbering table rows that are visible
                     const tables = document.querySelectorAll('table tbody');
                     tables.forEach(tbody => {
-                        const rows = tbody.querySelectorAll('tr');
                         let counter = 1;
+                        const rows = tbody.querySelectorAll('tr.searchable-item');
                         rows.forEach(row => {
-                            // Skip empty state rows
-                            if (row.querySelector('td') && row.querySelector('td').hasAttribute('colspan')) {
-                                return;
-                            }
-                            const text = row.textContent.toLowerCase();
-                            if (text.includes(filter)) {
-                                row.style.display = '';
-                                // Re-numbering if the first column is purely numeric
+                            if (row.style.display !== 'none') {
                                 const firstTd = row.querySelector('td:first-child');
                                 if (firstTd && firstTd.children.length === 0) {
                                     const num = parseInt(firstTd.textContent.trim());
                                     if (!isNaN(num)) {
                                         firstTd.textContent = counter++;
                                     }
-                                }
-                            } else {
-                                row.style.display = 'none';
-                            }
-                        });
-                    });
-
-                    // Filter Mobile Cards (typically in these containers)
-                    const mobileContainers = document.querySelectorAll('.sm\\:hidden.divide-y, .grid.grid-cols-1.md\\:grid-cols-2');
-                    mobileContainers.forEach(container => {
-                        const cards = container.children;
-                        Array.from(cards).forEach(card => {
-                            if (card.tagName === 'DIV') {
-                                // Skip empty state messages
-                                const content = card.textContent.toLowerCase();
-                                if (content.includes('belum ada') || content.includes('kosong')) return;
-                                
-                                if (content.includes(filter)) {
-                                    card.style.display = '';
-                                } else {
-                                    card.style.display = 'none';
                                 }
                             }
                         });
