@@ -2,12 +2,7 @@
 
 @section('title', 'Dashboard Penghuni - Dthanasha Kost')
 
-@section('search_input')
-<div class="relative w-full max-w-md md:w-96">
-    <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-lg"></i>
-    <input type="text" placeholder="Cari riwayat atau bantuan..." class="w-full pl-10 pr-4 py-2 bg-white border border-zinc-300 rounded-lg focus:outline-none focus:border-[#334155] focus:ring-1 focus:ring-[#334155] transition-all text-sm">
-</div>
-@endsection
+
 
 @section('content')
     <h1 class="text-2xl font-black text-gray-900 mb-8">Selamat datang, {{ $nama }}!</h1>
