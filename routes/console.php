@@ -8,5 +8,5 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('app:generate-tagihan-bulanan')->hourly();
+Schedule::command('app:generate-tagihan-bulanan')->everyMinute();
 Schedule::command('app:send-payment-reminder')->dailyAt('08:00');
