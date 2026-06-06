@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\WaitingListController;
 use App\Http\Controllers\Admin\KamarController;
 use App\Http\Controllers\Admin\PembayaranController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 
 // ==========================================
 // ROUTE SISI PEMILIK (ADMINISTRATOR)
@@ -95,6 +96,10 @@ Route::middleware(['auth', 'role:penghuni', 'wajib.email'])->group(function () {
     Route::post('/penghuni/submit-keluhan', [KeluhanController::class, 'submitKeluhan'])->name('penghuni.submit-keluhan');
 });
 Route::post('/midtrans/webhook', [PaymentController::class, 'webhook']);
+Route::get('/nembak-tagihan-rahasia', function () {
+    Artisan::call('schedule:run');
+    return 'Cron job berhasil ditembak manual!';
+});
 
 
 // Route autentikasi bawaan Breeze
