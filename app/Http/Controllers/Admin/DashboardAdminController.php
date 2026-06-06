@@ -7,6 +7,7 @@ use App\Models\Penghuni;
 use App\Models\Kamar;
 use App\Models\Tagihan;
 use App\Models\Transaksi;
+use App\Models\Pengeluaran;
 
 class DashboardAdminController extends Controller
 {
@@ -19,10 +20,10 @@ class DashboardAdminController extends Controller
         $kamarTerisi = Kamar::where('status_kamar', 'Terisi')->count();
 
         // Keuntungan
-        $totalPemasukan = Tagihan::where('status_tagihan', 'Lunas')->sum('nominal_tagihan');
-        $totalPengeluaran = Transaksi::whereNull('id_tagihan')
-            ->whereIn('status_transaksi', ['settlement', 'berhasil', 'Lunas', 'Berhasil'])
-            ->sum('nominal');
+        $totalPemasukan = Transaksi::where('status_transaksi', 'berhasil')->sum('nominal');
+
+        $totalPengeluaran = Pengeluaran::sum('nominal');
+
         $keuntungan = $totalPemasukan - $totalPengeluaran;
 
         // Transaksi terakhir
