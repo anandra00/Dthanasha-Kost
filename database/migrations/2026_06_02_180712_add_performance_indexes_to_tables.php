@@ -12,26 +12,53 @@ return new class extends Migration
     public function up(): void
     {
         // Add indexes for frequently queried columns to improve performance
-        Schema::table('tagihan', function (Blueprint $table) {
-            // Index for querying unpaid bills by specific resident
-            $table->index(['id_penghuni', 'status_tagihan']);
-            // Index for dashboard chart queries and filtering
-            $table->index('tanggal_bayar');
-            $table->index('status_tagihan');
-        });
+        try {
+            Schema::table('tagihan', function (Blueprint $table) {
+                $table->index(['id_penghuni', 'status_tagihan']);
+            });
+        } catch (\Exception $e) {}
 
-        Schema::table('transaksi', function (Blueprint $table) {
-            // Order ID is queried heavily by Midtrans Webhooks
-            $table->index('order_id');
-            // Transaction status is queried often for summaries
-            $table->index('status_transaksi');
-            $table->index('waktu'); // Custom field added in another migration
-        });
+        try {
+            Schema::table('tagihan', function (Blueprint $table) {
+                $table->index('tanggal_bayar');
+            });
+        } catch (\Exception $e) {}
+
+        try {
+            Schema::table('tagihan', function (Blueprint $table) {
+                $table->index('status_tagihan');
+            });
+        } catch (\Exception $e) {}
+
+        try {
+            Schema::table('transaksi', function (Blueprint $table) {
+                $table->index('order_id');
+            });
+        } catch (\Exception $e) {}
+
+        try {
+            Schema::table('transaksi', function (Blueprint $table) {
+                $table->index('status_transaksi');
+            });
+        } catch (\Exception $e) {}
+
+        try {
+            Schema::table('transaksi', function (Blueprint $table) {
+                $table->index('waktu');
+            });
+        } catch (\Exception $e) {}
         
-        Schema::table('penghuni', function (Blueprint $table) {
-            $table->index('id_user');
-            $table->index('id_kamar');
-        });
+        try {
+            Schema::table('penghuni', function (Blueprint $table) {
+                $table->index('id_user');
+            });
+        } catch (\Exception $e) {}
+
+        try {
+            Schema::table('penghuni', function (Blueprint $table) {
+                $table->index('id_kamar');
+            });
+        } catch (\Exception $e) {}
     }
 
     /**
@@ -39,21 +66,52 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tagihan', function (Blueprint $table) {
-            $table->dropIndex(['id_penghuni', 'status_tagihan']);
-            $table->dropIndex(['tanggal_bayar']);
-            $table->dropIndex(['status_tagihan']);
-        });
+        try {
+            Schema::table('tagihan', function (Blueprint $table) {
+                $table->dropIndex(['id_penghuni', 'status_tagihan']);
+            });
+        } catch (\Exception $e) {}
 
-        Schema::table('transaksi', function (Blueprint $table) {
-            $table->dropIndex(['order_id']);
-            $table->dropIndex(['status_transaksi']);
-            $table->dropIndex(['waktu']);
-        });
+        try {
+            Schema::table('tagihan', function (Blueprint $table) {
+                $table->dropIndex(['tanggal_bayar']);
+            });
+        } catch (\Exception $e) {}
+
+        try {
+            Schema::table('tagihan', function (Blueprint $table) {
+                $table->dropIndex(['status_tagihan']);
+            });
+        } catch (\Exception $e) {}
+
+        try {
+            Schema::table('transaksi', function (Blueprint $table) {
+                $table->dropIndex(['order_id']);
+            });
+        } catch (\Exception $e) {}
+
+        try {
+            Schema::table('transaksi', function (Blueprint $table) {
+                $table->dropIndex(['status_transaksi']);
+            });
+        } catch (\Exception $e) {}
+
+        try {
+            Schema::table('transaksi', function (Blueprint $table) {
+                $table->dropIndex(['waktu']);
+            });
+        } catch (\Exception $e) {}
         
-        Schema::table('penghuni', function (Blueprint $table) {
-            $table->dropIndex(['id_user']);
-            $table->dropIndex(['id_kamar']);
-        });
+        try {
+            Schema::table('penghuni', function (Blueprint $table) {
+                $table->dropIndex(['id_user']);
+            });
+        } catch (\Exception $e) {}
+
+        try {
+            Schema::table('penghuni', function (Blueprint $table) {
+                $table->dropIndex(['id_kamar']);
+            });
+        } catch (\Exception $e) {}
     }
 };
