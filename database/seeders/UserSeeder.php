@@ -14,19 +14,23 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // 1. Akun Owner (Punya Email)
-        User::create([
-            'username' => 'admin',
-            'email' => 'admin@dthanasha.com',
-            'password' => Hash::make('owner123'), // Hash::make() ini wajib biar password lu jadi teks acak di database
-            'role' => 'owner',
-        ]);
+        User::updateOrCreate(
+            ['username' => 'admin'],
+            [
+                'email' => 'admin@dthanasha.com',
+                'password' => Hash::make('owner123'), // Hash::make() ini wajib biar password lu jadi teks acak di database
+                'role' => 'owner',
+            ]
+        );
 
         // 2. Akun Penghuni (Email Null)
-        User::create([
-            'username' => 'penghuni1',
-            'email' => null, // Sesuai skenario kita, dikosongin dulu
-            'password' => Hash::make('12345678'),
-            'role' => 'penghuni',
-        ]);
+        User::updateOrCreate(
+            ['username' => 'penghuni1'],
+            [
+                'email' => null, // Sesuai skenario kita, dikosongin dulu
+                'password' => Hash::make('12345678'),
+                'role' => 'penghuni',
+            ]
+        );
     }
 }
