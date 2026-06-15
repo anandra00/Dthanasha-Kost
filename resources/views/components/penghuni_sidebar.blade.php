@@ -1,7 +1,9 @@
 <aside id="penghuniSidebar" class="sidebar-panel w-64 bg-[#18181B] text-zinc-400 flex flex-col fixed h-full z-50 border-r border-zinc-800">
     <div class="p-6 border-b border-gray-800 flex items-center justify-between">
         <div class="text-center flex-1">
-            <h2 class="text-white text-xl font-bold tracking-tight uppercase">DTHANASHA KOST</h2>
+            <a href="{{ route('landing') }}" class="hover:text-amber-500 transition-colors block">
+                <h2 class="text-white text-xl font-bold tracking-tight uppercase">DTHANASHA KOST</h2>
+            </a>
             <p class="text-[10px] text-zinc-500 tracking-[0.2em] mt-1 uppercase">Penghuni</p>
         </div>
         <!-- Close button (mobile) -->

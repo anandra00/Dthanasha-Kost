@@ -21,7 +21,9 @@
 
     <aside class="w-64 bg-[#18181B] text-zinc-400 hidden md:flex flex-col fixed h-full z-50">
         <div class="p-6 border-b border-zinc-800">
-            <h2 class="text-white text-xl font-bold tracking-tight uppercase">Dthanasha <span class="text-white">Kost</span></h2>
+            <a href="{{ route('landing') }}" class="hover:text-amber-500 transition-colors block">
+                <h2 class="text-white text-xl font-bold tracking-tight uppercase">Dthanasha <span class="text-white">Kost</span></h2>
+            </a>
             <p class="text-[10px] text-zinc-500 tracking-[0.2em] mt-1 uppercase">Pemilik Kost</p>
         </div>
         
