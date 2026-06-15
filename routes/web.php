@@ -74,7 +74,7 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
 // ==========================================
 // ROUTE SISI PENGHUNI
 // ==========================================
-Route::middleware(['auth', 'role:penghuni', 'wajib.email'])->group(function () { 
+Route::middleware(['auth', 'role:penghuni'])->group(function () { 
 
     Route::post('/penghuni/submit-email', [EmailController::class, 'submitEmail'])->name('penghuni.submit-email');
     

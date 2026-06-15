@@ -102,7 +102,7 @@
 @section('scripts')
     <script>
         function salinRekening() {
-            const norek = "123456789012";
+            const norek = document.getElementById('norek').innerText.trim();
             navigator.clipboard.writeText(norek).then(() => {
                 const textSalin = document.getElementById('text-salin');
                 textSalin.innerText = "Tersalin!";

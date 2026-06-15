@@ -5,41 +5,41 @@
 
 @section('content')
     <!-- SUMMARY CARDS -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        <div class="bg-white p-6 rounded-2xl card-shadow border border-gray-50 flex items-center justify-between group">
-            <div>
-                <p class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Terisi</p>
-                <p class="text-3xl font-black text-zinc-900">{{ $terisi }}</p>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
+        <div class="bg-white p-4 sm:p-6 rounded-2xl card-shadow border border-gray-50 flex items-center justify-between group transition-all">
+            <div class="min-w-0">
+                <p class="text-[10px] sm:text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Terisi</p>
+                <p class="text-2xl sm:text-3xl font-black text-zinc-900">{{ $terisi }}</p>
             </div>
-            <div class="w-14 h-14 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors">
-                <i class="ph-fill ph-user-check text-2xl text-black"></i>
-            </div>
-        </div>
-        <div class="bg-white p-6 rounded-2xl card-shadow border border-gray-50 flex items-center justify-between group">
-            <div>
-                <p class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Kosong</p>
-                <p class="text-3xl font-black text-zinc-900">{{ $kosong }}</p>
-            </div>
-            <div class="w-14 h-14 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors">
-                <i class="ph-fill ph-door-open text-2xl text-black"></i>
+            <div class="w-10 h-10 sm:w-14 sm:h-14 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors shrink-0 ml-2">
+                <i class="ph-fill ph-user-check text-lg sm:text-2xl text-black"></i>
             </div>
         </div>
-        <div class="bg-white p-6 rounded-2xl card-shadow border border-gray-50 flex items-center justify-between group">
-            <div>
-                <p class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Reguler</p>
-                <p class="text-3xl font-black text-zinc-900">{{ $reguler }}</p>
+        <div class="bg-white p-4 sm:p-6 rounded-2xl card-shadow border border-gray-50 flex items-center justify-between group transition-all">
+            <div class="min-w-0">
+                <p class="text-[10px] sm:text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Kosong</p>
+                <p class="text-2xl sm:text-3xl font-black text-zinc-900">{{ $kosong }}</p>
             </div>
-            <div class="w-14 h-14 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors">
-                <i class="ph-fill ph-bed text-2xl text-black"></i>
+            <div class="w-10 h-10 sm:w-14 sm:h-14 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors shrink-0 ml-2">
+                <i class="ph-fill ph-door-open text-lg sm:text-2xl text-black"></i>
             </div>
         </div>
-        <div class="bg-white p-6 rounded-2xl card-shadow border border-gray-50 flex items-center justify-between group">
-            <div>
-                <p class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-1">VIP</p>
-                <p class="text-3xl font-black text-zinc-900">{{ $vip }}</p>
+        <div class="bg-white p-4 sm:p-6 rounded-2xl card-shadow border border-gray-50 flex items-center justify-between group transition-all">
+            <div class="min-w-0">
+                <p class="text-[10px] sm:text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Reguler</p>
+                <p class="text-2xl sm:text-3xl font-black text-zinc-900">{{ $reguler }}</p>
             </div>
-            <div class="w-14 h-14 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors">
-                <i class="ph-fill ph-crown text-2xl text-black"></i>
+            <div class="w-10 h-10 sm:w-14 sm:h-14 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors shrink-0 ml-2">
+                <i class="ph-fill ph-bed text-lg sm:text-2xl text-black"></i>
+            </div>
+        </div>
+        <div class="bg-white p-4 sm:p-6 rounded-2xl card-shadow border border-gray-50 flex items-center justify-between group transition-all">
+            <div class="min-w-0">
+                <p class="text-[10px] sm:text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-1">VIP</p>
+                <p class="text-2xl sm:text-3xl font-black text-zinc-900">{{ $vip }}</p>
+            </div>
+            <div class="w-10 h-10 sm:w-14 sm:h-14 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors shrink-0 ml-2">
+                <i class="ph-fill ph-crown text-lg sm:text-2xl text-black"></i>
             </div>
         </div>
     </div>

@@ -86,8 +86,7 @@
                                         title="Edit">
                                         <i class="ph ph-pencil-simple text-base"></i>
                                     </button>
-                                    <button type="submit" onclick="bukaModalHapus({{ $a->id }}, '{{ $a->nama }}', '{{ $a->jenis_kelamin }}', '{{ $a->no_telepon ?? '-' }}')" 
-                                        onclick="if(this.form.checkValidity()){ this.innerHTML='<i class=\'ph ph-spinner animate-spin text-lg\'></i> Menyimpan...'; this.classList.remove('hover:bg-[#334155]', 'active:scale-95'); this.disabled=true; this.form.submit(); }"
+                                    <button type="button" onclick="bukaModalHapus({{ $a->id }}, '{{ $a->nama }}', '{{ $a->jenis_kelamin }}', '{{ $a->no_telepon ?? '-' }}')" 
                                         class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 hover:bg-red-100 text-red-500 transition-colors shadow-sm"
                                         title="Hapus">
                                         <i class="ph ph-trash text-base"></i>
@@ -249,7 +248,7 @@
                 </div>
                 <div class="flex gap-3 pt-6 border-t border-zinc-100">
                     <button type="button" onclick="tutupModal('modalHapus')" class="flex-1 px-4 py-3 rounded-xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm uppercase">Batal</button>
-                    <button type="submit" onclick="if(this.form.checkValidity()){ this.innerHTML='<i class=\'ph ph-spinner animate-spin text-lg\'></i> Menyimpan...'; this.classList.remove('hover:bg-[#334155]', 'active:scale-95'); this.disabled=true; this.form.submit(); }"class="flex-1 px-4 py-3 rounded-xl bg-red-50 text-red-600 font-bold hover:bg-red-100 border border-red-100 transition-all active:scale-95 flex items-center justify-center gap-2 text-sm uppercase">
+                    <button type="submit" onclick="if(this.form.checkValidity()){ this.innerHTML='<i class=\'ph ph-spinner animate-spin text-lg\'></i> Menyimpan...'; this.classList.remove('hover:bg-red-100', 'active:scale-95'); this.disabled=true; this.form.submit(); }" class="flex-1 px-4 py-3 rounded-xl bg-red-50 text-red-600 font-bold hover:bg-red-100 border border-red-100 transition-all active:scale-95 flex items-center justify-center gap-2 text-sm uppercase">
                         <i class="fas fa-trash-alt"></i> Hapus
                     </button>
                 </div>

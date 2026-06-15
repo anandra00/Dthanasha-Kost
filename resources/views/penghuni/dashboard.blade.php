@@ -187,7 +187,7 @@
         </div>
     @endif
 
-    @if(is_null(auth()->user()->email))
+    @if(false && is_null(auth()->user()->email))
         
         <div class="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center">
             <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl scale-100 transition-all mx-4">
@@ -216,7 +216,7 @@
             </div>
         </div>
 
-    @elseif(is_null(auth()->user()->email_verified_at))
+    @elseif(false && is_null(auth()->user()->email_verified_at))
 
         <div class="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center">
             <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl scale-100 transition-all mx-4">
