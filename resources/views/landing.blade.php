@@ -49,7 +49,7 @@
                 <a href="#kontak" class="hover:text-white transition-colors">Hubungi Kami</a>
             </nav>
 
-            <div class="flex items-center gap-4">
+            <div class="hidden md:flex items-center gap-4">
                 @auth
                     @if(auth()->user()->role == 'owner')
                         <a href="{{ route('admin.dashboard') }}" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-2">
@@ -64,6 +64,38 @@
                     @endif
                 @else
                     <a href="{{ route('login') }}" class="px-5 py-2.5 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all active:scale-95">
+                        Masuk / Login
+                    </a>
+                @endauth
+            </div>
+
+            <!-- Hamburger Button (Mobile only) -->
+            <button onclick="toggleMobileMenu()" class="md:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all active:scale-95 shrink-0">
+                <i id="mobileMenuIcon" class="ph ph-list text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div id="mobileMenu" class="hidden md:hidden bg-zinc-950 border-b border-zinc-900 px-4 pt-2 pb-6 space-y-3">
+            <a href="#home" onclick="toggleMobileMenu()" class="block text-zinc-400 hover:text-white py-2 px-3 rounded-lg font-semibold text-sm">Home</a>
+            <a href="#fasilitas" onclick="toggleMobileMenu()" class="block text-zinc-400 hover:text-white py-2 px-3 rounded-lg font-semibold text-sm">Fasilitas</a>
+            <a href="#kamar" onclick="toggleMobileMenu()" class="block text-zinc-400 hover:text-white py-2 px-3 rounded-lg font-semibold text-sm">Daftar Kamar</a>
+            <a href="#kontak" onclick="toggleMobileMenu()" class="block text-zinc-400 hover:text-white py-2 px-3 rounded-lg font-semibold text-sm">Hubungi Kami</a>
+            <div class="pt-4 border-t border-zinc-900 px-3">
+                @auth
+                    @if(auth()->user()->role == 'owner')
+                        <a href="{{ route('admin.dashboard') }}" class="w-full justify-center px-5 py-3 bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-2">
+                            <i class="ph ph-squares-four text-base"></i>
+                            <span>Dashboard Admin</span>
+                        </a>
+                    @else
+                        <a href="{{ route('penghuni.dashboard') }}" class="w-full justify-center px-5 py-3 bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-2">
+                            <i class="ph ph-squares-four text-base"></i>
+                            <span>Dashboard Saya</span>
+                        </a>
+                    @endif
+                @else
+                    <a href="{{ route('login') }}" class="w-full block text-center px-5 py-3 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all active:scale-95">
                         Masuk / Login
                     </a>
                 @endauth
@@ -379,6 +411,17 @@
                     }
                 }
             });
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const icon = document.getElementById('mobileMenuIcon');
+            menu.classList.toggle('hidden');
+            if (menu.classList.contains('hidden')) {
+                icon.className = 'ph ph-list text-xl';
+            } else {
+                icon.className = 'ph ph-x text-xl';
+            }
         }
     </script>
 </body>
