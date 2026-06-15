@@ -15,4 +15,9 @@ class Keluhan extends Model
         'status_keluhan',
         'tanggal',
     ];
+
+    public function penghuni()
+    {
+        return $this->belongsTo(Penghuni::class, 'id_penghuni');
+    }
 }

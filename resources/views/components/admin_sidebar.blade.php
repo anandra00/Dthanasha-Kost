@@ -43,6 +43,22 @@
             Riwayat
         </a>
 
+        <a href="{{ route('admin.keluhan') }}"
+            class="sidebar-link {{ request()->routeIs('admin.keluhan') ? 'active-link font-semibold' : 'font-medium hover:text-white' }} flex items-center justify-between px-4 py-3 rounded-lg text-sm transition-all">
+            <div class="flex items-center gap-3">
+                <i class="ph ph-chat-teardrop-text text-lg {{ request()->routeIs('admin.keluhan') ? 'text-white' : '' }}"></i>
+                <span>Keluhan</span>
+            </div>
+            @php
+                $menungguCount = \App\Models\Keluhan::where('status_keluhan', 'Menunggu')->count();
+            @endphp
+            @if($menungguCount > 0)
+                <span class="bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0">
+                    {{ $menungguCount }}
+                </span>
+            @endif
+        </a>
+
         <!-- MENU PENGATURAN -->
         <a href="{{ route('admin.pengaturan') }}"
             class="sidebar-link {{ request()->routeIs('admin.pengaturan') ? 'active-link font-semibold' : 'font-medium hover:text-white' }} flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all mt-4 border-t border-zinc-800 pt-4">

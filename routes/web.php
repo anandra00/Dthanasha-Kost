@@ -13,8 +13,15 @@ use App\Http\Controllers\Penghuni\KeluhanController;
 use App\Http\Controllers\Admin\WaitingListController;
 use App\Http\Controllers\Admin\KamarController;
 use App\Http\Controllers\Admin\PembayaranController;
+use App\Http\Controllers\Admin\KeluhanController as AdminKeluhanController;
+use App\Http\Controllers\LandingPageController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
+
+// ==========================================
+// ROUTE LANDING PAGE (PUBLIK)
+// ==========================================
+Route::get('/', [LandingPageController::class, 'index'])->name('landing');
 
 // ==========================================
 // ROUTE SISI PEMILIK (ADMINISTRATOR)
@@ -53,6 +60,10 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
     Route::put('/admin/edit_riwayat/{id}', [RiwayatController::class, 'update'])->name('admin.edit-riwayat');
     Route::delete('/admin/hapus_riwayat/{id}', [RiwayatController::class, 'destroy'])->name('admin.hapus-riwayat');
     Route::get('/admin/chart-data', [RiwayatController::class, 'getChartData'])->name('admin.chart-data');
+
+    // ---> Route CRUD Keluhan <---
+    Route::get('admin/keluhan', [AdminKeluhanController::class, 'index'])->name('admin.keluhan');
+    Route::put('/admin/keluhan/{id}', [AdminKeluhanController::class, 'update'])->name('admin.keluhan.update');
 
     // ---> Route Pengaturan <---
     Route::get('/admin/pengaturan', [PengaturanController::class, 'index'])->name('admin.pengaturan');

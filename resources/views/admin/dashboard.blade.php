@@ -9,7 +9,7 @@
 
 @section('content')
     <!-- SUMMARY CARDS -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-10">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-8 sm:mb-10">
         <div class="bg-white p-4 rounded-xl card-shadow border border-zinc-100 group hover:border-zinc-200 transition-all">
             <div class="flex items-center justify-between mb-3">
                 <div class="w-9 h-9 bg-zinc-50 rounded-lg flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-100 transition-colors">
@@ -48,6 +48,16 @@
             </div>
             <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-0.5">Keuntungan</p>
             <p class="text-lg sm:text-xl font-black text-green-600 truncate">Rp {{ number_format($keuntungan, 0, ',', '.') }}</p>
+        </div>
+
+        <div class="col-span-2 md:col-span-1 bg-white p-4 rounded-xl card-shadow border border-zinc-100 group hover:border-zinc-200 transition-all cursor-pointer" onclick="window.location.href='{{ route('admin.keluhan') }}'">
+            <div class="flex items-center justify-between mb-3">
+                <div class="w-9 h-9 bg-amber-50 rounded-lg flex items-center justify-center border border-amber-200 group-hover:bg-amber-100 transition-colors">
+                    <i class="ph ph-chat-teardrop-text text-lg text-amber-600 font-bold"></i>
+                </div>
+            </div>
+            <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-0.5">Keluhan Aktif</p>
+            <p class="text-2xl font-black text-amber-600">{{ $keluhanMenunggu }}</p>
         </div>
     </div>
 

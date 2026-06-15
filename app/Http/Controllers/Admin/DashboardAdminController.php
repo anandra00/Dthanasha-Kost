@@ -8,6 +8,7 @@ use App\Models\Kamar;
 use App\Models\Tagihan;
 use App\Models\Transaksi;
 use App\Models\Pengeluaran;
+use App\Models\Keluhan;
 
 class DashboardAdminController extends Controller
 {
@@ -56,6 +57,8 @@ class DashboardAdminController extends Controller
                 ->sum('nominal');
         }
 
+        $keluhanMenunggu = Keluhan::where('status_keluhan', 'Menunggu')->count();
+
         return view('admin.dashboard', compact(
             'totalPenghuni',
             'totalKamar',
@@ -66,7 +69,8 @@ class DashboardAdminController extends Controller
             'lewatJatuhTempo',
             'chartLabels',
             'chartPemasukan',
-            'chartPengeluaran'
+            'chartPengeluaran',
+            'keluhanMenunggu'
         ));
     }
 }

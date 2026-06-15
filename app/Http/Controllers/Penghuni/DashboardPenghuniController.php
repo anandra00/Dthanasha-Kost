@@ -23,6 +23,7 @@ class DashboardPenghuniController extends Controller
         $kamar = null;
         $tagihanSaatIni = null;
         $riwayatPembayaran = collect();
+        $riwayatKeluhan = collect();
 
         if ($penghuni) {
             if ($penghuni->id_kamar) {
@@ -37,11 +38,16 @@ class DashboardPenghuniController extends Controller
                         ->orderBy('created_at', 'desc')
                         ->take(10)
                         ->get();
+
+            $riwayatKeluhan = Keluhan::where('id_penghuni', $penghuni->id)
+                        ->orderBy('created_at', 'desc')
+                        ->take(5)
+                        ->get();
         }
 
         $waAdmin = Pengaturan::where('kunci', 'wa_admin')->first();
 
-        return view('penghuni.dashboard', compact('tagihanSaatIni', 'nama', 'kamar', 'penghuni', 'waAdmin', 'riwayatPembayaran'));
+        return view('penghuni.dashboard', compact('tagihanSaatIni', 'nama', 'kamar', 'penghuni', 'waAdmin', 'riwayatPembayaran', 'riwayatKeluhan'));
     }
 
    public function submitKeluhan(Request $request)

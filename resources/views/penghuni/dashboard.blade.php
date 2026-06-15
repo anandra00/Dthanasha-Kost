@@ -112,7 +112,7 @@
             </div>
         </div>
 
-        <!-- Aksi Cepat -->
+        <!-- Aksi Cepat & Keluhan -->
         <div class="space-y-6">
             <div class="bg-white p-6 rounded-3xl card-shadow border border-gray-50 flex flex-col gap-4">
                 <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide mb-2">Aksi Cepat</h3>
@@ -149,6 +149,34 @@
                         <i class="ph ph-caret-right text-zinc-300 group-hover:text-zinc-500 transition-colors"></i>
                     </button>
                 @endif
+            </div>
+
+            <!-- Riwayat Keluhan -->
+            <div class="bg-white p-6 rounded-3xl card-shadow border border-gray-50 flex flex-col gap-4">
+                <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide">Status Keluhan Saya</h3>
+                <div class="space-y-3">
+                    @forelse($riwayatKeluhan as $keluhan)
+                        <div class="p-4 border border-zinc-100 rounded-2xl bg-zinc-50/50 hover:bg-white transition-all">
+                            <p class="text-xs text-zinc-700 font-semibold mb-3 leading-relaxed">
+                                "{{ Str::limit($keluhan->isi_keluhan, 100) }}"
+                            </p>
+                            <div class="flex justify-between items-center text-[10px]">
+                                <span class="text-zinc-400 font-bold uppercase tracking-wider">{{ \Carbon\Carbon::parse($keluhan->tanggal)->translatedFormat('d M Y') }}</span>
+                                @if($keluhan->status_keluhan == 'Menunggu')
+                                    <span class="bg-amber-50 text-amber-700 font-bold px-2 py-0.5 rounded border border-amber-200">Menunggu</span>
+                                @elseif($keluhan->status_keluhan == 'Diproses')
+                                    <span class="bg-sky-50 text-sky-700 font-bold px-2 py-0.5 rounded border border-sky-200">Diproses</span>
+                                @else
+                                    <span class="bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded border border-emerald-200">Selesai</span>
+                                @endif
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center py-4">
+                            <p class="text-xs text-zinc-400 font-medium">Belum ada laporan keluhan.</p>
+                        </div>
+                    @endforelse
+                </div>
             </div>
         </div>
     </div>
