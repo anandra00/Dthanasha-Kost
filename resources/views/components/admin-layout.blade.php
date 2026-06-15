@@ -10,10 +10,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8FAFC; }
-        .sidebar-link:hover { background-color: rgba(255,255,255,0.05); }
-        .active-link { background-color: #334155; color: white !important; }
-        .card-shadow { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FAFAFA; }
+        .sidebar-link { transition: all 0.2s ease; }
+        .sidebar-link:hover { background-color: rgba(245, 158, 11, 0.1); color: #f59e0b !important; }
+        .active-link { background-color: #f59e0b !important; color: #09090b !important; font-weight: 800; }
+        .active-link i { color: #09090b !important; }
+        .card-shadow { box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>

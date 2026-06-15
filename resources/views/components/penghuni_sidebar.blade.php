@@ -1,13 +1,13 @@
-<aside id="penghuniSidebar" class="sidebar-panel w-64 bg-[#18181B] text-zinc-400 flex flex-col fixed h-full z-50 border-r border-zinc-800">
-    <div class="p-6 border-b border-gray-800 flex items-center justify-between">
+<aside id="penghuniSidebar" class="sidebar-panel w-64 bg-[#09090b] text-zinc-400 flex flex-col fixed h-full z-50 border-r border-zinc-900">
+    <div class="p-6 border-b border-zinc-900 flex items-center justify-between">
         <div class="text-center flex-1">
             <a href="{{ route('landing') }}" class="hover:text-amber-500 transition-colors block">
-                <h2 class="text-white text-xl font-bold tracking-tight uppercase">DTHANASHA KOST</h2>
+                <h2 class="text-white text-xl font-bold tracking-tight uppercase">DTHANASHA <span class="text-amber-500">KOST</span></h2>
             </a>
             <p class="text-[10px] text-zinc-500 tracking-[0.2em] mt-1 uppercase">Penghuni</p>
         </div>
         <!-- Close button (mobile) -->
-        <button onclick="toggleSidebar()" class="md:hidden w-8 h-8 flex items-center justify-center rounded-lg hover:bg-zinc-700 text-zinc-400 hover:text-white transition-all">
+        <button onclick="toggleSidebar()" class="md:hidden w-8 h-8 flex items-center justify-center rounded-lg hover:bg-zinc-750 text-zinc-400 hover:text-white transition-all">
             <i class="ph ph-x text-xl"></i>
         </button>
     </div>
@@ -23,7 +23,7 @@
         </a>
     </nav>
 
-    <div class="p-6 border-t border-zinc-800">
+    <div class="p-6 border-t border-zinc-900">
         <form action="{{ route('logout') }}" method="POST">
             @csrf
             <button type="submit" 

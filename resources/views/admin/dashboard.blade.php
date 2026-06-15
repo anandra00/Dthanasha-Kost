@@ -173,11 +173,11 @@
                         </span>
                         <span class="text-sm font-black text-zinc-900">{{ $kamarKosong }}</span>
                     </div>
-                    <div class="flex items-center justify-between px-3 py-2 bg-zinc-900 rounded-xl">
-                        <span class="flex items-center gap-2 text-xs font-bold text-zinc-200 uppercase tracking-wider">
-                            <div class="w-2 h-2 bg-white rounded-sm"></div> Terisi
+                    <div class="flex items-center justify-between px-3 py-2 bg-amber-500 rounded-xl">
+                        <span class="flex items-center gap-2 text-xs font-bold text-zinc-950 uppercase tracking-wider">
+                            <div class="w-2 h-2 bg-zinc-950 rounded-sm"></div> Terisi
                         </span>
-                        <span class="text-sm font-black text-white">{{ $kamarTerisi }}</span>
+                        <span class="text-sm font-black text-zinc-950">{{ $kamarTerisi }}</span>
                     </div>
                 </div>
             </div>
@@ -202,8 +202,8 @@
             data: {
                 labels: chartLabels,
                 datasets: [
-                    { label: 'In', data: chartPemasukan, backgroundColor: '#18181B', borderRadius: 4, barPercentage: 0.6, categoryPercentage: 0.5 },
-                    { label: 'Out', data: chartPengeluaran, backgroundColor: '#E4E4E7', borderRadius: 4, barPercentage: 0.6, categoryPercentage: 0.5 }
+                    { label: 'Masuk', data: chartPemasukan, backgroundColor: '#f59e0b', borderRadius: 6, barPercentage: 0.6, categoryPercentage: 0.5 },
+                    { label: 'Keluar', data: chartPengeluaran, backgroundColor: '#27272a', borderRadius: 6, barPercentage: 0.6, categoryPercentage: 0.5 }
                 ]
             },
             options: {
@@ -224,7 +224,7 @@
                 labels: ['Tersedia', 'Terisi'], 
                 datasets: [{ 
                     data: [{{ $kamarKosong }}, {{ $kamarTerisi }}], 
-                    backgroundColor: ['#E4E4E7', '#18181B'], 
+                    backgroundColor: ['#e4e4e7', '#f59e0b'], 
                     borderWidth: 0, 
                     hoverOffset: 10,
                     cutout: '75%'
