@@ -1,8 +1,8 @@
-<aside id="adminSidebar" class="sidebar-panel w-64 bg-[#09090b] text-zinc-400 flex flex-col fixed h-full z-50 border-r border-zinc-900">
-    <div class="p-6 border-b border-zinc-900 flex items-center justify-between">
+<aside id="adminSidebar" class="sidebar-panel w-64 bg-[#18181B] text-zinc-400 flex flex-col fixed h-full z-50 border-r border-zinc-800">
+    <div class="p-6 border-b border-zinc-800 flex items-center justify-between">
         <div>
             <a href="{{ route('landing') }}" class="hover:text-amber-500 transition-colors block">
-                <h2 class="text-white text-xl font-bold tracking-tight uppercase">Dthanasha <span class="text-amber-500">Kost</span></h2>
+                <h2 class="text-white text-xl font-bold tracking-tight uppercase">Dthanasha <span class="text-white">Kost</span></h2>
             </a>
             <p class="text-[10px] text-zinc-500 tracking-[0.2em] mt-1 uppercase">Pemilik Kost</p>
         </div>
@@ -63,13 +63,13 @@
 
         <!-- MENU PENGATURAN -->
         <a href="{{ route('admin.pengaturan') }}"
-            class="sidebar-link {{ request()->routeIs('admin.pengaturan') ? 'active-link font-semibold' : 'font-medium hover:text-white' }} flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all mt-4 border-t border-zinc-900 pt-4">
+            class="sidebar-link {{ request()->routeIs('admin.pengaturan') ? 'active-link font-semibold' : 'font-medium hover:text-white' }} flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all mt-4 border-t border-zinc-800 pt-4">
             <i class="ph ph-gear text-lg {{ request()->routeIs('admin.pengaturan') ? 'text-white' : '' }}"></i>
             Pengaturan
         </a>
     </nav>
 
-    <div class="p-6 border-t border-zinc-900">
+    <div class="p-6 border-t border-zinc-800">
         <form action="{{ route('logout') }}" method="POST">
             @csrf
             <button type="submit" 
