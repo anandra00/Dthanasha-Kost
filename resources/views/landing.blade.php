@@ -21,82 +21,82 @@
             background-color: #FAFAFA;
         }
         .glow-effect:hover {
-            box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);
+            box-shadow: 0 0 20px rgba(51, 65, 85, 0.15);
         }
         .card-shadow {
             box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04);
         }
-        .hero-pattern {
-            background-color: #09090b;
-            background-image: radial-gradient(at 0% 0%, rgba(39, 39, 42, 0.3) 0, transparent 50%), 
-                              radial-gradient(at 50% 0%, rgba(245, 158, 11, 0.05) 0, transparent 50%),
-                              radial-gradient(at 100% 100%, rgba(24, 24, 27, 0.3) 0, transparent 50%);
+        .hero-pattern-light {
+            background-color: #f8fafc;
+            background-image: radial-gradient(at 0% 0%, rgba(203, 213, 225, 0.3) 0, transparent 50%), 
+                              radial-gradient(at 50% 0%, rgba(51, 65, 85, 0.05) 0, transparent 50%),
+                              radial-gradient(at 100% 100%, rgba(241, 245, 249, 0.3) 0, transparent 50%);
         }
     </style>
 </head>
 <body class="text-zinc-800 antialiased">
 
     <!-- HEADER / NAVIGATION -->
-    <header class="fixed top-0 left-0 w-full bg-zinc-950/80 backdrop-blur-md border-b border-zinc-900 z-50 transition-all">
+    <header class="fixed top-0 left-0 w-full bg-white/90 backdrop-blur-md border-b border-zinc-200 z-50 transition-all">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <a href="#" class="flex items-center gap-2">
-                <span class="text-white text-xl font-extrabold tracking-tight uppercase">Dthanasha <span class="text-amber-500">Kost</span></span>
+                <span class="text-zinc-900 text-xl font-extrabold tracking-tight uppercase">Dthanasha <span class="text-[#334155]">Kost</span></span>
             </a>
             
-            <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-zinc-400">
-                <a href="#home" class="hover:text-white transition-colors">Home</a>
-                <a href="#fasilitas" class="hover:text-white transition-colors">Fasilitas</a>
-                <a href="#kamar" class="hover:text-white transition-colors">Daftar Kamar</a>
-                <a href="#kontak" class="hover:text-white transition-colors">Hubungi Kami</a>
+            <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-zinc-500">
+                <a href="#home" class="hover:text-zinc-900 transition-colors">Home</a>
+                <a href="#fasilitas" class="hover:text-zinc-900 transition-colors">Fasilitas</a>
+                <a href="#kamar" class="hover:text-zinc-900 transition-colors">Daftar Kamar</a>
+                <a href="#kontak" class="hover:text-zinc-900 transition-colors">Hubungi Kami</a>
             </nav>
 
             <div class="hidden md:flex items-center gap-4">
                 @auth
                     @if(auth()->user()->role == 'owner')
-                        <a href="{{ route('admin.dashboard') }}" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-2">
+                        <a href="{{ route('admin.dashboard') }}" class="px-5 py-2.5 bg-[#334155] hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-2">
                             <i class="ph ph-squares-four text-base"></i>
                             <span>Dashboard Admin</span>
                         </a>
                     @else
-                        <a href="{{ route('penghuni.dashboard') }}" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-2">
+                        <a href="{{ route('penghuni.dashboard') }}" class="px-5 py-2.5 bg-[#334155] hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-2">
                             <i class="ph ph-squares-four text-base"></i>
                             <span>Dashboard Saya</span>
                         </a>
                     @endif
                 @else
-                    <a href="{{ route('login') }}" class="px-5 py-2.5 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all active:scale-95">
+                    <a href="{{ route('login') }}" class="px-5 py-2.5 bg-[#334155] hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all active:scale-95">
                         Masuk / Login
                     </a>
                 @endauth
             </div>
 
             <!-- Hamburger Button (Mobile only) -->
-            <button onclick="toggleMobileMenu()" class="md:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all active:scale-95 shrink-0">
+            <button onclick="toggleMobileMenu()" class="md:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-zinc-200 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-50 transition-all active:scale-95 shrink-0">
                 <i id="mobileMenuIcon" class="ph ph-list text-xl"></i>
             </button>
         </div>
 
         <!-- Mobile Menu Panel -->
-        <div id="mobileMenu" class="hidden md:hidden bg-zinc-950 border-b border-zinc-900 px-4 pt-2 pb-6 space-y-3">
-            <a href="#home" onclick="toggleMobileMenu()" class="block text-zinc-400 hover:text-white py-2 px-3 rounded-lg font-semibold text-sm">Home</a>
-            <a href="#fasilitas" onclick="toggleMobileMenu()" class="block text-zinc-400 hover:text-white py-2 px-3 rounded-lg font-semibold text-sm">Fasilitas</a>
-            <a href="#kamar" onclick="toggleMobileMenu()" class="block text-zinc-400 hover:text-white py-2 px-3 rounded-lg font-semibold text-sm">Daftar Kamar</a>
-            <a href="#kontak" onclick="toggleMobileMenu()" class="block text-zinc-400 hover:text-white py-2 px-3 rounded-lg font-semibold text-sm">Hubungi Kami</a>
-            <div class="pt-4 border-t border-zinc-900 px-3">
+        <div id="mobileMenu" class="hidden md:hidden bg-white border-b border-zinc-200 px-4 pt-2 pb-6 space-y-3">
+            <a href="#home" onclick="toggleMobileMenu()" class="block text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 py-2 px-3 rounded-lg font-semibold text-sm">Home</a>
+            <a href="#fasilitas" onclick="toggleMobileMenu()" class="block text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 py-2 px-3 rounded-lg font-semibold text-sm">Fasilitas</a>
+            <a href="#kamar" onclick="toggleMobileMenu()" class="block text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 py-2 px-3 rounded-lg font-semibold text-sm">Daftar Kamar</a>
+            <a href="#kontak" onclick="toggleMobileMenu()" class="block text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 py-2 px-3 rounded-lg font-semibold text-sm">Hubungi Kami</a>
+            <div class="pt-4 border-t border-zinc-200 px-3">
                 @auth
                     @if(auth()->user()->role == 'owner')
-                        <a href="{{ route('admin.dashboard') }}" class="w-full justify-center px-5 py-3 bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-2">
+                        <a href="{{ route('admin.dashboard') }}" class="w-full justify-center px-5 py-3 bg-[#334155] hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-2">
                             <i class="ph ph-squares-four text-base"></i>
                             <span>Dashboard Admin</span>
                         </a>
                     @else
-                        <a href="{{ route('penghuni.dashboard') }}" class="w-full justify-center px-5 py-3 bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-2">
+                        <a href="{{ route('penghuni.dashboard') }}" class="w-full justify-center px-5 py-3 bg-[#334155] hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-2">
                             <i class="ph ph-squares-four text-base"></i>
                             <span>Dashboard Saya</span>
                         </a>
                     @endif
                 @else
-                    <a href="{{ route('login') }}" class="w-full block text-center px-5 py-3 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all active:scale-95">
+                    <a href="{{ route('login') }}" class="w-full block text-center px-5 py-3 bg-[#334155] hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all active:scale-95">
                         Masuk / Login
                     </a>
                 @endauth
@@ -105,26 +105,26 @@
     </header>
 
     <!-- HERO SECTION -->
-    <section id="home" class="hero-pattern pt-36 pb-24 md:pt-48 md:pb-36 text-white overflow-hidden relative">
+    <section id="home" class="hero-pattern-light pt-36 pb-24 md:pt-48 md:pb-36 text-zinc-850 overflow-hidden relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                 <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
-                    <span class="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 text-amber-500 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
+                    <span class="inline-flex items-center gap-2 bg-[#334155]/10 border border-[#334155]/20 text-[#334155] px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
                         <i class="ph ph-sparkle text-sm"></i> Hunian Kost Eksklusif & Modern
                     </span>
-                    <h1 class="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-none text-white">
+                    <h1 class="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-none text-zinc-900">
                         Kost Nyaman <br>
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-600">Teknologi Pintar</span>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#334155] to-zinc-900">Teknologi Pintar</span>
                     </h1>
-                    <p class="text-zinc-400 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed">
+                    <p class="text-zinc-500 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed">
                         Nikmati kemudahan sewa kost bulanan di Dthanasha Kost. Dilengkapi dengan pembayaran otomatis via Midtrans, laporan keluhan online, serta kamar kost berfasilitas lengkap.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
-                        <a href="#kamar" class="px-8 py-4 bg-amber-500 hover:bg-amber-600 text-zinc-950 font-extrabold text-sm uppercase tracking-wider rounded-2xl transition-all shadow-lg shadow-amber-500/15 active:scale-95 text-center flex items-center justify-center gap-2">
+                        <a href="#kamar" class="px-8 py-4 bg-[#334155] hover:bg-slate-800 text-white font-extrabold text-sm uppercase tracking-wider rounded-2xl transition-all shadow-lg shadow-[#334155]/15 active:scale-95 text-center flex items-center justify-center gap-2">
                             <span>Cari Kamar Tersedia</span>
                             <i class="ph ph-arrow-down text-lg"></i>
                         </a>
-                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $waAdmin) }}?text=Halo%20Dthanasha%20Kost,%20saya%20tertarik%20tanya%20seputar%20kamar%20kost." target="_blank" class="px-8 py-4 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-white font-extrabold text-sm uppercase tracking-wider rounded-2xl transition-all active:scale-95 text-center flex items-center justify-center gap-2">
+                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $waAdmin) }}?text=Halo%20Dthanasha%20Kost,%20saya%20tertarik%20tanya%20seputar%20kamar%20kost." target="_blank" class="px-8 py-4 bg-white border border-zinc-200 hover:border-zinc-300 text-zinc-800 font-extrabold text-sm uppercase tracking-wider rounded-2xl transition-all active:scale-95 text-center flex items-center justify-center gap-2">
                             <i class="ph ph-whatsapp-logo text-xl text-green-500"></i>
                             <span>Hubungi Owner</span>
                         </a>
@@ -132,27 +132,27 @@
                 </div>
                 
                 <div class="lg:col-span-5 relative flex justify-center">
-                    <div class="w-full max-w-sm bg-zinc-900/60 backdrop-blur-md border border-zinc-800 rounded-[2rem] p-8 card-shadow flex flex-col gap-6 relative">
-                        <div class="absolute -top-4 -right-4 w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center shadow-lg transform rotate-12">
-                            <i class="ph ph-door-open text-2xl text-zinc-950 font-bold"></i>
+                    <div class="w-full max-w-sm bg-white border border-zinc-200 rounded-[2rem] p-8 card-shadow flex flex-col gap-6 relative">
+                        <div class="absolute -top-4 -right-4 w-12 h-12 bg-[#334155] rounded-2xl flex items-center justify-center shadow-lg transform rotate-12">
+                            <i class="ph ph-door-open text-2xl text-white font-bold"></i>
                         </div>
-                        <h3 class="text-lg font-black tracking-wide uppercase text-white">Status Kost Saat Ini</h3>
+                        <h3 class="text-lg font-black tracking-wide uppercase text-zinc-900">Status Kost Saat Ini</h3>
                         <div class="space-y-4">
-                            <div class="flex items-center justify-between p-4 bg-zinc-950/40 border border-zinc-800/80 rounded-2xl">
-                                <span class="text-xs font-bold text-zinc-400 uppercase tracking-widest">Kamar Kosong</span>
-                                <span class="text-xl font-black text-amber-500">{{ $kamarKosong }} Unit</span>
+                            <div class="flex items-center justify-between p-4 bg-zinc-50 border border-zinc-100 rounded-2xl">
+                                <span class="text-xs font-bold text-zinc-500 uppercase tracking-widest">Kamar Kosong</span>
+                                <span class="text-xl font-black text-[#334155]">{{ $kamarKosong }} Unit</span>
                             </div>
-                            <div class="flex items-center justify-between p-4 bg-zinc-950/40 border border-zinc-800/80 rounded-2xl">
-                                <span class="text-xs font-bold text-zinc-400 uppercase tracking-widest">Kamar Terisi</span>
-                                <span class="text-xl font-black text-zinc-100">{{ $kamarTerisi }} Unit</span>
+                            <div class="flex items-center justify-between p-4 bg-zinc-50 border border-zinc-100 rounded-2xl">
+                                <span class="text-xs font-bold text-zinc-500 uppercase tracking-widest">Kamar Terisi</span>
+                                <span class="text-xl font-black text-zinc-900">{{ $kamarTerisi }} Unit</span>
                             </div>
-                            <div class="flex items-center justify-between p-4 bg-zinc-950/40 border border-zinc-800/80 rounded-2xl">
-                                <span class="text-xs font-bold text-zinc-400 uppercase tracking-widest">Total Kamar</span>
-                                <span class="text-xl font-black text-zinc-100">{{ $totalKamar }} Unit</span>
+                            <div class="flex items-center justify-between p-4 bg-zinc-50 border border-zinc-100 rounded-2xl">
+                                <span class="text-xs font-bold text-zinc-500 uppercase tracking-widest">Total Kamar</span>
+                                <span class="text-xl font-black text-zinc-900">{{ $totalKamar }} Unit</span>
                             </div>
                         </div>
                         <div class="text-center pt-2">
-                            <p class="text-[11px] font-semibold text-zinc-500 uppercase tracking-widest leading-relaxed">
+                            <p class="text-[11px] font-semibold text-zinc-400 uppercase tracking-widest leading-relaxed">
                                 *Data diperbarui secara real-time dari sistem manajemen kost.
                             </p>
                         </div>
@@ -166,14 +166,14 @@
     <section id="fasilitas" class="py-20 bg-white border-y border-zinc-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-16">
-                <span class="text-xs font-bold text-amber-600 uppercase tracking-widest">Kenapa Memilih Kami?</span>
+                <span class="text-xs font-bold text-[#334155] uppercase tracking-widest">Kenapa Memilih Kami?</span>
                 <h2 class="text-3xl font-black text-zinc-900 mt-2 uppercase tracking-wide">Fasilitas Kost Premium</h2>
-                <div class="w-16 h-1 bg-amber-500 mx-auto mt-4 rounded-full"></div>
+                <div class="w-16 h-1 bg-[#334155] mx-auto mt-4 rounded-full"></div>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 sm:gap-8">
                 <div class="bg-zinc-50 p-6 rounded-3xl border border-zinc-100 text-center flex flex-col items-center gap-4 transition-all hover:bg-white glow-effect card-shadow">
-                    <div class="w-14 h-14 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-center text-amber-600">
+                    <div class="w-14 h-14 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-center text-[#334155]">
                         <i class="ph ph-wifi-high text-3xl font-bold"></i>
                     </div>
                     <div>
@@ -183,7 +183,7 @@
                 </div>
 
                 <div class="bg-zinc-50 p-6 rounded-3xl border border-zinc-100 text-center flex flex-col items-center gap-4 transition-all hover:bg-white glow-effect card-shadow">
-                    <div class="w-14 h-14 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-center text-amber-600">
+                    <div class="w-14 h-14 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-center text-[#334155]">
                         <i class="ph ph-thermometer-cold text-3xl font-bold"></i>
                     </div>
                     <div>
@@ -193,7 +193,7 @@
                 </div>
 
                 <div class="bg-zinc-50 p-6 rounded-3xl border border-zinc-100 text-center flex flex-col items-center gap-4 transition-all hover:bg-white glow-effect card-shadow">
-                    <div class="w-14 h-14 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-center text-amber-600">
+                    <div class="w-14 h-14 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-center text-[#334155]">
                         <i class="ph ph-shower text-3xl font-bold"></i>
                     </div>
                     <div>
@@ -203,7 +203,7 @@
                 </div>
 
                 <div class="bg-zinc-50 p-6 rounded-3xl border border-zinc-100 text-center flex flex-col items-center gap-4 transition-all hover:bg-white glow-effect card-shadow">
-                    <div class="w-14 h-14 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-center text-amber-600">
+                    <div class="w-14 h-14 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-center text-[#334155]">
                         <i class="ph ph-eye text-3xl font-bold"></i>
                     </div>
                     <div>
@@ -213,7 +213,7 @@
                 </div>
 
                 <div class="bg-zinc-50 p-6 rounded-3xl border border-zinc-100 text-center flex flex-col items-center gap-4 transition-all hover:bg-white glow-effect card-shadow">
-                    <div class="w-14 h-14 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-center text-amber-600">
+                    <div class="w-14 h-14 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-center text-[#334155]">
                         <i class="ph ph-cooking-pot text-3xl font-bold"></i>
                     </div>
                     <div>
@@ -223,7 +223,7 @@
                 </div>
 
                 <div class="bg-zinc-50 p-6 rounded-3xl border border-zinc-100 text-center flex flex-col items-center gap-4 transition-all hover:bg-white glow-effect card-shadow">
-                    <div class="w-14 h-14 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-center text-amber-600">
+                    <div class="w-14 h-14 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-center text-[#334155]">
                         <i class="ph ph-park text-3xl font-bold"></i>
                     </div>
                     <div>
@@ -240,13 +240,13 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
                 <div>
-                    <span class="text-xs font-bold text-amber-600 uppercase tracking-widest">Katalog Unit</span>
+                    <span class="text-xs font-bold text-[#334155] uppercase tracking-widest">Katalog Unit</span>
                     <h2 class="text-3xl font-black text-zinc-900 mt-2 uppercase tracking-wide">Daftar Kamar Kost</h2>
                 </div>
                 
                 <!-- Client Side Filter Controls -->
                 <div class="flex flex-wrap gap-3">
-                    <button onclick="filterKamar('all')" id="btn-all" class="filter-btn px-5 py-2.5 rounded-xl bg-zinc-900 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-sm">
+                    <button onclick="filterKamar('all')" id="btn-all" class="filter-btn px-5 py-2.5 rounded-xl bg-[#334155] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-sm">
                         Semua Kamar
                     </button>
                     @foreach($types as $type)
@@ -269,7 +269,7 @@
                         
                         <!-- Header Card -->
                         <div class="flex justify-between items-start">
-                            <div class="bg-zinc-950 text-white w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-xl shadow-md">
+                            <div class="bg-[#334155] text-white w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-xl shadow-md">
                                 {{ $kamar->nomor_kamar }}
                             </div>
                             <div class="text-right">
@@ -302,7 +302,7 @@
                         <!-- Action Button -->
                         <div>
                             @if($kamar->status_kamar == 'Kosong')
-                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $waAdmin) }}?text=Halo%20Dthanasha%20Kost,%20saya%20tertarik%20untuk%20memesan%20Kamar%20No%20{{ $kamar->nomor_kamar }}%20Tipe%20{{ $kamar->jenis_kamar }}." target="_blank" class="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold text-xs uppercase tracking-widest rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-2">
+                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $waAdmin) }}?text=Halo%20Dthanasha%20Kost,%20saya%20tertarik%20untuk%20memesan%20Kamar%20No%20{{ $kamar->nomor_kamar }}%20Tipe%20{{ $kamar->jenis_kamar }}." target="_blank" class="w-full py-3.5 bg-[#334155] hover:bg-slate-850 text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-2">
                                     <i class="ph-fill ph-check-square-offset text-base"></i> Booking Sekarang
                                 </a>
                             @else
@@ -323,13 +323,13 @@
     </section>
 
     <!-- FOOTER / CONTACT SECTION -->
-    <footer id="kontak" class="bg-zinc-950 text-white pt-16 pb-8 border-t border-zinc-900">
+    <footer id="kontak" class="bg-[#0f172a] text-white pt-16 pb-8 border-t border-[#1e293b]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-12">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <!-- Tentang Dthanasha -->
                 <div class="space-y-4">
                     <h4 class="text-white font-extrabold text-sm uppercase tracking-wider">Dthanasha Kost</h4>
-                    <p class="text-zinc-400 text-xs leading-relaxed font-medium">
+                    <p class="text-slate-400 text-xs leading-relaxed font-medium">
                         Kost modern dengan tata kelola digital untuk kenyamanan hidup Anda. Booking, bayar tagihan, dan kelola keluhan dalam satu platform terintegrasi.
                     </p>
                 </div>
@@ -337,7 +337,7 @@
                 <!-- Navigasi Cepat -->
                 <div class="space-y-4">
                     <h4 class="text-white font-extrabold text-sm uppercase tracking-wider">Tautan Pintar</h4>
-                    <ul class="text-zinc-400 text-xs space-y-2 font-semibold">
+                    <ul class="text-slate-400 text-xs space-y-2 font-semibold">
                         <li><a href="#home" class="hover:text-white transition-colors">Home</a></li>
                         <li><a href="#fasilitas" class="hover:text-white transition-colors">Fasilitas</a></li>
                         <li><a href="#kamar" class="hover:text-white transition-colors">Daftar Kamar</a></li>
@@ -348,7 +348,7 @@
                 <!-- Hubungi Kami -->
                 <div class="space-y-4 col-span-2">
                     <h4 class="text-white font-extrabold text-sm uppercase tracking-wider">Hubungi Kami / Booking</h4>
-                    <p class="text-zinc-400 text-xs leading-relaxed font-medium mb-4">
+                    <p class="text-slate-400 text-xs leading-relaxed font-medium mb-4">
                         Ada pertanyaan atau ingin menjadwalkan survei kamar kost? Hubungi kami langsung melalui link di bawah:
                     </p>
                     <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $waAdmin) }}?text=Halo%20Dthanasha%20Kost,%20saya%20ingin%20tanya%20seputar%20kost." target="_blank" class="inline-flex items-center gap-3 px-6 py-3.5 bg-green-500 hover:bg-green-600 text-zinc-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-95">
@@ -359,13 +359,13 @@
             </div>
 
             <!-- Bottom Footer -->
-            <div class="border-t border-zinc-900 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <p class="text-zinc-500 text-[11px] font-semibold uppercase tracking-wider">
+            <div class="border-t border-[#1e293b] pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p class="text-slate-500 text-[11px] font-semibold uppercase tracking-wider">
                     &copy; 2026 Dthanasha Kost. Hak Cipta Dilindungi.
                 </p>
-                <div class="flex items-center gap-2 text-[10px] font-bold text-zinc-500 uppercase">
+                <div class="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase">
                     <span>Powered by</span>
-                    <span class="text-zinc-400">Laravel & Tailwind</span>
+                    <span class="text-slate-400">Laravel & Tailwind</span>
                 </div>
             </div>
         </div>
@@ -387,7 +387,7 @@
             }
             const activeBtn = document.getElementById(activeId);
             if (activeBtn) {
-                activeBtn.className = 'filter-btn px-5 py-2.5 rounded-xl bg-zinc-900 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-sm';
+                activeBtn.className = 'filter-btn px-5 py-2.5 rounded-xl bg-[#334155] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-sm';
             }
 
             // Filter cards
